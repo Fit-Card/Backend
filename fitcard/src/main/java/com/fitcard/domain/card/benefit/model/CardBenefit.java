@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Table(name = "card_benefit")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CardBenefit {
 

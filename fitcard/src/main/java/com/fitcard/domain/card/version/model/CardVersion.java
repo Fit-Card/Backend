@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Table(name = "card_version")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CardVersion {
     @Id

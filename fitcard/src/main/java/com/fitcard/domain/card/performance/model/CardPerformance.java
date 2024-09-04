@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Table(name = "card_performance")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CardPerformance {
 
