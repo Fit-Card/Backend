@@ -1,6 +1,6 @@
 package com.fitcard.domain.merchant.merchantinfo.controller;
 
-public class MerchantController {
+public class MerchantInfoController {
 
 
 }

@@ -21,7 +21,7 @@ public class Payment {
 
     @ManyToOne
     @JoinColumn(name = "member_card_id", nullable = false)
-    private MemberCardInfo memberCardId;
+    private MemberCardInfo memberCard;
 
     @NotNull
     private Integer amount;
@@ -35,8 +35,8 @@ public class Payment {
     @NotEmpty
     private String paymentCategory;
 
-    private Payment(MemberCardInfo memberCardId, Integer amount, LocalDateTime paymentDate, String paymentName, String paymentCategory) {
-        this.memberCardId = memberCardId;
+    private Payment(MemberCardInfo memberCard, Integer amount, LocalDateTime paymentDate, String paymentName, String paymentCategory) {
+        this.memberCard = memberCard;
         this.amount = amount;
         this.paymentDate = paymentDate;
         this.paymentName = paymentName;

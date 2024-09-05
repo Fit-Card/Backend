@@ -19,26 +19,16 @@ public class MerchantCard {
     private Long merchantCardId;
 
     @ManyToOne
-    @JoinColumn(name = "merchant", nullable = false)
+    @JoinColumn(name = "merchant_id", nullable = false)
     private MerchantInfo merchantId;
 
     @ManyToOne
-    @JoinColumn(name = "card_version", nullable = false)
-    private CardVersion cardVersionId;
-
-    @ManyToOne
-    @JoinColumn(name = "card_version", nullable = false)
-    private CardVersion cardId2;
-
-    @ManyToOne
-    @JoinColumn(name = "card_version", nullable = false)
-    private CardVersion cardCompanyId;
+    @JoinColumn(name = "card_version_id", nullable = false)
+    private CardVersion cardVersion;
 
     // private 생성자
-    private MerchantCard(MerchantInfo merchantId, CardVersion cardVersionId, CardVersion cardId2, CardVersion cardCompanyId) {
+    private MerchantCard(MerchantInfo merchantId, CardVersion cardVersion) {
         this.merchantId = merchantId;
-        this.cardVersionId = cardVersionId;
-        this.cardId2 = cardId2;
-        this.cardCompanyId = cardCompanyId;
+        this.cardVersion = cardVersion;
     }
 }

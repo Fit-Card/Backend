@@ -1,6 +1,7 @@
 package com.fitcard.domain.membercard.membercardinfo.model;
 
 import com.fitcard.domain.card.version.model.CardVersion;
+import com.fitcard.domain.member.model.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,16 +21,13 @@ public class MemberCardInfo {
     private Long memberCardId;
 
     @ManyToOne
-    @JoinColumn(name = "card_version_id", nullable = false)
-    private CardVersion memberId;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
+
 
     @ManyToOne
     @JoinColumn(name = "card_version_id", nullable = false)
-    private CardVersion cardVersionId;
-
-    @ManyToOne
-    @JoinColumn(name = "card_version_id", nullable = false)
-    private CardVersion cardCompanyId;
+    private CardVersion cardVersion;
 
     private LocalDate expiredDate;
 
@@ -40,10 +38,8 @@ public class MemberCardInfo {
     private Boolean isPersonal;
 
     // private 생성자
-    private MemberCardInfo(CardVersion memberId, CardVersion cardVersionId, CardVersion cardCompanyId, LocalDate expiredDate, String globalBrand, Boolean isPersonal) {
-        this.memberId = memberId;
-        this.cardVersionId = cardVersionId;
-        this.cardCompanyId = cardCompanyId;
+    private MemberCardInfo(Member member, CardVersion cardVersion, LocalDate expiredDate, String globalBrand, Boolean isPersonal) {
+        this.member = member;
         this.expiredDate = expiredDate;
         this.globalBrand = globalBrand;
         this.isPersonal = isPersonal;

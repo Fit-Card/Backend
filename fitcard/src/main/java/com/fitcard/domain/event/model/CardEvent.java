@@ -21,7 +21,7 @@ public class CardEvent {
 
     @ManyToOne
     @JoinColumn(name = "card_company_id", nullable = false)
-    private CardCompany cardCompanyId;
+    private CardCompany cardCompany;
 
     @NotEmpty
     private String target;
@@ -44,8 +44,8 @@ public class CardEvent {
     @NotEmpty
     private String content;
 
-    private CardEvent(CardCompany cardCompanyId, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content) {
-        this.cardCompanyId = cardCompanyId;
+    private CardEvent(CardCompany cardCompany, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content) {
+        this.cardCompany = cardCompany;
         this.target = target;
         this.isCategory = isCategory;
         this.eventUrl = eventUrl;
