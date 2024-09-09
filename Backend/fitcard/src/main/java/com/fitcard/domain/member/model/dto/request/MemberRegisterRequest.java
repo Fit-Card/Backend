@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @Schema(name = "사용자 회원가입 요청 DTO", description = "사용자 회원가입에 필요한 정보")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,4 +30,7 @@ public class MemberRegisterRequest {
     @Schema(description = "전화번호", example = "010-1234-5678")
     @NotBlank(message = "전화번호를 입력하세요.")
     private String phoneNumber;
+
+    @Schema(description = "사용자 생년월일", example = "1990-01-01")
+    private LocalDate birthDate;
 }
