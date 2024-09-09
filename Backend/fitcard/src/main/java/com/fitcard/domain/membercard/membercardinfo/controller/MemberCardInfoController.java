@@ -2,6 +2,7 @@ package com.fitcard.domain.membercard.membercardinfo.controller;
 
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardCreateRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardDeleteRequest;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllResponses;
 import com.fitcard.domain.membercard.membercardinfo.service.MemberCardInfoService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
@@ -43,5 +44,12 @@ public class MemberCardInfoController {
     @PostMapping("/delete")
     public Response<?> deleteMemberCards(@RequestBody MemberCardDeleteRequest request) {
         return Response.SUCCESS(null, "사용자 카드 전체 조회를 성공했습니다.");
+    }
+
+    @Operation(summary = "사용자 카드 갱신 정보 조회 API", description = "사용자의 카드를 추가하기 위해 갱신한 카드 정보를 조회합니다.")
+    @SwaggerApiSuccess(description = "사용자 카드 갱신 정보 조회를 성공했습니다.")
+    @PostMapping("/get/renewal")
+    public Response<MemberCardGetAllRenewalResponses> getRenewalMemberCards() {
+        return Response.SUCCESS(null, "사용자 카드 갱신 정보 조회를 성공했습니다.");
     }
 }
