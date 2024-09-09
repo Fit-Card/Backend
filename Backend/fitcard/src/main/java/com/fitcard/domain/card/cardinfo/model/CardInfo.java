@@ -24,4 +24,7 @@ public class CardInfo {
     @JoinColumn(name = "card_company_id", nullable = false)
     private CardCompany cardCompany;
 
+    @NotEmpty
+    private String cardCode;
+
 }

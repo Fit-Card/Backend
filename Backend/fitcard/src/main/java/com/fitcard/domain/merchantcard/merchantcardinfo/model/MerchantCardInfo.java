@@ -1,10 +1,8 @@
-package com.fitcard.domain.merchantcard.model;
+package com.fitcard.domain.merchantcard.merchantcardinfo.model;
 
 import com.fitcard.domain.card.version.model.CardVersion;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "merchant_card")
 @Getter
 @NoArgsConstructor
-public class MerchantCard {
+public class MerchantCardInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +25,7 @@ public class MerchantCard {
     private CardVersion cardVersion;
 
     // private 생성자
-    private MerchantCard(MerchantInfo merchantId, CardVersion cardVersion) {
+    private MerchantCardInfo(MerchantInfo merchantId, CardVersion cardVersion) {
         this.merchantId = merchantId;
         this.cardVersion = cardVersion;
     }

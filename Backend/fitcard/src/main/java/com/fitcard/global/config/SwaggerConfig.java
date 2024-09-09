@@ -9,7 +9,7 @@ import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.View;
+//import org.springframework.web.servlet.View;
 
 @Configuration
 @OpenAPIDefinition(
@@ -29,8 +29,7 @@ import org.springframework.web.servlet.View;
 )
 public class SwaggerConfig {
 
-    private final String[] noRequiredTokenApi = {"/register", "/login", "/reissue","/login/oauth", "/oauth2/**",
-            "/login/oauth2/**", "/error", "login/oauth2/code/kakao", "/register/duplicate", "/sms/**"};
+    private final String[] noRequiredTokenApi = {"/auth/**", "/error", "login/oauth2/code/kakao", "/register/duplicate", "/sms/**"};
 //    private final View error;
 
     private final OperationCustomizer operationCustomizer;
