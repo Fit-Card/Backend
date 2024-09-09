@@ -13,9 +13,12 @@ import java.util.List;
 public class AlarmGetAllResponses {
 
     @Schema(description = "알람 목록")
-    List<AlarmGetAllResponse> alarmResponses;
+    private List<AlarmGetAllResponse> alarmResponses;
+
+    @Schema(description = "목록 개수", example = "1")
+    private int size;
 
     public static AlarmGetAllResponses from(List<AlarmGetAllResponse> alarmResponses) {
-        return new AlarmGetAllResponses(alarmResponses);
+        return new AlarmGetAllResponses(alarmResponses, alarmResponses.size());
     }
 }

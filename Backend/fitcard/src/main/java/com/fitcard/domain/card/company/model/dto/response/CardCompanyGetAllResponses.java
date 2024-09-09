@@ -11,5 +11,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CardCompanyGetAllResponses {
-    private List<CardCompanyGetAllResponse> cardCompanies;
+
+    private List<CardCompanyGetResponse> cardCompanies;
+
+    @Schema(description = "목록 개수", example = "1")
+    private int size;
 }

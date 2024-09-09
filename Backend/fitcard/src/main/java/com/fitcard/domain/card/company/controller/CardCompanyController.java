@@ -1,6 +1,5 @@
 package com.fitcard.domain.card.company.controller;
 
-import com.fitcard.domain.alarm.model.dto.response.AlarmGetAllResponses;
 import com.fitcard.domain.card.company.model.dto.response.CardCompanyGetAllResponses;
 import com.fitcard.domain.card.company.service.CardCompanyService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CardCompanyController {
     private final CardCompanyService cardCompanyService;
 
-    @Operation(summary = "카드사 전체 조회 API", description = "모든 카드사 목록을 조회합니다.")
+    @Operation(summary = "카드사 전체 조회 API", description = "모든 카드사 목록을 조회합니다. 기본 정렬은 사전순입니다.")
     @SwaggerApiSuccess(description = "카드사 전체 조회를 성공했습니다.")
     @PostMapping("/get/all")
     public Response<CardCompanyGetAllResponses> getCardCompanies() {
