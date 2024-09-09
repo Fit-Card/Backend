@@ -5,13 +5,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Schema(description = "카드사의 전체 카드 조회 DTO")
+@Schema(description = "사용자의 전체 카드 조회 DTO")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberCardGetResponse {
 
-    @Schema(description = "카드 id", example = "2")
-    private String cardId;
+    @Schema(description = "사용자 카드 id", example = "2")
+    private String memberCardId;
 
     @Schema(description = "카드 이름", example = "신한")
     private String cardName;

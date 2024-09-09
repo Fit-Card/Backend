@@ -1,6 +1,6 @@
 package com.fitcard.domain.card.cardinfo.controller;
 
-import com.fitcard.domain.card.cardinfo.model.dto.response.CardInfoGetAllByCompanyResponses;
+import com.fitcard.domain.card.cardinfo.model.dto.response.CardInfoGetResponses;
 import com.fitcard.domain.card.cardinfo.service.CardInfoService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
 import com.fitcard.global.response.Response;
@@ -26,7 +26,7 @@ public class CardInfoController {
     @Operation(summary = "카드사의 전체 카드 조회 API", description = "카드사의 전체 카드 목록을 조회합니다. 사전 순 정렬입니다.")
     @SwaggerApiSuccess(description = "카드사의 전체 카드 조회를 성공했습니다.")
     @PostMapping("/get/{cardCompanyId}")
-    public Response<CardInfoGetAllByCompanyResponses> getCardsByCompany(
+    public Response<CardInfoGetResponses> getCardsByCompany(
             @Parameter(description = "카드사 id", example = "3")
             @PathVariable("cardCompanyId") int cardCompanyId) {
         return Response.SUCCESS(null, "카드사의 전체 카드 조회를 성공했습니다.");

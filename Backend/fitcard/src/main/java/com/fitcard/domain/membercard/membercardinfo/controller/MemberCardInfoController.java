@@ -1,9 +1,10 @@
 package com.fitcard.domain.membercard.membercardinfo.controller;
 
+import com.fitcard.domain.card.cardinfo.model.dto.response.CardInfoGetResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardCreateRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardDeleteRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllResponses;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
 import com.fitcard.domain.membercard.membercardinfo.service.MemberCardInfoService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
 import com.fitcard.global.response.Response;
@@ -28,7 +29,7 @@ public class MemberCardInfoController {
     @Operation(summary = "사용자 카드 전체 조회 API", description = "사용자의 카드 전체 목록을 조회합니다. 기본 정렬은 사전순입니다.")
     @SwaggerApiSuccess(description = "사용자 카드 전체 조회를 성공했습니다.")
     @PostMapping("/get/all")
-    public Response<MemberCardGetAllResponses> getMemberCardAll() {
+    public Response<MemberCardGetResponses> getMemberCardAll() {
         return Response.SUCCESS(null, "사용자 카드 전체 조회를 성공했습니다.");
     }
 
@@ -50,6 +51,13 @@ public class MemberCardInfoController {
     @SwaggerApiSuccess(description = "사용자 카드 갱신 정보 조회를 성공했습니다.")
     @PostMapping("/get/renewal")
     public Response<MemberCardGetAllRenewalResponses> getRenewalMemberCards() {
+        return Response.SUCCESS(null, "사용자 카드 갱신 정보 조회를 성공했습니다.");
+    }
+
+    @Operation(summary = "사용자 나이대 카드 사용순 조회 API", description = "사용자의 나이대에 해당하는 카드를 사용 순으로 조회합니다.")
+    @SwaggerApiSuccess(description = "사용자 나이대 카드 사용순 조회를 성공했습니다.")
+    @PostMapping("/get/age-specific")
+    public Response<CardInfoGetResponses> getMemberCardsByAgeSpecific() {
         return Response.SUCCESS(null, "사용자 카드 갱신 정보 조회를 성공했습니다.");
     }
 }
