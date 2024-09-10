@@ -19,12 +19,12 @@ COPY . .
 # gradlew 파일에 실행 권한 추가
 RUN chmod +x ./gradlew
 
-# Gradle을 사용하여 프로젝트 빌드
+# Gradle을 사용하여 프로젝트 빌드 (테스트 제외)
 RUN ./gradlew build -x test
 
-# 빌드된 JAR 파일을 컨테이너에 추가
+# 빌드된 JAR 파일을 컨테이너에 복사
 ARG JAR_FILE=build/libs/*.jar
-ADD ${JAR_FILE} app.jar
+COPY ${JAR_FILE} app.jar
 
 # 8081 포트 노출
 EXPOSE 8081
