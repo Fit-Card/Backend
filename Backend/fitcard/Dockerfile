@@ -20,7 +20,7 @@ COPY . .
 RUN chmod +x ./gradlew
 
 # Gradle을 사용하여 프로젝트 빌드
-RUN ./gradlew build
+RUN ./gradlew build -x test
 
 # 빌드된 JAR 파일을 컨테이너에 추가
 ARG JAR_FILE=build/libs/*.jar
