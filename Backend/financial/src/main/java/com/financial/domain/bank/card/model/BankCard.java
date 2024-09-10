@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,17 +16,33 @@ import lombok.NoArgsConstructor;
 public class BankCard {
 
     @Id
-    private String Id;
+    private String cardId;
 
     @NotBlank
     private String cardName;
 
-    @NotBlank
+    @NotNull
     private Integer annualFee;
 
-    @NotBlank
+    @NotNull
+    private Integer abroadAnnualFee;
+
+    @NotNull
     private boolean createCheckType;
 
-    @NotBlank
+    @NotNull
     private boolean isBC;
+
+    @NotNull
+    private String cardImageUrl;
+
+    public BankCard(String cardId, String cardName, Integer annualFee, Integer abroadAnnualFee, boolean createCheckType, boolean isBC, String cardImageUrl) {
+        this.cardId = cardId;
+        this.cardName = cardName;
+        this.annualFee = annualFee;
+        this.abroadAnnualFee = abroadAnnualFee;
+        this.createCheckType = createCheckType;
+        this.isBC = isBC;
+        this.cardImageUrl = cardImageUrl;
+    }
 }
