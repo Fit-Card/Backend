@@ -4,8 +4,10 @@ FROM mdernst/cf-ubuntu-jdk21
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# Gradle 빌드를 위한 환경 설치 (Ubuntu 패키지 설치)
+# Gradle 빌드를 위한 환경 설치
+# 충돌하는 패키지를 제거하고 Gradle 설치
 RUN apt-get update && \
+    apt-get remove -y libtestng7-java testng && \
     apt-get install -y gradle && \
     apt-get clean
 
