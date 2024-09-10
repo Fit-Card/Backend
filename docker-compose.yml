@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: fitcard-mysql
+    volumes:
+      - db:/var/lib/mysql
+    restart: "no"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=root
+    networks:
+      - fitcard
+    ports:
+      - "3306:3306"
+      
+  backend:
+    image: limgayoung/fitcard-be:latest
+    container_name: fitcard-be
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8081"
+    restart: "always"
+    networks:
+      - fitcard
+
+volumes:
+  db: {}
+
+networks:
+  fitcard:
+    name: fitcard
+    driver: bridge
