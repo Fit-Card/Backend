@@ -39,6 +39,14 @@ dependencies {
 
 	// Add Swagger dependency
 	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.4'
+
+	// Test dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation "org.testcontainers:junit-jupiter"
+	testImplementation 'com.h2database:h2'  // In-memory database for tests
+	testImplementation 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
