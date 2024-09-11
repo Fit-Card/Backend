@@ -29,6 +29,8 @@ public class CardGorillaWebClientService {
             // 카드 정보 출력 (예시로 카드 이름을 출력)
             String cardName = cardData.getString("name");
             JSONObject cardImg = cardData.getJSONObject("card_img");
+            JSONObject cardCorp = cardData.getJSONObject("corp");
+            String cardCorpName = cardCorp.getString("name");
             String cardImageUrl = cardImg.getString("url");
             String cardType = cardData.getString("cate");
             System.out.println("카드 이름: " + cardName);
