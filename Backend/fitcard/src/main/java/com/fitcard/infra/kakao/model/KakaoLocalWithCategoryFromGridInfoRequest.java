@@ -10,18 +10,24 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class KakaoCategoryRequestQueryParameter {
+public class KakaoLocalWithCategoryFromGridInfoRequest {
 
     @NotEmpty
     private String category_group_code;
 
-    @NotEmpty
-    private String x;
-
-    @NotEmpty
-    private String y;
-
     @NotNull
     private int radius;
+
+    @NotNull
+    private double minLat;
+
+    @NotNull
+    private double minLon;
+
+    @NotNull
+    private double maxLat;
+
+    @NotNull
+    private double maxLon;
 
 }

@@ -1,6 +1,7 @@
 package com.fitcard.infra.kakao.service;
 
 import com.fitcard.infra.kakao.model.KakaoCategoryRequestQueryParameter;
+import com.fitcard.infra.kakao.model.KakaoLocalWithCategoryFromGridInfoRequest;
 import com.fitcard.infra.kakao.model.LocalInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -36,15 +37,32 @@ public class KakaoLocalServiceTest {
         KakaoCategoryRequestQueryParameter queryParameter = new KakaoCategoryRequestQueryParameter("FD6",
                 "127.05897078335246",
                 "37.506051888130386",
-                20000,
-                1);
+                50);
 
         List<LocalInfo> localWithCategoryFromKakao = kakaoLocalService.getLocalWithCategoryFromKakao(queryParameter);
 
-        localWithCategoryFromKakao.forEach(l -> {
-            log.info("response: {}",l.toString());
-        });
+        log.info("size: {}",localWithCategoryFromKakao.size());
         Assertions.assertThat(localWithCategoryFromKakao).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("범위에 대한 location 정보를 불러옵니다.")
+    public void getLocalWithCategoryFromGrid() {
+
+        KakaoLocalWithCategoryFromGridInfoRequest request = new KakaoLocalWithCategoryFromGridInfoRequest(
+                "FD6",
+                50,
+                126.732055331217,
+                37.5079080178341,
+                126.741038736625,
+                37.5191692206235
+        );
+
+        List<LocalInfo> localWithCategoryFromGrid = kakaoLocalService.getLocalWithCategoryFromGrid(request);
+        log.info("size: {}",localWithCategoryFromGrid.size());
+        Assertions.assertThat(localWithCategoryFromGrid).isNotEmpty();
+
+
     }
 
 }

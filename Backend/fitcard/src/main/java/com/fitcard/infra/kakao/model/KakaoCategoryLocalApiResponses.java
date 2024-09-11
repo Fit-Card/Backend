@@ -3,6 +3,7 @@ package com.fitcard.infra.kakao.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class KakaoCategoryLocalApiResponses {
         private String y;
     }
 
+    @ToString
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
