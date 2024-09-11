@@ -25,7 +25,22 @@ services:
     restart: "always"
     networks:
       - fitcard
-
+    
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/nginx:/etc/nginx  # nginx 설정 파일 경로
+      - /var/www/html:/var/www/html  # 정적 파일 제공을 위한 경로
+      - /etc/letsencrypt:/etc/letsencrypt  # SSL 인증서 경로
+    depends_on:
+      - backend
+    restart: "always"
+    networks:
+      - fitcard
 volumes:
   db: {}
 
