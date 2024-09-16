@@ -1,10 +1,14 @@
 package com.fitcard.infra;
 
 import com.fitcard.domain.card.benefit.model.CardBenefit;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class CardGorillaWebClientService {
@@ -21,7 +25,26 @@ public class CardGorillaWebClientService {
             // 응답이 JSON 형식일 경우, JSONObject로 변환 후 데이터 처리
             JSONObject cardData = new JSONObject(response);
 
-            System.out.println(cardData);
+            JSONArray benefits = cardData.getJSONArray("key_benefit");
+
+            System.out.println(benefits);
+
+            for (int i = 0; i < benefits.length(); i++) {
+                JSONObject benefitData = benefits.getJSONObject(i);
+                String benefitType = benefitData.getJSONObject("cate").getString("name");
+                String comment = benefitData.getString("comment");
+                String info = benefitData.getString("info");
+
+                System.out.println(benefitType);
+                System.out.println(comment);
+                System.out.println(info);
+
+//                Integer amountLimit = extractAmountLimit(info);
+//                String countLimit = extractCountLimit(info);
+//                Integer minPayment = extractMinPayment(info);
+//                Double benefitValue = extractBenefitValue(info);
+//                Integer benefitPer = extractBenefitPer(info);
+            }
 
         } catch (HttpClientErrorException.NotFound e) {
             // 404 에러를 무시하고 다음 카드로 넘어가도록 처리
