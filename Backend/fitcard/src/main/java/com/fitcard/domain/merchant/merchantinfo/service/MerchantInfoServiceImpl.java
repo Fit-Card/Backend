@@ -22,6 +22,7 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     @Override
     public void saveAll(MerchantInfoSaveAllRequest request) {
         List<String> merchantNames = StringArrayListConverter.convertStringToList(request.getMerchantNames());
+        //todo: category를 string으로 저장하지 않고 categoryNum(int)로 저장하게 변경할지 의논 필요
         List<MerchantInfo> merchantInfos = merchantNames.stream()
                 .map(m -> MerchantInfo.of(m, request.getCategory(), ""))
                 .toList();

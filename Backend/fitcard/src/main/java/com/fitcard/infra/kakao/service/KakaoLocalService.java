@@ -31,6 +31,11 @@ public class KakaoLocalService {
         this.KAKAO_API_KEY = kakoApiKey;
     }
 
+    /**
+     * 사각형 범위의 카테고리 장소를 모두 불러옵니다.
+     * @param request
+     * @return
+     */
     public List<LocalInfo> getLocalWithCategoryInGridUsingRect(KakaoLocalWithCategoryFromGridInfoRequest request) {
         List<LocalInfo> allLocalInfos = new ArrayList<>();
         double moveDistanceLat = 0.00045; // 위도 50미터 이동
@@ -51,8 +56,8 @@ public class KakaoLocalService {
                 );
 
                 List<LocalInfo> localInfos = getLocalWithCategoryAndRectFromKakao(parameter);
-                log.info("현재 rect: {}, {}, {}, {}", minLon, minLat, maxLon, maxLat);
-                log.info("size: {}", localInfos.size());
+//                log.info("현재 rect: {}, {}, {}, {}", minLon, minLat, maxLon, maxLat);
+//                log.info("size: {}", localInfos.size());
 
                 allLocalInfos.addAll(localInfos);
 
@@ -97,7 +102,10 @@ public class KakaoLocalService {
         }
 
 //        log.info("response meta: {}", responses.getMeta());
-        return localInfos;
+
+        return localInfos.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
 
@@ -129,7 +137,9 @@ public class KakaoLocalService {
         }
 
 //        log.info("response meta: {}", responses.getMeta());
-        return localInfos;
+        return localInfos.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private KakaoCategoryLocalApiResponses getKakaoCategoryLocalApiResponses(KakaoCategoryRectRequestQueryParameter parameter, int page){

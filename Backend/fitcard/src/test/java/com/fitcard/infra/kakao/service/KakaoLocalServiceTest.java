@@ -75,9 +75,9 @@ public class KakaoLocalServiceTest {
 
         List<LocalInfo> localWithCategoryFromGrid = kakaoLocalService.getLocalWithCategoryInGridUsingRect(request);
         log.info("size: {}",localWithCategoryFromGrid.size());
-        localWithCategoryFromGrid.forEach(l->{
-            log.info("l: {}", l);
-        });
+//        localWithCategoryFromGrid.forEach(l->{
+//            log.info("l: {}", l);
+//        });
         Assertions.assertThat(localWithCategoryFromGrid).isNotEmpty();
 
 
