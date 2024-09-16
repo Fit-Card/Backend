@@ -1,9 +1,9 @@
 package com.fitcard.domain.merchant.branch.model;
 
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
+import com.fitcard.infra.kakao.model.LocalInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,13 +27,30 @@ public class Branch {
     @NotEmpty
     private String branchName;
 
-    private String kakaoUrl;  // Optional field, not validated for emptiness
+    @NotEmpty
+    private String x;
+
+    @NotEmpty
+    private String y;
+
+    private String kakaoUrl;
+
+    @NotEmpty
+    private String kakaoLocalId;
 
     // private 생성자
-    private Branch(MerchantInfo merchantInfo, String address, String branchName, String kakaoUrl) {
+    private Branch(MerchantInfo merchantInfo, String address, String branchName, String kakaoUrl, String x, String y, String kakaoLocalId) {
         this.merchantInfo = merchantInfo;
         this.address = address;
         this.branchName = branchName;
         this.kakaoUrl = kakaoUrl;
+        this.x = x;
+        this.y = y;
+        this.kakaoLocalId = kakaoLocalId;
+    }
+
+    public static Branch of(LocalInfo localInfo, MerchantInfo merchantInfo){
+        return new Branch(merchantInfo, localInfo.getRoadAddressName(), localInfo.getPlaceName(),
+                localInfo.getPlaceUrl(), localInfo.getX(), localInfo.getY(), localInfo.getPlaceId());
     }
 }

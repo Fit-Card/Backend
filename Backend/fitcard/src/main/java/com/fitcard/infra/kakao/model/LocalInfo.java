@@ -19,6 +19,7 @@ public class LocalInfo {
     private String roadAddressName;
     private String x;
     private String y;
+    private String placeId;
 
     public static LocalInfo from(KakaoCategoryLocalApiResponses.KakaoCategoryLocalApiResponse response) {
         return new LocalInfo(response.getCategory_group_code(),
@@ -30,6 +31,7 @@ public class LocalInfo {
                 response.getPlace_url(),
                 response.getRoad_address_name(),
                 response.getX(),
-                response.getY());
+                response.getY(),
+                response.getPlaceId());
     }
 }
