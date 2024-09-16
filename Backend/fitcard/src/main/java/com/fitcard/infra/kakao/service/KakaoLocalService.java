@@ -59,7 +59,7 @@ public class KakaoLocalService {
     public List<LocalInfo> getLocalWithCategoryAndRectFromKakao(KakaoCategoryRectRequestQueryParameter parameter){
 
         //1. request를 바탕으로 요청 url 만들기
-        KakaoCategoryLocalApiResponses responses = getKakaoCategoryLocalRectApiResponses(parameter, 1);
+        KakaoCategoryLocalApiResponses responses = getKakaoCategoryLocalApiResponses(parameter, 1);
 
         if(responses == null){
             return List.of();
@@ -74,7 +74,7 @@ public class KakaoLocalService {
         int totalPageCount = responses.getMeta().getPageable_count();
 
         for(int i = 2; i <= totalPageCount; i++){
-            responses = getKakaoCategoryLocalRectApiResponses(parameter, i);
+            responses = getKakaoCategoryLocalApiResponses(parameter, i);
             localInfos.addAll(responses.getDocuments().stream()
                     .map(LocalInfo::from)
                     .toList());
@@ -117,7 +117,7 @@ public class KakaoLocalService {
         return localInfos;
     }
 
-    private KakaoCategoryLocalApiResponses getKakaoCategoryLocalRectApiResponses(KakaoCategoryRectRequestQueryParameter parameter, int page){
+    private KakaoCategoryLocalApiResponses getKakaoCategoryLocalApiResponses(KakaoCategoryRectRequestQueryParameter parameter, int page){
         String requestUrl = ORIGIN_URI+CATEGORY_LOCAL_REQUEST_URI+"?category_group_code="+parameter.getCategory_group_code()
                 +"&rect="+parameter.getTopX()+", "+parameter.getTopY()+", "+parameter.getBottomX()+", "+parameter.getBottomY()
                 +"&page="+page;
