@@ -1,5 +1,6 @@
 package com.fitcard.infra.kakao.service;
 
+import com.fitcard.infra.kakao.model.KakaoCategoryRectRequestQueryParameter;
 import com.fitcard.infra.kakao.model.KakaoCategoryRequestQueryParameter;
 import com.fitcard.infra.kakao.model.KakaoLocalWithCategoryFromGridInfoRequest;
 import com.fitcard.infra.kakao.model.LocalInfo;
@@ -40,6 +41,21 @@ public class KakaoLocalServiceTest {
                 50);
 
         List<LocalInfo> localWithCategoryFromKakao = kakaoLocalService.getLocalWithCategoryFromKakao(queryParameter);
+
+        log.info("size: {}",localWithCategoryFromKakao.size());
+        Assertions.assertThat(localWithCategoryFromKakao).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("kakao local category API를 이용해 rect 범위 안의 location 정보를 불러옵니다.")
+    public void getLocalWithCategoryAndRectFromKakao() {
+        KakaoCategoryRectRequestQueryParameter queryParameter = new KakaoCategoryRectRequestQueryParameter("FD6",
+                "126.546797053228",
+                "37.311004215224",
+                "127.181509882205",
+                "37.311004215224");
+
+        List<LocalInfo> localWithCategoryFromKakao = kakaoLocalService.getLocalWithCategoryAndRectFromKakao(queryParameter);
 
         log.info("size: {}",localWithCategoryFromKakao.size());
         Assertions.assertThat(localWithCategoryFromKakao).isNotEmpty();

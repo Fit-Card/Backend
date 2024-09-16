@@ -1,10 +1,7 @@
 package com.fitcard.infra.kakao.service;
 
 import com.fitcard.global.util.CoordinateUtil;
-import com.fitcard.infra.kakao.model.KakaoCategoryLocalApiResponses;
-import com.fitcard.infra.kakao.model.KakaoCategoryRequestQueryParameter;
-import com.fitcard.infra.kakao.model.KakaoLocalWithCategoryFromGridInfoRequest;
-import com.fitcard.infra.kakao.model.LocalInfo;
+import com.fitcard.infra.kakao.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,6 +51,42 @@ public class KakaoLocalService {
         return allLocalInfos;
     }
 
+    /**
+     * 카카오에서 사각형 범위의 장소 정보를 받아온다.
+     * @param parameter
+     * @return
+     */
+    public List<LocalInfo> getLocalWithCategoryAndRectFromKakao(KakaoCategoryRectRequestQueryParameter parameter){
+
+        //1. request를 바탕으로 요청 url 만들기
+        KakaoCategoryLocalApiResponses responses = getKakaoCategoryLocalRectApiResponses(parameter, 1);
+
+        if(responses == null){
+            return List.of();
+        }
+
+        List<LocalInfo> localInfos = new ArrayList<>();
+
+        localInfos.addAll(responses.getDocuments().stream()
+                .map(LocalInfo::from)
+                .toList());
+
+        int totalPageCount = responses.getMeta().getPageable_count();
+
+        for(int i = 2; i <= totalPageCount; i++){
+            responses = getKakaoCategoryLocalRectApiResponses(parameter, i);
+            localInfos.addAll(responses.getDocuments().stream()
+                    .map(LocalInfo::from)
+                    .toList());
+            if(responses.getMeta().is_end()) break;
+        }
+
+//        log.info("response meta: {}", responses.getMeta());
+        return localInfos;
+    }
+
+
+
     //해당 위치 기준으로 20km 반경의 list 뽑기 50m
     public List<LocalInfo> getLocalWithCategoryFromKakao(KakaoCategoryRequestQueryParameter parameter){
 
@@ -84,6 +117,16 @@ public class KakaoLocalService {
         return localInfos;
     }
 
+    private KakaoCategoryLocalApiResponses getKakaoCategoryLocalRectApiResponses(KakaoCategoryRectRequestQueryParameter parameter, int page){
+        String requestUrl = ORIGIN_URI+CATEGORY_LOCAL_REQUEST_URI+"?category_group_code="+parameter.getCategory_group_code()
+                +"&rect="+parameter.getTopX()+", "+parameter.getTopY()+", "+parameter.getBottomX()+", "+parameter.getBottomY()
+                +"&page="+page;
+
+        log.info("requestUrl: {}", requestUrl);
+
+        return getRequestToKakao(requestUrl);
+    }
+
     private KakaoCategoryLocalApiResponses getKakaoCategoryLocalApiResponses(KakaoCategoryRequestQueryParameter parameter, int page){
         String requestUrl = ORIGIN_URI+CATEGORY_LOCAL_REQUEST_URI+"?category_group_code="+parameter.getCategory_group_code()
                 +"&x="+parameter.getX()+"&y="+parameter.getY()
@@ -91,8 +134,10 @@ public class KakaoLocalService {
 
         log.info("requestUrl: {}", requestUrl);
 
-        //2. webClient.get으로 요청해서 LocalInfo list 받기
+        return getRequestToKakao(requestUrl);
+    }
 
+    private KakaoCategoryLocalApiResponses getRequestToKakao(String requestUrl){
         return webClient.get()
                 .uri(requestUrl)
                 .header("Authorization", "KakaoAK " + KAKAO_API_KEY)
