@@ -1,6 +1,5 @@
 package com.fitcard.infra.kakao.service;
 
-import com.fitcard.global.util.CoordinateUtil;
 import com.fitcard.infra.kakao.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -31,23 +31,38 @@ public class KakaoLocalService {
         this.KAKAO_API_KEY = kakoApiKey;
     }
 
-    // 반복문을 통해 50m씩 이동하면서 API 호출
-    public List<LocalInfo> getLocalWithCategoryFromGrid(KakaoLocalWithCategoryFromGridInfoRequest request) {
+    public List<LocalInfo> getLocalWithCategoryInGridUsingRect(KakaoLocalWithCategoryFromGridInfoRequest request) {
         List<LocalInfo> allLocalInfos = new ArrayList<>();
-        double moveDistance = 50.0;
+        double moveDistanceLat = 0.00045; // 위도 50미터 이동
+        double moveDistanceLon = 0.00056; // 경도 50미터 이동 (서울 기준)
 
-        // 위도와 경도 범위 내에서 50m씩 이동하는 반복문
-        for (double lat = request.getMinLat(); lat <= request.getMaxLat(); lat = CoordinateUtil.calculateNewCoordinates(lat, request.getMinLon(), moveDistance, 0)[0]) {
-            for (double lon = request.getMinLon(); lon <= request.getMaxLon(); lon = CoordinateUtil.calculateNewCoordinates(lat, lon, moveDistance, 90)[1]) {
-                KakaoCategoryRequestQueryParameter parameter = new KakaoCategoryRequestQueryParameter(
-                        request.getCategory_group_code(),
-                        String.valueOf(lon),
-                        String.valueOf(lat),
-                        request.getRadius());
-                List<LocalInfo> localInfos = getLocalWithCategoryFromKakao(parameter);
+        // 위도와 경도 범위 내에서 50m씩 이동하면서 API 호출
+        for (double lat = request.getMinLat(); lat <= request.getMaxLat(); lat += moveDistanceLat) {
+            for (double lon = request.getMinLon(); lon <= request.getMaxLon(); lon += moveDistanceLon) {
+
+                String minLon = Double.toString(lon);
+                String minLat = Double.toString(lat);
+                String maxLon = Double.toString(lon + moveDistanceLon); // 오른쪽 위 경도
+                String maxLat = Double.toString(lat + moveDistanceLat); // 오른쪽 위 위도
+
+                // rect 파라미터에 들어가는 순서: minLon, minLat, maxLon, maxLat (경도, 위도 순서)
+                KakaoCategoryRectRequestQueryParameter parameter = new KakaoCategoryRectRequestQueryParameter(
+                        request.getCategoryGroupCode(), minLon, minLat, maxLon, maxLat
+                );
+
+                List<LocalInfo> localInfos = getLocalWithCategoryAndRectFromKakao(parameter);
+                log.info("현재 rect: {}, {}, {}, {}", minLon, minLat, maxLon, maxLat);
+                log.info("size: {}", localInfos.size());
+
                 allLocalInfos.addAll(localInfos);
+
+                // 중복된 데이터 제거
+                allLocalInfos = allLocalInfos.stream()
+                        .distinct()
+                        .collect(Collectors.toList());
             }
         }
+
         return allLocalInfos;
     }
 
@@ -119,10 +134,10 @@ public class KakaoLocalService {
 
     private KakaoCategoryLocalApiResponses getKakaoCategoryLocalApiResponses(KakaoCategoryRectRequestQueryParameter parameter, int page){
         String requestUrl = ORIGIN_URI+CATEGORY_LOCAL_REQUEST_URI+"?category_group_code="+parameter.getCategory_group_code()
-                +"&rect="+parameter.getTopX()+", "+parameter.getTopY()+", "+parameter.getBottomX()+", "+parameter.getBottomY()
+                +"&rect="+parameter.getTopX()+","+parameter.getTopY()+","+parameter.getBottomX()+","+parameter.getBottomY()
                 +"&page="+page;
 
-        log.info("requestUrl: {}", requestUrl);
+//        log.info("requestUrl: {}", requestUrl);
 
         return getRequestToKakao(requestUrl);
     }
@@ -132,7 +147,7 @@ public class KakaoLocalService {
                 +"&x="+parameter.getX()+"&y="+parameter.getY()
                 +"&radius="+parameter.getRadius()+"&page="+page;
 
-        log.info("requestUrl: {}", requestUrl);
+//        log.info("requestUrl: {}", requestUrl);
 
         return getRequestToKakao(requestUrl);
     }

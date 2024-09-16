@@ -13,21 +13,18 @@ import lombok.NoArgsConstructor;
 public class KakaoLocalWithCategoryFromGridInfoRequest {
 
     @NotEmpty
-    private String category_group_code;
-
-    @NotNull
-    private int radius;
-
-    @NotNull
-    private double minLat;
+    private String categoryGroupCode;
 
     @NotNull
     private double minLon;
 
     @NotNull
-    private double maxLat;
+    private double minLat;
 
     @NotNull
     private double maxLon;
+
+    @NotNull
+    private double maxLat;
 
 }

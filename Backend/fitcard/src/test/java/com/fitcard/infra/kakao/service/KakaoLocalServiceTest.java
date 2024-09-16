@@ -50,10 +50,10 @@ public class KakaoLocalServiceTest {
     @DisplayName("kakao local category API를 이용해 rect 범위 안의 location 정보를 불러옵니다.")
     public void getLocalWithCategoryAndRectFromKakao() {
         KakaoCategoryRectRequestQueryParameter queryParameter = new KakaoCategoryRectRequestQueryParameter("FD6",
-                "126.546797053228",
-                "37.311004215224",
-                "127.181509882205",
-                "37.311004215224");
+                "126.7364230775",
+                "37.5281035080633",
+                "126.73781961604",
+                "37.5311948812139");
 
         List<LocalInfo> localWithCategoryFromKakao = kakaoLocalService.getLocalWithCategoryAndRectFromKakao(queryParameter);
 
@@ -67,15 +67,17 @@ public class KakaoLocalServiceTest {
 
         KakaoLocalWithCategoryFromGridInfoRequest request = new KakaoLocalWithCategoryFromGridInfoRequest(
                 "FD6",
-                50,
-                126.732055331217,
-                37.5079080178341,
-                126.741038736625,
-                37.5191692206235
+                126.7364230775,
+                37.5281035080633,
+                126.73781961604,
+                37.5311948812139
         );
 
-        List<LocalInfo> localWithCategoryFromGrid = kakaoLocalService.getLocalWithCategoryFromGrid(request);
+        List<LocalInfo> localWithCategoryFromGrid = kakaoLocalService.getLocalWithCategoryInGridUsingRect(request);
         log.info("size: {}",localWithCategoryFromGrid.size());
+        localWithCategoryFromGrid.forEach(l->{
+            log.info("l: {}", l);
+        });
         Assertions.assertThat(localWithCategoryFromGrid).isNotEmpty();
 
 

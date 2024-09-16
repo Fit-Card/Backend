@@ -1,10 +1,8 @@
 package com.fitcard.infra.kakao.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+@EqualsAndHashCode
 @ToString
 @Getter
 @NoArgsConstructor
