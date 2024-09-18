@@ -30,6 +30,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// Lombok
+	implementation 'org.json:json:20210307'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
@@ -46,6 +47,11 @@ dependencies {
 	testImplementation 'com.h2database:h2'  // In-memory database for tests
 	testImplementation 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Add Swagger dependency
+	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.4'
+
 }
 
 tasks.named('test') {
