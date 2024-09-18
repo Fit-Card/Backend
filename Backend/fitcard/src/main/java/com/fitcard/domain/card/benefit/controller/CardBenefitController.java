@@ -34,15 +34,12 @@ public class CardBenefitController {
     }
     
     @GetMapping("/fetch")
-    public ResponseEntity<String> fetchCardData() {
-        try {
+    public Response<String> fetchCardData() {
             for (int cardId = 1; cardId <= 1; cardId++) {
                 cardGorillaWebClientService.fetchCardBenefit(cardId);
             }
-            return ResponseEntity.ok("카드 정보 조회가 완료되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("카드 정보를 가져오는 중 오류가 발생했습니다.");
-        }
+            return Response.SUCCESS(null, "카드 정보 조회가 완료되었습니다.");
+
     }
 
 }

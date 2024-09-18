@@ -27,7 +27,7 @@ public class CardGorillaWebClientService {
 
             JSONArray benefits = cardData.getJSONArray("key_benefit");
 
-            System.out.println(benefits);
+//            System.out.println(benefits);
 
             for (int i = 0; i < benefits.length(); i++) {
                 JSONObject benefitData = benefits.getJSONObject(i);
@@ -35,9 +35,9 @@ public class CardGorillaWebClientService {
                 String comment = benefitData.getString("comment");
                 String info = benefitData.getString("info");
 
-                System.out.println(benefitType);
-                System.out.println(comment);
-                System.out.println(info);
+//                System.out.println(benefitType);
+//                System.out.println(comment);
+//                System.out.println(info);
 
 //                Integer amountLimit = extractAmountLimit(info);
 //                String countLimit = extractCountLimit(info);

@@ -33,8 +33,8 @@ public class CardGorillaWebClientService {
             String cardCorpName = cardCorp.getString("name");
             String cardImageUrl = cardImg.getString("url");
             String cardType = cardData.getString("cate");
-            System.out.println("카드 이름: " + cardName);
-            System.out.println("카드 이미지: " + cardImageUrl);
+//            System.out.println("카드 이름: " + cardName);
+//            System.out.println("카드 이미지: " + cardImageUrl);
 
             Long annualFee = 0L;
             Long abroadAnnualFee = 0L;
@@ -47,15 +47,15 @@ public class CardGorillaWebClientService {
                 abroadAnnualFee = parseFee(annualFeeBasic, "해외겸용");
 
                 // 연회비 출력
-                System.out.println("국내전용 연회비: " + annualFee);
-                System.out.println("해외겸용 연회비: " + abroadAnnualFee);
+//                System.out.println("국내전용 연회비: " + annualFee);
+//                System.out.println("해외겸용 연회비: " + abroadAnnualFee);
             }
 
             int createCheckType = (cardType.equals("CHK")) ? 1 : 0;
             int bcCheck = cardName.contains("(비씨)") ? 1 : 0;
 
-            System.out.println("createCheckType: " + createCheckType);
-            System.out.println("BC 여부: " + bcCheck);
+//            System.out.println("createCheckType: " + createCheckType);
+//            System.out.println("BC 여부: " + bcCheck);
 
             BankCard bankCard = new BankCard(
                     String.valueOf(cardId),
