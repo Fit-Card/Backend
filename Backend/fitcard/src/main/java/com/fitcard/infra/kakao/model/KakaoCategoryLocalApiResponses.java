@@ -42,4 +42,9 @@ public class KakaoCategoryLocalApiResponses {
         private int pageable_count;
         private int total_count;
     }
+
+    public static KakaoCategoryLocalApiResponses empty(){
+        return new KakaoCategoryLocalApiResponses(List.of(), new Meta(true, 0,0));
+    }
+
 }

@@ -26,24 +26,19 @@ public class BranchServiceImpl implements BranchService {
     public int saveBranches(List<LocalInfo> localInfos) {
 
         List<Branch> branches = localInfos.stream()
+                .filter(l->!branchRepository.existsByKakaoLocalId(l.getPlaceId()))
                 .map(localInfo -> {
                     //merchant 이미 있는지 확인, 없다면 저장
                     String merchantName = makeMerchentName(localInfo.getPlaceName().split(" "));
 
                     Optional<MerchantInfo> optionalMerchantInfo = merchantInfoRepository.findByName(merchantName);
-                    MerchantInfo merchantInfo;
-                    if (optionalMerchantInfo.isEmpty()) {
-                        merchantInfo = merchantInfoRepository.save(MerchantInfo.of(merchantName, localInfo.getCategoryGroupCode(), localInfo.getPlaceUrl()));
-                    } else {
-                        merchantInfo = optionalMerchantInfo.get();
-                    }
+                    MerchantInfo merchantInfo = optionalMerchantInfo.orElseGet(() -> merchantInfoRepository.save(MerchantInfo.of(merchantName, localInfo.getCategoryGroupCode(), localInfo.getPlaceUrl())));
 
 //                    log.info("merchantInfo: {}", merchantInfo);
 //                    log.info("kakaoId: {}", localInfo.getPlaceId());
                     //branch 만들기
                     return Branch.of(localInfo, merchantInfo);
                 })
-                .filter(l -> !branchRepository.existsByKakaoLocalId(l.getKakaoLocalId()))
                 .toList();
 
 //        log.info("branches: {}", branches);
@@ -56,11 +51,17 @@ public class BranchServiceImpl implements BranchService {
         StringBuilder result = new StringBuilder();
 
         // 각 단어를 확인하면서 "~점"으로 끝나지 않는 경우에만 합침
+        if(placeNameSplits.length == 1) {
+            return placeNameSplits[0];
+        }
         for (String word : placeNameSplits) {
             if (!word.endsWith("점")) {
                 result.append(word).append(" ");
             }
         }
+
+        String merchantName = result.toString().trim();
+        if(merchantName.isEmpty()) return placeNameSplits[0];
 
         // 마지막 공백을 제거한 최종 결과
         return result.toString().trim();

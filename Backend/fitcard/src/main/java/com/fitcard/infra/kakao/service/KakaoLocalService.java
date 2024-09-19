@@ -38,8 +38,8 @@ public class KakaoLocalService {
      */
     public List<LocalInfo> getLocalWithCategoryInGridUsingRect(KakaoLocalWithCategoryFromGridInfoRequest request) {
         List<LocalInfo> allLocalInfos = new ArrayList<>();
-        double moveDistanceLat = 0.00045; // 위도 50미터 이동
-        double moveDistanceLon = 0.00056; // 경도 50미터 이동 (서울 기준)
+        double moveDistanceLat = 0.00045*10; // 위도 200미터 이동
+        double moveDistanceLon = 0.00056*10; // 경도 200미터 이동 (서울 기준)
 
         // 위도와 경도 범위 내에서 50m씩 이동하면서 API 호출
         for (double lat = request.getMinLat(); lat <= request.getMaxLat(); lat += moveDistanceLat) {
@@ -57,7 +57,7 @@ public class KakaoLocalService {
 
                 List<LocalInfo> localInfos = getLocalWithCategoryAndRectFromKakao(parameter);
 //                log.info("현재 rect: {}, {}, {}, {}", minLon, minLat, maxLon, maxLat);
-//                log.info("size: {}", localInfos.size());
+                log.info("size: {}", localInfos.size());
 
                 allLocalInfos.addAll(localInfos);
 
@@ -148,7 +148,6 @@ public class KakaoLocalService {
                 +"&page="+page;
 
 //        log.info("requestUrl: {}", requestUrl);
-
         return getRequestToKakao(requestUrl);
     }
 
@@ -179,6 +178,11 @@ public class KakaoLocalService {
                 .bodyToMono(KakaoCategoryLocalApiResponses.class)
                 .doOnError(throwable -> {
                     log.info("kakao api error: {}", throwable.getMessage());
+                })
+                .onErrorResume(throwable -> {
+                    // 에러 발생 시 빈 응답 반환
+                    log.warn("Error occurred during API call, returning empty response. Error: {}", throwable.getMessage());
+                    return Mono.just(KakaoCategoryLocalApiResponses.empty()); // 빈 응답
                 })
                 .block();
     }

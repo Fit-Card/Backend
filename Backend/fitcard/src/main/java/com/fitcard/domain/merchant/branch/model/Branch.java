@@ -23,7 +23,7 @@ public class Branch {
     @JoinColumn(name = "merchant_id", nullable = false)
     private MerchantInfo merchantInfo;
 
-    @NotEmpty
+//    @NotEmpty
     private String address;
 
     @NotEmpty
