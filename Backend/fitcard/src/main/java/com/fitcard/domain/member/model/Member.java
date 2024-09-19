@@ -37,7 +37,7 @@ public class Member {
 
     private String userSeqNo;
 
-    public Member(String loginId, String password, String name, LocalDate birthDate, String phoneNumber, Boolean isCertifiedMydata, String userSeqNo) {
+    private Member(String loginId, String password, String name, LocalDate birthDate, String phoneNumber, Boolean isCertifiedMydata, String userSeqNo) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -45,5 +45,9 @@ public class Member {
         this.phoneNumber = phoneNumber;
         this.isCertifiedMydata = isCertifiedMydata;
         this.userSeqNo = userSeqNo;
+    }
+
+    public static Member of(String loginId, String password, String name, LocalDate birthDate, String phoneNumber, Boolean isCertifiedMydata, String userSeqNo) {
+        return new Member(loginId, password, name, birthDate, phoneNumber, isCertifiedMydata, userSeqNo);
     }
 }

@@ -17,4 +17,9 @@ public class MemberRegisterResponse {
 
     @Schema(description = "회원가입 결과 메시지", example = "회원가입 성공")
     private String message;
+
+    public static MemberRegisterResponse of(String loginId, String message) {
+        return new MemberRegisterResponse(loginId, message);
+    }
+
 }

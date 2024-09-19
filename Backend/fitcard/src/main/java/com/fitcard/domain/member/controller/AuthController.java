@@ -26,20 +26,24 @@ public class AuthController {
     @SwaggerApiSuccess(description = "사용자 회원가입을 성공했습니다.")
     @PostMapping("/register")
     public Response<MemberRegisterResponse> registerUser(@RequestBody MemberRegisterRequest request) {
-        return Response.SUCCESS(null, "회원가입에 성공했습니다.");
+        MemberRegisterResponse response = authService.register(request);
+        return Response.SUCCESS(response, "회원가입에 성공했습니다.");
     }
 
     @Operation(summary = "아이디 중복 확인 API", description = "사용자의 아이디 중복 여부를 확인합니다.")
     @SwaggerApiSuccess(description = "아이디 중복 확인을 성공했습니다.")
     @PostMapping("/checkid")
     public Response<MemberCheckIdResponse> checkDuplicatedId(@RequestParam String userId) {
-        return Response.SUCCESS(null, "아이디 중복 확인을 성공했습니다.");
+        boolean isDuplicated = authService.checkDuplicatedId(userId);
+        MemberCheckIdResponse response = MemberCheckIdResponse.of(isDuplicated);
+        return Response.SUCCESS(response, "아이디 중복 확인을 성공했습니다.");
     }
 
     @Operation(summary = "사용자 로그인 API", description = "사용자가 아이디와 비밀번호로 로그인합니다.")
     @SwaggerApiSuccess(description = "로그인 성공 시 JWT 토큰을 반환합니다.")
     @PostMapping("/login")
     public Response<MemberLoginResponse> loginUser(@RequestBody MemberLoginRequest request) {
-        return Response.SUCCESS(null, "로그인 성공");
+        MemberLoginResponse response = authService.login(request);
+        return Response.SUCCESS(response, "로그인 성공");
     }
 }
