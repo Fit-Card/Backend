@@ -7,7 +7,7 @@ services:
     volumes:
       - db:/var/lib/mysql
     restart: "no"
-    environment:
+    env_file:
       - /etc/fitcard/.env
     networks:
       - fitcard
