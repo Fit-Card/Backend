@@ -31,7 +31,6 @@ public class KakaoCategoryLocalApiResponses {
         private String road_address_name;
         private String x;
         private String y;
-        private String placeId;
     }
 
     @ToString

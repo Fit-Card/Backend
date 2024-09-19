@@ -12,7 +12,6 @@ public class LocalInfo {
     private String categoryGroupCode;
     private String categoryGroupName;
     private String categoryName;
-    private String id;
     private String phone;
     private String placeName;
     private String placeUrl;
@@ -25,13 +24,12 @@ public class LocalInfo {
         return new LocalInfo(response.getCategory_group_code(),
                 response.getCategory_group_name(),
                 response.getCategory_name(),
-                response.getId(),
                 response.getPhone(),
                 response.getPlace_name(),
                 response.getPlace_url(),
                 response.getRoad_address_name(),
                 response.getX(),
                 response.getY(),
-                response.getPlaceId());
+                response.getId());
     }
 }

@@ -163,6 +163,7 @@ public class KakaoLocalService {
     }
 
     private KakaoCategoryLocalApiResponses getRequestToKakao(String requestUrl){
+        //todo : 현재 blocking 방식으로 작동함, 추후 webClinet의 특성에 맞게 Mono로 감싸서 stream에서 사용하도록 변경 필요
         return webClient.get()
                 .uri(requestUrl)
                 .header("Authorization", "KakaoAK " + KAKAO_API_KEY)

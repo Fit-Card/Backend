@@ -7,5 +7,5 @@ import java.util.List;
 public interface BranchService {
 
     //범위만큼 크롤링해서 가맹점과 분점 저장
-    void saveBranches(List<LocalInfo> request);
+    int saveBranches(List<LocalInfo> request);
 }

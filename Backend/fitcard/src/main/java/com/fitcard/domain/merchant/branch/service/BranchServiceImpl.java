@@ -23,7 +23,7 @@ public class BranchServiceImpl implements BranchService {
     private final MerchantInfoRepository merchantInfoRepository;
 
     @Override
-    public void saveBranches(List<LocalInfo> localInfos) {
+    public int saveBranches(List<LocalInfo> localInfos) {
 
         List<Branch> branches = localInfos.stream()
                 .map(localInfo -> {
@@ -38,13 +38,17 @@ public class BranchServiceImpl implements BranchService {
                         merchantInfo = optionalMerchantInfo.get();
                     }
 
+//                    log.info("merchantInfo: {}", merchantInfo);
+//                    log.info("kakaoId: {}", localInfo.getPlaceId());
                     //branch 만들기
                     return Branch.of(localInfo, merchantInfo);
                 })
                 .filter(l -> !branchRepository.existsByKakaoLocalId(l.getKakaoLocalId()))
                 .toList();
 
-        branchRepository.saveAll(branches);
+//        log.info("branches: {}", branches);
+        List<Branch> savedBranches = branchRepository.saveAll(branches);
+        return savedBranches.size();
     }
 
     private String makeMerchentName(String[] placeNameSplits) {
