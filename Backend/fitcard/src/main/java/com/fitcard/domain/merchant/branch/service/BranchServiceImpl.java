@@ -2,6 +2,7 @@ package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.Branch;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
+import com.fitcard.domain.merchant.merchantinfo.model.MerchantCategory;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import com.fitcard.infra.kakao.model.LocalInfo;
@@ -29,7 +30,7 @@ public class BranchServiceImpl implements BranchService {
                 .filter(l->!branchRepository.existsByKakaoLocalId(l.getPlaceId()))
                 .map(localInfo -> {
                     //merchant 이미 있는지 확인, 없다면 저장
-                    String merchantName = makeMerchentName(localInfo.getPlaceName().split(" "));
+                    String merchantName = makeMerchentName(localInfo.getPlaceName(), localInfo.getPlaceName().split(" "), localInfo.getCategoryGroupCode());
 
                     Optional<MerchantInfo> optionalMerchantInfo = merchantInfoRepository.findByName(merchantName);
                     MerchantInfo merchantInfo = optionalMerchantInfo.orElseGet(() -> merchantInfoRepository.save(MerchantInfo.of(merchantName, localInfo.getCategoryGroupCode(), localInfo.getPlaceUrl())));
@@ -46,24 +47,44 @@ public class BranchServiceImpl implements BranchService {
         return savedBranches.size();
     }
 
-    private String makeMerchentName(String[] placeNameSplits) {
-        // 최종 결과를 저장할 StringBuilder
-        StringBuilder result = new StringBuilder();
+    private String makeMerchentName(String locationName, String[] placeNameSplits, String categoryGroupCode) {
+        String merchantName = makeMerchantNameWithoutWord(placeNameSplits, "점");
 
-        // 각 단어를 확인하면서 "~점"으로 끝나지 않는 경우에만 합침
-        if(placeNameSplits.length == 1) {
-            return placeNameSplits[0];
-        }
-        for (String word : placeNameSplits) {
-            if (!word.endsWith("점")) {
-                result.append(word).append(" ");
+        // 최종 결과를 저장할 StringBuilder
+
+//        log.info("merchantName: {}  locationName: {}", merchantName, locationName);
+        if(merchantName.equals(locationName)) {
+            if(categoryGroupCode.equals(MerchantCategory.OIL.getCategoryCode())) {
+                merchantName = makeMerchantNameWithoutWord(placeNameSplits, "주유소");
+//                log.info("merchantName: {}", merchantName);
             }
         }
 
-        String merchantName = result.toString().trim();
-        if(merchantName.isEmpty()) return placeNameSplits[0];
-
         // 마지막 공백을 제거한 최종 결과
-        return result.toString().trim();
+        return merchantName;
+    }
+
+    private String makeMerchantNameWithoutWord(String[] placeNameSplits, String word){
+        StringBuilder resultStringBuilder = new StringBuilder();
+
+        if(placeNameSplits.length == 1) {
+            return placeNameSplits[0];
+        }
+
+        // 각 단어를 확인하면서 ~word(~점, ~주유소)으로 끝나지 않는 경우에만 합침
+        //마지막 단어가 ~점, ~주유소로 끝나는 경우 제외
+        int length = placeNameSplits.length;
+        for(int i=0;i<length;i++) {
+            if(i==length-1 && placeNameSplits[i].endsWith(word)) {
+                continue;
+            }
+            resultStringBuilder.append(placeNameSplits[i]).append(" ");
+        }
+
+        String result = resultStringBuilder.toString().trim();
+
+        if(result.isEmpty()) return placeNameSplits[0];
+
+        return result;
     }
 }

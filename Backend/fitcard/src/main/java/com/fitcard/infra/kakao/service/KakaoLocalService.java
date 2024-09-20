@@ -38,8 +38,8 @@ public class KakaoLocalService {
      */
     public List<LocalInfo> getLocalWithCategoryInGridUsingRect(KakaoLocalWithCategoryFromGridInfoRequest request) {
         List<LocalInfo> allLocalInfos = new ArrayList<>();
-        double moveDistanceLat = 0.00045*10; // 위도 200미터 이동
-        double moveDistanceLon = 0.00056*10; // 경도 200미터 이동 (서울 기준)
+        double moveDistanceLat = 0.00045*100; // 위도 500미터 이동
+        double moveDistanceLon = 0.00056*100; // 경도 500미터 이동 (서울 기준)
 
         // 위도와 경도 범위 내에서 50m씩 이동하면서 API 호출
         for (double lat = request.getMinLat(); lat <= request.getMaxLat(); lat += moveDistanceLat) {
@@ -145,7 +145,7 @@ public class KakaoLocalService {
     private KakaoCategoryLocalApiResponses getKakaoCategoryLocalApiResponses(KakaoCategoryRectRequestQueryParameter parameter, int page){
         String requestUrl = ORIGIN_URI+CATEGORY_LOCAL_REQUEST_URI+"?category_group_code="+parameter.getCategory_group_code()
                 +"&rect="+parameter.getTopX()+","+parameter.getTopY()+","+parameter.getBottomX()+","+parameter.getBottomY()
-                +"&page="+page;
+                +"&page="+page+"&size=15";
 
 //        log.info("requestUrl: {}", requestUrl);
         return getRequestToKakao(requestUrl);
