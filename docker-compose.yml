@@ -14,13 +14,24 @@ services:
     ports:
       - "3306:3306"
       
-  backend:
-    image: limgayoung/fitcard-be:latest
+  fitcard:
+    image: fitcard-be:latest
     container_name: fitcard-be
     depends_on:
       - mysql
     ports:
       - "8081:8081"
+    restart: "always"
+    networks:
+      - fitcard
+
+  financial:
+    image: financial-be:latest
+    container_name: financial-be
+    depends_on:
+      - mysql
+    ports:
+      - "8082:8082"
     restart: "always"
     networks:
       - fitcard
