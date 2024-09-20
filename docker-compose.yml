@@ -7,9 +7,8 @@ services:
     volumes:
       - db:/var/lib/mysql
     restart: "no"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=root
+    env_file:
+      - /etc/fitcard/.env
     networks:
       - fitcard
     ports:
