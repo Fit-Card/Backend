@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,10 +27,12 @@ public class BranchServiceImpl implements BranchService {
     @Override
     public int saveBranches(List<LocalInfo> localInfos) {
 
+        log.info("localInfo size: {}", localInfos.size());
         List<Branch> branches = localInfos.stream()
                 .filter(l->!branchRepository.existsByKakaoLocalId(l.getPlaceId()))
                 .map(localInfo -> {
                     //merchant 이미 있는지 확인, 없다면 저장
+//                    if()
                     String merchantName = makeMerchentName(localInfo.getPlaceName(), localInfo.getPlaceName().split(" "), localInfo.getCategoryGroupCode());
 
                     Optional<MerchantInfo> optionalMerchantInfo = merchantInfoRepository.findByName(merchantName);
@@ -40,9 +43,17 @@ public class BranchServiceImpl implements BranchService {
                     //branch 만들기
                     return Branch.of(localInfo, merchantInfo);
                 })
+                // kakaoLocalId로 중복 제거
+                .collect(Collectors.toMap(
+                        Branch::getKakaoLocalId,  // kakaoLocalId를 키로 사용
+                        branch -> branch,         // Branch를 값으로 사용
+                        (existing, replacement) -> existing // 동일한 kakaoLocalId가 있으면 기존 값 유지
+                ))
+                .values()
+                .stream()
                 .toList();
 
-//        log.info("branches: {}", branches);
+        log.info("branches size: {}", branches.size());
         List<Branch> savedBranches = branchRepository.saveAll(branches);
         return savedBranches.size();
     }

@@ -2,7 +2,8 @@ package com.fitcard.infra.kakao.model;
 
 import lombok.*;
 
-@EqualsAndHashCode
+import java.util.Objects;
+
 @ToString
 @Getter
 @NoArgsConstructor
@@ -31,5 +32,29 @@ public class LocalInfo {
                 response.getX(),
                 response.getY(),
                 response.getId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LocalInfo localInfo = (LocalInfo) o;
+        return categoryGroupCode.equals(localInfo.categoryGroupCode) && Objects.equals(categoryGroupName, localInfo.categoryGroupName) && Objects.equals(categoryName, localInfo.categoryName) && Objects.equals(phone, localInfo.phone) && placeName.equals(localInfo.placeName) && Objects.equals(placeUrl, localInfo.placeUrl) && Objects.equals(roadAddressName, localInfo.roadAddressName) && x.equals(localInfo.x) && y.equals(localInfo.y) && placeId.equals(localInfo.placeId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = categoryGroupCode.hashCode();
+        result = 31 * result + Objects.hashCode(categoryGroupName);
+        result = 31 * result + Objects.hashCode(categoryName);
+        result = 31 * result + Objects.hashCode(phone);
+        result = 31 * result + placeName.hashCode();
+        result = 31 * result + Objects.hashCode(placeUrl);
+        result = 31 * result + Objects.hashCode(roadAddressName);
+        result = 31 * result + x.hashCode();
+        result = 31 * result + y.hashCode();
+        result = 31 * result + placeId.hashCode();
+        return result;
     }
 }
