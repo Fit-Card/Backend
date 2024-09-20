@@ -1,13 +1,13 @@
 package com.financial.domain.bank.cardevent.model;
 
-import com.financial.domain.bank.cardbenefit.model.BenefitType;
-import com.financial.domain.bank.cardperformance.model.BankCardPerformance;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -17,52 +17,40 @@ public class BankCardEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cardBenefitId;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private BenefitType benefitType;
-
-    @NotNull
-    private int amountLimit;
+    private Long cardEventId;
 
     @NotEmpty
-    private String countLimit;
-
-    @NotNull
-    private int minPayment;
-
-    @NotNull
-    private double benefitValue;
-
-    @NotNull
-    private int benefitPer;
-
-    @NotNull
-    private int merchantId;
+    private Long cardCompanyId;
 
     @NotEmpty
-    private String exceptionTypeList;
+    private String target;
 
     @NotNull
-    private String merchantCategory;
+    private Boolean isCategory;
 
-    @ManyToOne
-    @JoinColumn(name = "card_performance_id", nullable = false)
-    private BankCardPerformance bankCardPerformance;
+    @NotEmpty
+    private String eventUrl;
 
-    public BankCardEvent(BankCardPerformance bankCardPerformance, BenefitType benefitType, int amountLimit,
-                         String countLimit, int minPayment, double benefitValue, int benefitPer,
-                         String merchantCategory, int merchantId, String exceptionTypeList) {
-        this.bankCardPerformance = bankCardPerformance;
-        this.benefitType = benefitType;
-        this.amountLimit = amountLimit;
-        this.countLimit = countLimit;
-        this.minPayment = minPayment;
-        this.benefitValue = benefitValue;
-        this.benefitPer = benefitPer;
-        this.merchantCategory = merchantCategory;
-        this.merchantId = merchantId;
-        this.exceptionTypeList = exceptionTypeList;
+    @NotNull
+    private LocalDate startDate;
+
+    @NotNull
+    private LocalDate endDate;
+
+    @NotEmpty
+    private String title;
+
+    @NotEmpty
+    private String content;
+
+    private BankCardEvent(Long cardCompanyId, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content) {
+        this.cardCompanyId = cardCompanyId;
+        this.target = target;
+        this.isCategory = isCategory;
+        this.eventUrl = eventUrl;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.title = title;
+        this.content = content;
     }
 }

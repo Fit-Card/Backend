@@ -25,9 +25,16 @@ repositories {
 
 dependencies {
 	// Spring Boot starters
+	implementation 'org.jsoup:jsoup:1.18.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+	// Selenium Java
+	implementation 'org.seleniumhq.selenium:selenium-java:4.6.0'
+	// WebDriver Manager
+	implementation 'io.github.bonigarcia:webdrivermanager:5.3.0'
 
 	// Lombok
 	implementation 'org.json:json:20210307'
