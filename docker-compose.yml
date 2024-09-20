@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   mysql:
     image: mysql:8
@@ -15,7 +13,7 @@ services:
       - "3306:3306"
       
   fitcard:
-    image: fitcard-be:latest
+    image: fitcard-image:latest
     container_name: fitcard-be
     depends_on:
       - mysql
@@ -26,7 +24,7 @@ services:
       - fitcard
 
   financial:
-    image: financial-be:latest
+    image: financial-image:latest
     container_name: financial-be
     depends_on:
       - mysql
