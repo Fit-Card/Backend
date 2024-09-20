@@ -1,5 +1,6 @@
 package com.fitcard.domain.member.model;
 
+import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +38,7 @@ public class Member {
 
     private String userSeqNo;
 
-    public Member(String loginId, String password, String name, LocalDate birthDate, String phoneNumber, Boolean isCertifiedMydata, String userSeqNo) {
+    private Member(String loginId, String password, String name, LocalDate birthDate, String phoneNumber, Boolean isCertifiedMydata, String userSeqNo) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -45,5 +46,26 @@ public class Member {
         this.phoneNumber = phoneNumber;
         this.isCertifiedMydata = isCertifiedMydata;
         this.userSeqNo = userSeqNo;
+    }
+
+    public static Member from(MemberRegisterRequest request) {
+        return new Member(
+                request.getLoginId(),
+                request.getPassword(),
+                request.getName(),
+                request.getBirthDate(),
+                request.getPhoneNumber(),
+                false,   // isCertifiedMydata 초기값
+                ""       // userSeqNo 초기값
+        );
+    }
+
+    public static Member of(String loginId, String password, String name, LocalDate birthDate, String phoneNumber, Boolean isCertifiedMydata, String userSeqNo) {
+        return new Member(loginId, password, name, birthDate, phoneNumber, isCertifiedMydata, userSeqNo);
+    }
+
+    public void update(String password, String phoneNumber) {
+        this.password = password;
+        this.phoneNumber = phoneNumber;
     }
 }
