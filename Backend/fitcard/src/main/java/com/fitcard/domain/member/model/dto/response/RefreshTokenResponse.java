@@ -13,7 +13,7 @@ public class RefreshTokenResponse {
     @Schema(description = "새로운 JWT access 토큰", example = "eyJhbGciOiJIUzI1NiIsInR...")
     private String newAccessToken;
 
-    public static RefreshTokenResponse of(String newAccessToken) {
+    public static RefreshTokenResponse from(String newAccessToken) {
         return new RefreshTokenResponse(newAccessToken);
     }
 }

@@ -4,7 +4,6 @@ import com.fitcard.domain.member.model.dto.request.MemberLoginRequest;
 import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
 import com.fitcard.domain.member.model.dto.response.MemberCheckIdResponse;
 import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
-import com.fitcard.domain.member.model.dto.response.MemberRegisterResponse;
 import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
 import com.fitcard.domain.member.service.AuthService;
 import com.fitcard.global.config.swagger.SwaggerApiError;
@@ -29,9 +28,9 @@ public class AuthController {
     @SwaggerApiSuccess(description = "사용자 회원가입을 성공했습니다.")
     @SwaggerApiError({ErrorCode.DUPLICATE_MEMBER})
     @PostMapping("/register")
-    public Response<MemberRegisterResponse> registerUser(@RequestBody MemberRegisterRequest request) {
-        MemberRegisterResponse response = authService.register(request);
-        return Response.SUCCESS(response, "회원가입에 성공했습니다.");
+    public Response<Void> registerUser(@RequestBody MemberRegisterRequest request) {
+        authService.register(request);
+        return Response.SUCCESS(null, "회원가입에 성공했습니다.");
     }
 
     @Operation(summary = "아이디 중복 확인 API", description = "사용자의 아이디 중복 여부를 확인합니다.")

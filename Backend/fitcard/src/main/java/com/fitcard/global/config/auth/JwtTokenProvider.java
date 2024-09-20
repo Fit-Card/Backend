@@ -91,4 +91,11 @@ public class JwtTokenProvider {
         }
     }
 
+    public String resolveToken(String bearerToken) {
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);  // "Bearer " 이후의 토큰 값 반환
+        }
+        return bearerToken;
+    }
+
 }
