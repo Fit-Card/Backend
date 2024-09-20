@@ -2,10 +2,11 @@ package com.fitcard.domain.merchant.merchantinfo.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString
 @Entity
 @Table(name = "merchant")
 @Getter
@@ -22,7 +23,6 @@ public class MerchantInfo {
     @NotEmpty
     private String category;
 
-    @NotEmpty
     private String url;
 
     // private 생성자
@@ -30,5 +30,9 @@ public class MerchantInfo {
         this.name = name;
         this.category = category;
         this.url = url;
+    }
+
+    public static MerchantInfo of(String merchantName, String merchantCategory, String merchantUrl) {
+        return new MerchantInfo(merchantName, merchantCategory, merchantUrl);
     }
 }

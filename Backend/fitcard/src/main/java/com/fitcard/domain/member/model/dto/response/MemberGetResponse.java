@@ -1,5 +1,6 @@
 package com.fitcard.domain.member.model.dto.response;
 
+import com.fitcard.domain.member.model.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,4 +26,8 @@ public class MemberGetResponse {
 
     @Schema(description = "마이데이터 인증 여부", example = "true")
     private Boolean isCertifiedMydata;
+
+    public static MemberGetResponse of(Member member) {
+        return new MemberGetResponse(member.getLoginId(), member.getName(), member.getPhoneNumber(), member.getBirthDate(), member.getIsCertifiedMydata());
+    }
 }

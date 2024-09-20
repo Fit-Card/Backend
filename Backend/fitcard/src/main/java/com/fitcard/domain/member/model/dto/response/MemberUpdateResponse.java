@@ -1,5 +1,6 @@
 package com.fitcard.domain.member.model.dto.response;
 
+import com.fitcard.domain.member.model.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,4 +13,8 @@ public class MemberUpdateResponse {
 
     @Schema(description = "수정 결과 메시지", example = "회원 정보 수정에 성공했습니다.")
     private String message;
+
+    public static MemberUpdateResponse of(Member member) {
+        return new MemberUpdateResponse("회원 정보 수정에 성공했습니다.");
+    }
 }
