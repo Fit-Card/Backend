@@ -35,8 +35,8 @@ public class KakaoLocalService {
      */
     public List<LocalInfo> getLocalWithCategoryInGridUsingRect(KakaoLocalWithCategoryFromGridInfoRequest request) {
         List<LocalInfo> allLocalInfos = new ArrayList<>();
-        double moveDistanceLat = 0.00045*100; // 위도 500미터 이동
-        double moveDistanceLon = 0.00056*100; // 경도 500미터 이동 (서울 기준)
+        double moveDistanceLat = 0.00045*50; // 위도 500미터 이동
+        double moveDistanceLon = 0.00056*50; // 경도 500미터 이동 (서울 기준)
 
         // 위도와 경도 범위 내에서 50m씩 이동하면서 API 호출
         for (double lat = request.getMinLat(); lat <= request.getMaxLat(); lat += moveDistanceLat) {
@@ -88,7 +88,7 @@ public class KakaoLocalService {
                 .map(LocalInfo::from)
                 .toList());
 
-        int totalPageCount = responses.getMeta().getPageable_count();
+        int totalPageCount = responses.getMeta().getTotal_count();
 //        log.info("totalPageCount: {}", totalPageCount);
         for(int i = 2; i <= totalPageCount/15; i++){
             responses = getKakaoCategoryLocalApiResponses(parameter, i);
@@ -96,7 +96,10 @@ public class KakaoLocalService {
             localInfos.addAll(responses.getDocuments().stream()
                     .map(LocalInfo::from)
                     .toList());
-            if(responses.getMeta().is_end()) break;
+            if(responses.getMeta().is_end()) {
+                log.info("end!!!!!!!!!!!!!!!");
+                break;
+            }
         }
 
 //        log.info("response meta: {}", responses.getMeta());
@@ -166,12 +169,13 @@ public class KakaoLocalService {
     }
 
     private KakaoCategoryLocalApiResponses getRequestToKakao(String requestUrl){
-        //todo : 현재 blocking 방식으로 작동함, 추후 webClinet의 특성에 맞게 Mono로 감싸서 stream에서 사용하도록 변경 필요
 
         return restClient.get()
                 .uri(requestUrl)
                 .header("Authorization", "KakaoAK " + KAKAO_API_KEY)
                 .retrieve()
+                //예외처리 필요!!!!
+//                .onStatus()
                 .body(KakaoCategoryLocalApiResponses.class);
 
 

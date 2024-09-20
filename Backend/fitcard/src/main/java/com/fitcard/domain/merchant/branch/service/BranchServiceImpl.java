@@ -32,8 +32,15 @@ public class BranchServiceImpl implements BranchService {
                 .filter(l->!branchRepository.existsByKakaoLocalId(l.getPlaceId()))
                 .map(localInfo -> {
                     //merchant 이미 있는지 확인, 없다면 저장
-//                    if()
-                    String merchantName = makeMerchentName(localInfo.getPlaceName(), localInfo.getPlaceName().split(" "), localInfo.getCategoryGroupCode());
+                    //문화시설이라면 카카오의 카테고리 사용
+                    String merchantName;
+                    if (localInfo.getCategoryGroupCode().equals(MerchantCategory.CULTURE.getCategoryCode())) {
+                        String[] splits = localInfo.getCategoryName().split(">");
+                        merchantName = splits[splits.length - 1].trim();
+                    }
+                    else{
+                        merchantName = makeMerchentName(localInfo.getPlaceName(), localInfo.getPlaceName().split(" "), localInfo.getCategoryGroupCode());
+                    }
 
                     Optional<MerchantInfo> optionalMerchantInfo = merchantInfoRepository.findByName(merchantName);
                     MerchantInfo merchantInfo = optionalMerchantInfo.orElseGet(() -> merchantInfoRepository.save(MerchantInfo.of(merchantName, localInfo.getCategoryGroupCode(), localInfo.getPlaceUrl())));
