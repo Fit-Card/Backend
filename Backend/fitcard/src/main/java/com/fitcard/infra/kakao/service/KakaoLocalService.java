@@ -105,7 +105,7 @@ public class KakaoLocalService {
 
         return localInfos.stream()
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -139,7 +139,7 @@ public class KakaoLocalService {
 //        log.info("response meta: {}", responses.getMeta());
         return localInfos.stream()
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private KakaoCategoryLocalApiResponses getKakaoCategoryLocalApiResponses(KakaoCategoryRectRequestQueryParameter parameter, int page){
