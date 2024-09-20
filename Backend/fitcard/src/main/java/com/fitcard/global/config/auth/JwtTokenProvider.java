@@ -1,10 +1,10 @@
-package com.fitcard.global.config;
+package com.fitcard.global.config.auth;
 
-import com.fitcard.domain.member.model.dto.response.MemberGetResponse;
+import com.fitcard.global.config.auth.exception.TokenExpiredException;
+import com.fitcard.global.config.auth.exception.TokenInvalidException;
+import com.fitcard.global.error.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import com.fitcard.domain.member.service.MemberService;
-import com.fitcard.domain.member.model.Member;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -64,7 +64,7 @@ public class JwtTokenProvider {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.");
         }
     }
 
@@ -87,7 +87,7 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            return e.getClaims();  // 만료된 토큰도 Claims를 반환할 수 있음
+            throw new TokenExpiredException(ErrorCode.INVALID_TOKEN, "토큰이 만료되었습니다.");
         }
     }
 

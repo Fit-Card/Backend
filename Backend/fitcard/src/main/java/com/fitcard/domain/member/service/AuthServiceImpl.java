@@ -1,5 +1,9 @@
 package com.fitcard.domain.member.service;
 
+import com.fitcard.domain.member.exception.DuplicatedMemberException;
+import com.fitcard.domain.member.exception.IncorrectPasswordException;
+import com.fitcard.domain.member.exception.InvalidRefreshTokenException;
+import com.fitcard.domain.member.exception.MemberNotFoundException;
 import com.fitcard.domain.member.model.Member;
 import com.fitcard.domain.member.model.dto.request.MemberLoginRequest;
 import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
@@ -7,7 +11,8 @@ import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
 import com.fitcard.domain.member.model.dto.response.MemberRegisterResponse;
 import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
 import com.fitcard.domain.member.repository.MemberRepository;
-import com.fitcard.global.config.JwtTokenProvider;
+import com.fitcard.global.config.auth.JwtTokenProvider;
+import com.fitcard.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MemberRegisterResponse register(MemberRegisterRequest request) {
         if (memberRepository.existsByLoginId(request.getLoginId())) {
-            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+            throw new DuplicatedMemberException(ErrorCode.DUPLICATE_MEMBER, "이미 사용 중인 아이디입니다.");
         }
 
         // Member 객체를 of 메서드로 생성
@@ -53,10 +58,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MemberLoginResponse login(MemberLoginRequest request) {
         Member member = memberRepository.findByLoginId(request.getLoginId())
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND,"존재하지 않는 ID 입니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+            throw new IncorrectPasswordException(ErrorCode.INCORRECT_PASSWORD, "아이디와 비밀번호가 일치하지 않습니다.");
         }
 
         String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId());
@@ -73,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
             String newAccessToken = jwtTokenProvider.createAccessToken(username);
             return RefreshTokenResponse.of(newAccessToken);
         } else {
-            throw new IllegalArgumentException("Invalid refresh token");
+            throw new InvalidRefreshTokenException(ErrorCode.INVALID_REFRESH_TOKEN, "유효하지 않은 RefreshToken 토큰입니다.");
         }
     }
 }
