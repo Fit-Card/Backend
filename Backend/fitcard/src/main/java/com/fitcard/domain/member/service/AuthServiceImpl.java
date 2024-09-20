@@ -73,6 +73,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RefreshTokenResponse refresh(String refreshToken) {
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+
         if (jwtTokenProvider.validateToken(refreshToken)) {
             String username = jwtTokenProvider.getUsername(refreshToken);
             String newAccessToken = jwtTokenProvider.createAccessToken(username);

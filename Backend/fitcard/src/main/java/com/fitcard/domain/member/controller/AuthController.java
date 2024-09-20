@@ -58,11 +58,6 @@ public class AuthController {
     @SwaggerApiError({ErrorCode.INVALID_REFRESH_TOKEN})
     @PostMapping("/refresh")
     public Response<RefreshTokenResponse> refreshAccessToken(@RequestHeader("Authorization") String refreshToken) {
-        // 헤더에 "Bearer " 접두어가 포함되어 있을 경우 이를 제거
-        if (refreshToken.startsWith("Bearer ")) {
-            refreshToken = refreshToken.substring(7);
-        }
-
         RefreshTokenResponse response = authService.refresh(refreshToken);
         return Response.SUCCESS(response, "JWT 토큰 재발급을 성공했습니다.");
     }
