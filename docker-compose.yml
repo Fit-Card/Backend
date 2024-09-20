@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   mysql:
     image: mysql:8
@@ -14,13 +12,24 @@ services:
     ports:
       - "3306:3306"
       
-  backend:
-    image: limgayoung/fitcard-be:latest
+  fitcard:
+    image: fitcard-image:latest
     container_name: fitcard-be
     depends_on:
       - mysql
     ports:
       - "8081:8081"
+    restart: "always"
+    networks:
+      - fitcard
+
+  financial:
+    image: financial-image:latest
+    container_name: financial-be
+    depends_on:
+      - mysql
+    ports:
+      - "8082:8082"
     restart: "always"
     networks:
       - fitcard
@@ -35,8 +44,6 @@ services:
       - /etc/nginx:/etc/nginx  # nginx 설정 파일 경로
       - /var/www/html:/var/www/html  # 정적 파일 제공을 위한 경로
       - /etc/letsencrypt:/etc/letsencrypt  # SSL 인증서 경로
-    depends_on:
-      - backend
     restart: "always"
     networks:
       - fitcard
