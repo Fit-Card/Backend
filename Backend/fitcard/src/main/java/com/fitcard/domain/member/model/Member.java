@@ -50,4 +50,9 @@ public class Member {
     public static Member of(String loginId, String password, String name, LocalDate birthDate, String phoneNumber, Boolean isCertifiedMydata, String userSeqNo) {
         return new Member(loginId, password, name, birthDate, phoneNumber, isCertifiedMydata, userSeqNo);
     }
+
+    public void update(String password, String phoneNumber) {
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
 }

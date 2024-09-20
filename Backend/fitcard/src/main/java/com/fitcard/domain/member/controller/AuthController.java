@@ -5,6 +5,7 @@ import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
 import com.fitcard.domain.member.model.dto.response.MemberCheckIdResponse;
 import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
 import com.fitcard.domain.member.model.dto.response.MemberRegisterResponse;
+import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
 import com.fitcard.domain.member.service.AuthService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
 import com.fitcard.global.response.Response;
@@ -46,4 +47,18 @@ public class AuthController {
         MemberLoginResponse response = authService.login(request);
         return Response.SUCCESS(response, "로그인 성공");
     }
+
+    @Operation(summary = "JWT 토큰 재발급 API", description = "Refresh Token을 통해 Access Token을 재발급받습니다.")
+    @SwaggerApiSuccess(description = "JWT 토큰 재발급을 성공했습니다.")
+    @PostMapping("/refresh")
+    public Response<RefreshTokenResponse> refreshAccessToken(@RequestHeader("Authorization") String refreshToken) {
+        // 헤더에 "Bearer " 접두어가 포함되어 있을 경우 이를 제거
+        if (refreshToken.startsWith("Bearer ")) {
+            refreshToken = refreshToken.substring(7);
+        }
+
+        RefreshTokenResponse response = authService.refresh(refreshToken);
+        return Response.SUCCESS(response, "JWT 토큰 재발급을 성공했습니다.");
+    }
+
 }

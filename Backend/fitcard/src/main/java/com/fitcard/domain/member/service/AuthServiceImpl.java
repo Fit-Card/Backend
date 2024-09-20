@@ -5,6 +5,7 @@ import com.fitcard.domain.member.model.dto.request.MemberLoginRequest;
 import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
 import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
 import com.fitcard.domain.member.model.dto.response.MemberRegisterResponse;
+import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
 import com.fitcard.domain.member.repository.MemberRepository;
 import com.fitcard.global.config.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
@@ -62,5 +64,16 @@ public class AuthServiceImpl implements AuthService {
 
         // 클라이언트에게 Access Token과 Refresh Token 모두 반환
         return MemberLoginResponse.of(accessToken, refreshToken, "로그인 성공");
+    }
+
+    @Override
+    public RefreshTokenResponse refresh(String refreshToken) {
+        if (jwtTokenProvider.validateToken(refreshToken)) {
+            String username = jwtTokenProvider.getUsername(refreshToken);
+            String newAccessToken = jwtTokenProvider.createAccessToken(username);
+            return RefreshTokenResponse.of(newAccessToken);
+        } else {
+            throw new IllegalArgumentException("Invalid refresh token");
+        }
     }
 }
