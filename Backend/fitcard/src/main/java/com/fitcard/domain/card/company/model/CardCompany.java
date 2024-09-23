@@ -19,5 +19,6 @@ public class CardCompany {
     @NotEmpty
     private String name;
 
+    private String imageUrl;
     
 }
