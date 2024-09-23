@@ -1,21 +1,19 @@
 package com.financial.infra.crawler.service;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class KbCardEventCrawler {
@@ -33,8 +31,12 @@ public class KbCardEventCrawler {
         // 첫 번째 페이지로 이동
         driver.get(eventUrl);
 
-        Map<String, Integer> map = new HashMap<>();
-        // 각 페이지의 데이터를 크롤링
+        Map<String, String> map = new HashMap<>();
+
+        // 정규식을 사용하여 eventNum을 추출하는 패턴
+        String pattern = "goDetail\\('([0-9]+)'";
+        Pattern regex = Pattern.compile(pattern);
+
         for (int i = 1; i <= 10; i++) {
             // 페이지 소스를 가져와 Jsoup으로 파싱
             String pageSource = driver.getPageSource();
@@ -43,8 +45,25 @@ public class KbCardEventCrawler {
             // Jsoup을 사용해 크롤링
             doc.select(".eventList li > a").forEach(element -> {
                 String eventLink = element.attr("href");
-                System.out.println("크롤링한 링크: " + eventLink);
-                map.put(eventLink, 0);
+
+                // 정규식으로 이벤트 번호 추출
+                Matcher matcher = regex.matcher(eventLink);
+                if (matcher.find()) {
+                    String eventNum = matcher.group(1);
+
+                    // 이벤트 번호를 포함한 전체 URL 생성
+                    String fullEventUrl = "https://card.kbcard.com/BON/DVIEW/HBBMCXCRVNEC0001?mainCC=a&eventNum=" + eventNum;
+                    String title = element.select("span.subject").text();
+                    String date = element.select("span.date").text();
+
+                    String[] dateParts = date.split(" ~ ");
+                    String startDate = dateParts[0];
+                    String endDate = dateParts[1];
+                    // map에 URL을 key로, title, startDate, endDate를 이어서 value로 저장
+                    String value = "title=" + title + ", startDate=" + startDate + ", endDate=" + endDate;
+                    System.out.println("저장된 값: " + value);
+                    map.put(fullEventUrl, value);  // Map에 추가
+                }
             });
 
             // 다음 페이지로 이동
@@ -57,9 +76,30 @@ public class KbCardEventCrawler {
                 }
             }
         }
+        for (String detailUrl : map.keySet()) {
+            driver.get(detailUrl);  // 상세 페이지로 이동
+
+            // 페이지 소스를 가져와 Jsoup으로 파싱
+            String detailPageSource = driver.getPageSource();
+            Document detailDoc = Jsoup.parse(detailPageSource);
+
+            Elements columns = detailDoc.select("div.column");
+            if (columns.size() > 1) {
+                Element targetElement = columns.get(1);  // 두 번째 div.column 선택
+                String target = targetElement.text();
+                System.out.println("대상: " + target);
+            } else {
+                System.out.println("대상 정보가 부족하거나 없습니다.");
+            }
+
+            // 내용 크롤링
+            String content = detailDoc.select("div.cont.box").text();
+            System.out.println("내용: " + content);
+
+            System.out.println("------------------------------------");
+        }
 
         // 브라우저 닫기
-        System.out.println(map.size());
         driver.quit();
     }
 }
