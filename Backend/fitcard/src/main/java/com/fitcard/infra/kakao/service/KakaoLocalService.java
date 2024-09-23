@@ -90,14 +90,17 @@ public class KakaoLocalService {
 
         int totalPageCount = responses.getMeta().getTotal_count();
 //        log.info("totalPageCount: {}", totalPageCount);
-        for(int i = 2; i <= totalPageCount/15; i++){
+        int totalPageNum = totalPageCount/15;
+        if(totalPageCount % 15 != 0){
+            totalPageNum++;
+        }
+        for(int i = 2; i <= totalPageNum; i++){
             responses = getKakaoCategoryLocalApiResponses(parameter, i);
 //            log.info("response size: {}", responses.getDocuments().size());
             localInfos.addAll(responses.getDocuments().stream()
                     .map(LocalInfo::from)
                     .toList());
             if(responses.getMeta().is_end()) {
-                log.info("end!!!!!!!!!!!!!!!");
                 break;
             }
         }
@@ -170,13 +173,17 @@ public class KakaoLocalService {
 
     private KakaoCategoryLocalApiResponses getRequestToKakao(String requestUrl){
 
-        return restClient.get()
-                .uri(requestUrl)
-                .header("Authorization", "KakaoAK " + KAKAO_API_KEY)
-                .retrieve()
-                //예외처리 필요!!!!
-//                .onStatus()
-                .body(KakaoCategoryLocalApiResponses.class);
+        try {
+            return restClient.get()
+                    .uri(requestUrl)
+                    .header("Authorization", "KakaoAK " + KAKAO_API_KEY)
+                    .retrieve()
+                    .body(KakaoCategoryLocalApiResponses.class);
+        } catch (Exception e) {
+            // 예외 발생 시 KakaoCategoryLocalApiResponses.empty() 반환
+            log.error("Error occurred during API call: {}", e.getMessage());
+            return KakaoCategoryLocalApiResponses.empty();
+        }
 
 
 //        return webClient.get()
