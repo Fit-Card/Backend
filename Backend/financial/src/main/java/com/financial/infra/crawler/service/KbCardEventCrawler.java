@@ -52,7 +52,7 @@ public class KbCardEventCrawler {
                     String eventNum = matcher.group(1);
 
                     // 이벤트 번호를 포함한 전체 URL 생성
-                    String fullEventUrl = "https://card.kbcard.com/BON/DVIEW/HBBMCXCRVNEC0001?mainCC=a&eventNum=" + eventNum;
+                    String fullEventUrl = eventUrl + "?mainCC=a&eventNum=" + eventNum;
                     String title = element.select("span.subject").text();
                     String date = element.select("span.date").text();
 
