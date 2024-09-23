@@ -29,7 +29,8 @@ public class CardInfoController {
     public Response<CardInfoGetResponses> getCardsByCompany(
             @Parameter(description = "카드사 id", example = "3")
             @PathVariable("cardCompanyId") int cardCompanyId) {
-        return Response.SUCCESS(null, "카드사의 전체 카드 조회를 성공했습니다.");
+        CardInfoGetResponses response = cardInfoService.getCardsByCompany(cardCompanyId);
+        return Response.SUCCESS(response, "카드사의 전체 카드 조회를 성공했습니다.");
     }
 
 }

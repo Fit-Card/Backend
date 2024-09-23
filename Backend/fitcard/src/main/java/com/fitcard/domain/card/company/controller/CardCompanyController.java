@@ -25,6 +25,6 @@ public class CardCompanyController {
     @PostMapping("/get/all")
     public Response<CardCompanyGetAllResponses> getCardCompanies() {
         CardCompanyGetAllResponses response = cardCompanyService.getAllCardCompany();
-        return Response.SUCCESS(response, "사용자 알림 전체 조회를 성공했습니다.");
+        return Response.SUCCESS(response, "카드사 전체 전체 조회를 성공했습니다.");
     }
 }
