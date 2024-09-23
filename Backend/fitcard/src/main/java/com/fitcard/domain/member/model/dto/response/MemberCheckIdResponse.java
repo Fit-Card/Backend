@@ -14,4 +14,9 @@ public class MemberCheckIdResponse {
 
     @Schema(description = "아이디 중복 여부", example = "false")
     private boolean isDuplicated;
+
+    public static MemberCheckIdResponse of(boolean isDuplicated) {
+        return new MemberCheckIdResponse(isDuplicated);
+    }
+
 }

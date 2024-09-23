@@ -1,6 +1,7 @@
 package com.fitcard.domain.card.benefit.model;
 
 import com.fitcard.domain.card.performance.model.CardPerformance;
+import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "card_benefit", schema = "fitcard")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CardBenefit {
+public class CardBenefit extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

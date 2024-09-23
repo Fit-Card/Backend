@@ -2,6 +2,7 @@ package com.fitcard.domain.merchantcard.merchantcardinfo.model;
 
 import com.fitcard.domain.card.version.model.CardVersion;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
+import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "merchant_card")
 @Getter
 @NoArgsConstructor
-public class MerchantCardInfo {
+public class MerchantCardInfo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

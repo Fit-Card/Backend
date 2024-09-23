@@ -1,6 +1,7 @@
 package com.fitcard.domain.event.model;
 
 import com.fitcard.domain.card.company.model.CardCompany;
+import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @Table(name = "card_event")
 @Getter
 @NoArgsConstructor
-public class CardEvent {
+public class CardEvent extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

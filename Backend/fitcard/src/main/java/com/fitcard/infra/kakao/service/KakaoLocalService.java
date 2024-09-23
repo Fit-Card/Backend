@@ -4,31 +4,28 @@ import com.fitcard.infra.kakao.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class KakaoLocalService {
 
-    private final WebClient webClient;
     private final String CATEGORY_LOCAL_REQUEST_URI;
     private final String ORIGIN_URI;
     private final String KAKAO_API_KEY;
+    private final RestClient restClient;
 
 
-    public KakaoLocalService(WebClient webClient,
-                             @Value("${webclient.kakao.origin}") String originUri,
+    public KakaoLocalService(@Value("${webclient.kakao.origin}") String originUri,
                              @Value("${webclient.kakao.local.category}") String categoryUri,
-                             @Value("${webclient.kakao.apikey}") String kakoApiKey) {
-        this.webClient = webClient;
+                             @Value("${webclient.kakao.apikey}") String kakoApiKey, RestClient.Builder restClientBuilder) {
         this.ORIGIN_URI = originUri;
         this.CATEGORY_LOCAL_REQUEST_URI = categoryUri;
         this.KAKAO_API_KEY = kakoApiKey;
+        this.restClient = RestClient.create();
     }
 
     /**
@@ -38,8 +35,8 @@ public class KakaoLocalService {
      */
     public List<LocalInfo> getLocalWithCategoryInGridUsingRect(KakaoLocalWithCategoryFromGridInfoRequest request) {
         List<LocalInfo> allLocalInfos = new ArrayList<>();
-        double moveDistanceLat = 0.00045*10; // 위도 200미터 이동
-        double moveDistanceLon = 0.00056*10; // 경도 200미터 이동 (서울 기준)
+        double moveDistanceLat = 0.00045*100; // 위도 500미터 이동
+        double moveDistanceLon = 0.00056*100; // 경도 500미터 이동 (서울 기준)
 
         // 위도와 경도 범위 내에서 50m씩 이동하면서 API 호출
         for (double lat = request.getMinLat(); lat <= request.getMaxLat(); lat += moveDistanceLat) {
@@ -62,9 +59,9 @@ public class KakaoLocalService {
                 allLocalInfos.addAll(localInfos);
 
                 // 중복된 데이터 제거
-                allLocalInfos = allLocalInfos.stream()
-                        .distinct()
-                        .collect(Collectors.toList());
+//                allLocalInfos = allLocalInfos.stream()
+//                        .distinct()
+//                        .collect(Collectors.toList());
             }
         }
 
@@ -92,9 +89,10 @@ public class KakaoLocalService {
                 .toList());
 
         int totalPageCount = responses.getMeta().getPageable_count();
-
-        for(int i = 2; i <= totalPageCount; i++){
+//        log.info("totalPageCount: {}", totalPageCount);
+        for(int i = 2; i <= totalPageCount/15; i++){
             responses = getKakaoCategoryLocalApiResponses(parameter, i);
+//            log.info("response size: {}", responses.getDocuments().size());
             localInfos.addAll(responses.getDocuments().stream()
                     .map(LocalInfo::from)
                     .toList());
@@ -102,10 +100,19 @@ public class KakaoLocalService {
         }
 
 //        log.info("response meta: {}", responses.getMeta());
-
-        return localInfos.stream()
-                .distinct()
-                .toList();
+//        log.info("localInfos size: {}", localInfos.size());
+        return localInfos;
+//        log.info("localInfos: {}", localInfos);
+//        log.info("localInfos distinct size: {}", localInfos.stream()
+//                .distinct()
+//                .toList().size());
+//
+//        log.info("localInfos distinct: {}", localInfos.stream()
+//                .distinct()
+//                .toList());
+//        return localInfos.stream()
+//                .distinct()
+//                .toList();
     }
 
 
@@ -145,8 +152,7 @@ public class KakaoLocalService {
     private KakaoCategoryLocalApiResponses getKakaoCategoryLocalApiResponses(KakaoCategoryRectRequestQueryParameter parameter, int page){
         String requestUrl = ORIGIN_URI+CATEGORY_LOCAL_REQUEST_URI+"?category_group_code="+parameter.getCategory_group_code()
                 +"&rect="+parameter.getTopX()+","+parameter.getTopY()+","+parameter.getBottomX()+","+parameter.getBottomY()
-                +"&page="+page;
-
+                +"&page="+page+"&size=15";
 //        log.info("requestUrl: {}", requestUrl);
         return getRequestToKakao(requestUrl);
     }
@@ -156,34 +162,40 @@ public class KakaoLocalService {
                 +"&x="+parameter.getX()+"&y="+parameter.getY()
                 +"&radius="+parameter.getRadius()+"&page="+page;
 
-//        log.info("requestUrl: {}", requestUrl);
-
         return getRequestToKakao(requestUrl);
     }
 
     private KakaoCategoryLocalApiResponses getRequestToKakao(String requestUrl){
         //todo : 현재 blocking 방식으로 작동함, 추후 webClinet의 특성에 맞게 Mono로 감싸서 stream에서 사용하도록 변경 필요
-        return webClient.get()
+
+        return restClient.get()
                 .uri(requestUrl)
                 .header("Authorization", "KakaoAK " + KAKAO_API_KEY)
                 .retrieve()
-                .onStatus(httpStatusCode -> httpStatusCode.isError(), clientResponse -> {
-                    // 에러 응답 본문을 return
-                    return clientResponse.bodyToMono(String.class)
-                            .flatMap(errorMessage -> {
-//                                log.error("Kakao API error response: {}", errorMessage);
-                                return Mono.error(new RuntimeException("Kakao API Error: " + errorMessage));
-                            });
-                })
-                .bodyToMono(KakaoCategoryLocalApiResponses.class)
-                .doOnError(throwable -> {
-                    log.info("kakao api error: {}", throwable.getMessage());
-                })
-                .onErrorResume(throwable -> {
-                    // 에러 발생 시 빈 응답 반환
-                    log.warn("Error occurred during API call, returning empty response. Error: {}", throwable.getMessage());
-                    return Mono.just(KakaoCategoryLocalApiResponses.empty()); // 빈 응답
-                })
-                .block();
+                .body(KakaoCategoryLocalApiResponses.class);
+
+
+//        return webClient.get()
+//                .uri(requestUrl)
+//                .header("Authorization", "KakaoAK " + KAKAO_API_KEY)
+//                .retrieve()
+//                .onStatus(httpStatusCode -> httpStatusCode.isError(), clientResponse -> {
+//                    // 에러 응답 본문을 return
+//                    return clientResponse.bodyToMono(String.class)
+//                            .flatMap(errorMessage -> {
+////                                log.error("Kakao API error response: {}", errorMessage);
+//                                return Mono.error(new RuntimeException("Kakao API Error: " + errorMessage));
+//                            });
+//                })
+//                .bodyToMono(KakaoCategoryLocalApiResponses.class)
+//                .doOnError(throwable -> {
+//                    log.info("kakao api error: {}", throwable.getMessage());
+//                })
+//                .onErrorResume(throwable -> {
+//                    // 에러 발생 시 빈 응답 반환
+//                    log.warn("Error occurred during API call, returning empty response. Error: {}", throwable.getMessage());
+//                    return Mono.just(KakaoCategoryLocalApiResponses.empty()); // 빈 응답
+//                })
+//                .block();
     }
 }

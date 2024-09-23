@@ -1,5 +1,6 @@
 package com.fitcard.domain.card.company.model;
 
+import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AccessLevel;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "card_company")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CardCompany {
+public class CardCompany extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
