@@ -48,10 +48,10 @@ public class Member {
         this.userSeqNo = userSeqNo;
     }
 
-    public static Member from(MemberRegisterRequest request) {
+    public static Member from(MemberRegisterRequest request, String encodedPassword) {
         return new Member(
                 request.getLoginId(),
-                request.getPassword(),
+                encodedPassword,  // 인코딩된 패스워드를 사용
                 request.getName(),
                 request.getBirthDate(),
                 request.getPhoneNumber(),

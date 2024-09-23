@@ -34,8 +34,11 @@ public class AuthServiceImpl implements AuthService {
             throw new DuplicatedMemberException(ErrorCode.DUPLICATE_MEMBER, "이미 사용 중인 아이디입니다.");
         }
 
-        // Member 객체를 of 메서드로 생성
-        Member member = Member.from(request);
+        // 패스워드 인코딩 처리
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        
+        // Member 객체 생성 시 인코딩된 패스워드를 전달
+        Member member = Member.from(request, encodedPassword);
         memberRepository.save(member);
     }
 
