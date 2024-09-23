@@ -1,6 +1,7 @@
 package com.financial.domain.bank.usercardpayment.model;
 
 import com.financial.domain.bank.usercard.model.BankUserCard;
+import com.financial.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "bank_user_card_payment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BankUserCardPayment {
+public class BankUserCardPayment extends BaseEntity {
 
     @Id
     private Integer id;

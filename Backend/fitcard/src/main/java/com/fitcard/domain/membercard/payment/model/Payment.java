@@ -1,6 +1,7 @@
 package com.fitcard.domain.membercard.payment.model;
 
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
+import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "member_card_payment")
 @Getter
 @NoArgsConstructor
-public class Payment {
+public class Payment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

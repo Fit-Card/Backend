@@ -1,5 +1,6 @@
 package com.financial.domain.bank.usercard.model;
 
+import com.financial.global.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "bank_user_card")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BankUserCard {
+public class BankUserCard extends BaseEntity {
 
     @Id
     private Integer id;

@@ -1,5 +1,6 @@
 package com.financial.domain.fin.user.model;
 
+import com.financial.global.common.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "fin_user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FinUser {
+public class FinUser extends BaseEntity {
 
     @Id
     private String id;

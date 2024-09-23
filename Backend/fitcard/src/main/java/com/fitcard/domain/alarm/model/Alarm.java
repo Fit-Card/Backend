@@ -2,6 +2,7 @@ package com.fitcard.domain.alarm.model;
 
 import com.fitcard.domain.card.company.model.CardCompany;
 import com.fitcard.domain.event.model.CardEvent;
+import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "alarm")
 @Getter
 @NoArgsConstructor
-public class Alarm {
+public class Alarm extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
