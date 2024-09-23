@@ -1,6 +1,7 @@
 package com.fitcard.domain.merchant.branch.model;
 
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
+import com.fitcard.global.common.BaseEntity;
 import com.fitcard.infra.kakao.model.LocalInfo;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,7 +14,7 @@ import lombok.ToString;
 @Table(name = "merchant_branch")
 @Getter
 @NoArgsConstructor
-public class Branch {
+public class Branch extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
