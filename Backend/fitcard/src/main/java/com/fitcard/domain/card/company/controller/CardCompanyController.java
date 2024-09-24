@@ -31,7 +31,7 @@ public class CardCompanyController {
     @Operation(hidden = true)
     @PostMapping("/post/all")
     public Response<Integer> saveCardCompanies() {
-        int cardCompaniesNum = cardCompanyService.saveCardCompanies();
+        int cardCompaniesNum = cardCompanyService.saveAllCardCompanies();
         return Response.SUCCESS(cardCompaniesNum);
     }
 }
