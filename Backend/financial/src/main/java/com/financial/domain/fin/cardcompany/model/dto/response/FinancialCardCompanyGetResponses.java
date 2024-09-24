@@ -14,7 +14,7 @@ public class FinancialCardCompanyGetResponses {
 
     private int size;
 
-    public static FinancialCardCompanyGetResponses from(List<FinancialCardCompanyGetResponse> financialCardCompanyGetRespons) {
-        return new FinancialCardCompanyGetResponses(financialCardCompanyGetRespons, financialCardCompanyGetRespons.size());
+    public static FinancialCardCompanyGetResponses from(List<FinancialCardCompanyGetResponse> financialCardCompanyGetResponse) {
+        return new FinancialCardCompanyGetResponses(financialCardCompanyGetResponse, financialCardCompanyGetResponse.size());
     }
 }

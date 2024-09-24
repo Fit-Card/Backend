@@ -14,7 +14,7 @@ public class BankCardGetResponses {
 
     private int size;
 
-    public static BankCardGetResponses from(List<BankCardGetResponse> bankCardGetRespons) {
-        return new BankCardGetResponses(bankCardGetRespons, bankCardGetRespons.size());
+    public static BankCardGetResponses from(List<BankCardGetResponse> bankCardGetResponse) {
+        return new BankCardGetResponses(bankCardGetResponse, bankCardGetResponse.size());
     }
 }

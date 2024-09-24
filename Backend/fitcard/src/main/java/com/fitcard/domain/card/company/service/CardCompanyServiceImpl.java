@@ -43,7 +43,7 @@ public class CardCompanyServiceImpl implements CardCompanyService {
     }
 
     @Override
-    public int saveCardCompanies() {
+    public int saveAllCardCompanies() {
         String response = restClient.post()
                 .uri(FINANCIAL_GET_CARD_COMPANIES)
                 .retrieve()
