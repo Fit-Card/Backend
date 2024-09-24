@@ -27,4 +27,11 @@ public class CardCompanyController {
         CardCompanyGetAllResponses response = cardCompanyService.getAllCardCompany();
         return Response.SUCCESS(response, "카드사 전체 전체 조회를 성공했습니다.");
     }
+
+    @Operation(hidden = true)
+    @PostMapping("/post/all")
+    public Response<Integer> saveCardCompanies() {
+        int cardCompaniesNum = cardCompanyService.saveCardCompanies();
+        return Response.SUCCESS(cardCompaniesNum);
+    }
 }
