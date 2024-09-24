@@ -2,6 +2,8 @@ package com.financial.infra;
 
 import com.financial.domain.bank.card.model.BankCard;
 import com.financial.domain.bank.card.repository.BankCardRepository;
+import com.financial.domain.fin.cardcompany.model.FinCardCompany;
+import com.financial.domain.fin.cardcompany.repository.FinCardCompanyRepository;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -11,9 +13,11 @@ import org.springframework.web.client.RestTemplate;
 public class CardGorillaWebClientService {
     private final String apiUrl = "https://api.card-gorilla.com:8080/v1/cards/";
     private final BankCardRepository bankCardRepository;
+    private final FinCardCompanyRepository finCardCompanyRepository;
 
-    public CardGorillaWebClientService(BankCardRepository bankCardRepository) {
+    public CardGorillaWebClientService(BankCardRepository bankCardRepository, FinCardCompanyRepository finCardCompanyRepository) {
         this.bankCardRepository = bankCardRepository;
+        this.finCardCompanyRepository = finCardCompanyRepository;
     }
 
     public void fetchCardInfo(int cardId) {
@@ -35,6 +39,11 @@ public class CardGorillaWebClientService {
             String cardType = cardData.getString("cate");
 //            System.out.println("카드 이름: " + cardName);
 //            System.out.println("카드 이미지: " + cardImageUrl);
+
+            String cardCompanyCode = mapCardCompanyCode(cardCorpName);
+//            System.out.println("카드 회사 코드: " + cardCompanyCode);
+            FinCardCompany finCardCompany = finCardCompanyRepository.findById(cardCompanyCode)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 카드 회사 코드가 존재하지 않습니다: " + cardCompanyCode));
 
             Long annualFee = 0L;
             Long abroadAnnualFee = 0L;
@@ -59,6 +68,7 @@ public class CardGorillaWebClientService {
 
             BankCard bankCard = new BankCard(
                     String.valueOf(cardId),
+                    finCardCompany,
                     cardName,                // 카드 이름
                     annualFee.intValue(),     // 연회비
                     abroadAnnualFee.intValue(), // 해외 연회비
@@ -75,6 +85,25 @@ public class CardGorillaWebClientService {
         } catch (Exception e) {
             System.out.println("카드 ID " + cardId + "의 데이터를 가져오는 데 실패했습니다.");
             e.printStackTrace();
+        }
+    }
+
+    private String mapCardCompanyCode(String cardCorpName) {
+        switch (cardCorpName) {
+            case "신한카드":
+                return "001";
+            case "KB국민카드":
+                return "002";
+            case "삼성카드":
+                return "003";
+            case "NH농협카드":
+                return "004";
+            case "우리카드":
+                return "005";
+            case "하나카드":
+                return "006";
+            default:
+                return "007"; // 기타
         }
     }
 

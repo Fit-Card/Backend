@@ -1,6 +1,7 @@
 package com.financial.domain.bank.cardbenefit.model;
 
 import com.financial.domain.bank.cardperformance.model.BankCardPerformance;
+import com.financial.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "bank_card_benefit")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BankCardBenefit {
+public class BankCardBenefit extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

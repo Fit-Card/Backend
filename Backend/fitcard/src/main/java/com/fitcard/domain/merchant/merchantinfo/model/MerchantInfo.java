@@ -1,5 +1,6 @@
 package com.fitcard.domain.merchant.merchantinfo.model;
 
+import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.ToString;
 @Table(name = "merchant")
 @Getter
 @NoArgsConstructor
-public class MerchantInfo {
+public class MerchantInfo extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
