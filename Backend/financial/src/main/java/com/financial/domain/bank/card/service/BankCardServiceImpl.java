@@ -30,4 +30,13 @@ public class BankCardServiceImpl implements BankCardService{
 
         return BankCardGetResponses.from(bankCardGetResponses);
     }
+
+    @Override
+    public BankCardGetResponses getCards() {
+        List<BankCardGetResponse> bankCardGetResponses = bankCardRepository.findAll().stream()
+                .map(BankCardGetResponse::of)
+                .toList();
+
+        return BankCardGetResponses.from(bankCardGetResponses);
+    }
 }

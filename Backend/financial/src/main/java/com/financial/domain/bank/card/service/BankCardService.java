@@ -5,4 +5,6 @@ import com.financial.domain.bank.card.model.dto.response.BankCardGetResponses;
 public interface BankCardService {
 
     BankCardGetResponses getCardsByCompany(String cardCompanyId);
+
+    BankCardGetResponses getCards();
 }

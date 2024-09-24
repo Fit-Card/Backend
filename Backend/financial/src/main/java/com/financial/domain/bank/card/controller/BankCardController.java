@@ -39,4 +39,10 @@ public class BankCardController {
         return Response.SUCCESS(response);
     }
 
+    @GetMapping("")
+    public Response<BankCardGetResponses> getCards() {
+        BankCardGetResponses response = bankCardService.getCards();
+        return Response.SUCCESS(response);
+    }
+
 }
