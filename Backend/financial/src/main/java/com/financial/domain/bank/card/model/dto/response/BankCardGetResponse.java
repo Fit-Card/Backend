@@ -10,10 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BankCardGetResponse {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private String cardId;
 
@@ -39,19 +42,19 @@ public class BankCardGetResponse {
     private String cardImageUrl;
 
     @NotNull
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 
 
     public static BankCardGetResponse of(BankCard card) {
         return new BankCardGetResponse(card.getCardId(),
-                card.getCardName(),
                 card.getFinCardCompany().getId(),
+                card.getCardName(),
                 card.getAnnualFee(),
                 card.getAbroadAnnualFee(),
                 card.isCreateCheckType(),
                 card.isBC(),
                 card.getCardImageUrl(),
-                card.getUpdatedAt());
+                card.getUpdatedAt().format(formatter));
     }
 
 }

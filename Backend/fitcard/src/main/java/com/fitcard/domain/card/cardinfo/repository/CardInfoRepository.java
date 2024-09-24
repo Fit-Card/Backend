@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface CardInfoRepository extends JpaRepository<CardInfo, Integer> {
     List<CardInfo> findByCardCompany(CardCompany cardCompany);
+
+    boolean existsCardInfoByFinancialCardId(String cardId);
 }

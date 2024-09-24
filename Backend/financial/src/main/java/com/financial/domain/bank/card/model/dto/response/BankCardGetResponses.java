@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BankCardGetResponses {
 
-    private List<BankCardGetResponse> alarmResponses;
+    private List<BankCardGetResponse> bankCardGetResponses;
 
     private int size;
 

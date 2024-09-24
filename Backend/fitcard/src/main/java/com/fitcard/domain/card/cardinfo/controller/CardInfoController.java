@@ -33,4 +33,10 @@ public class CardInfoController {
         return Response.SUCCESS(response, "카드사의 전체 카드 조회를 성공했습니다.");
     }
 
+    @PostMapping("/post")
+    public Response<Integer> saveCardsFromFinancail() {
+        int savedCardInfosNum = cardInfoService.saveCardsFromFinancial();
+        return Response.SUCCESS(savedCardInfosNum);
+    }
+
 }
