@@ -1,5 +1,6 @@
 package com.fitcard.domain.card.cardinfo.model;
 
+import com.fitcard.domain.card.cardinfo.model.dto.response.FinancialCardInfoResponse;
 import com.fitcard.domain.card.company.model.CardCompany;
 import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -25,7 +26,30 @@ public class CardInfo extends BaseEntity {
     @JoinColumn(name = "card_company_id", nullable = false)
     private CardCompany cardCompany;
 
-    @NotEmpty
-    private String cardCode;
+    private String cardImage;
 
+    @NotEmpty
+    private String financialCardId;
+
+    private boolean isCredit;
+
+    private boolean isBC;
+
+    private CardInfo(String name, CardCompany cardCompany, String cardImage, String financialCardId, boolean isCredit, boolean isBC) {
+        this.name = name;
+        this.cardCompany = cardCompany;
+        this.cardImage = cardImage;
+        this.financialCardId = financialCardId;
+        this.isCredit = isCredit;
+        this.isBC = isBC;
+    }
+
+    public static CardInfo of(CardCompany cardCompany, FinancialCardInfoResponse financialCardInfoResponse) {
+        return new CardInfo(financialCardInfoResponse.getCardName(),
+                cardCompany,
+                financialCardInfoResponse.getCardImageUrl(),
+                financialCardInfoResponse.getCardId(),
+                financialCardInfoResponse.isCreateCheckType(),
+                financialCardInfoResponse.isBC());
+    }
 }
