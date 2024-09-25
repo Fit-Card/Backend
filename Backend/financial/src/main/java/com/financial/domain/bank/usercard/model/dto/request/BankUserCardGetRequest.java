@@ -1,6 +1,6 @@
 package com.financial.domain.bank.usercard.model.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BankUserCardGetRequest {
 
-    @NotBlank
-    private String userId;
+    @NotNull
+    private Long bankUserCardId;
 }
