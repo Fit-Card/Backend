@@ -18,8 +18,8 @@ public class FinUserController {
     private final FinUserService finUserService;
 
     @PostMapping("/")
-    public Response<?> saveUser(@RequestBody FinUserSaveRequest request) {
-        finUserService.saveUser(request);
+    public Response<?> createUser(@RequestBody FinUserSaveRequest request) {
+        finUserService.createUser(request);
         return Response.SUCCESS();
     }
 

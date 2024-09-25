@@ -22,7 +22,7 @@ public class FinUserServiceImpl implements FinUserService{
     private final FinUserRepository finUserRepository;
 
     @Override
-    public void saveUser(FinUserSaveRequest request) {
+    public void createUser(FinUserSaveRequest request) {
         FinUser finUser = FinUser.from(request);
         log.info("user: {}", finUser);
         finUserRepository.save(finUser);

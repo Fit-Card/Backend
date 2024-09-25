@@ -5,7 +5,7 @@ import com.financial.domain.fin.user.model.dto.request.FinUserSaveRequest;
 
 public interface FinUserService {
 
-    void saveUser(FinUserSaveRequest request);
+    void createUser(FinUserSaveRequest request);
 
     void deleteUser(FinUserDeleteRequest request);
 }

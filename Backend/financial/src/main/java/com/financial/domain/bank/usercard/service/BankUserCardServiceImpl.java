@@ -33,7 +33,7 @@ public class BankUserCardServiceImpl implements BankUserCardService {
     private final FinUserRepository finUserRepository;
 
     @Override
-    public void saveUserCard(BankUserCardSaveRequest request) {
+    public void createUserCard(BankUserCardSaveRequest request) {
         BankCard bankCard = bankCardRepository.findById(request.getBankCardId())
                 .orElseThrow(() -> new SaveUserCardException(ErrorCode.BAD_REQUEST, "카드가 존재하지 않습니다"));
         FinUser finUser = finUserRepository.findById(request.getFinUserId())

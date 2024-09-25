@@ -8,7 +8,7 @@ import com.financial.domain.bank.usercard.model.dto.response.BankUserCardGetResp
 
 public interface BankUserCardService {
 
-    void saveUserCard(BankUserCardSaveRequest request);
+    void createUserCard(BankUserCardSaveRequest request);
 
     void deleteUserCard(BankUserCardDeleteRequest request);
 

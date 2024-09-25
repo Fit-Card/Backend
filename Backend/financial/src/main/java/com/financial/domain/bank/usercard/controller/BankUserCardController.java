@@ -20,8 +20,8 @@ public class BankUserCardController {
     private final BankUserCardService bankUserCardService;
 
     @PostMapping("/")
-    public Response<?> saveUserCard(@RequestBody BankUserCardSaveRequest request) {
-        bankUserCardService.saveUserCard(request);
+    public Response<?> createUserCard(@RequestBody BankUserCardSaveRequest request) {
+        bankUserCardService.createUserCard(request);
         return Response.SUCCESS();
     }
 
