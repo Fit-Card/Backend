@@ -6,5 +6,5 @@ public interface CardCompanyService {
 
     CardCompanyGetAllResponses getAllCardCompany();
 
-    int saveAllCardCompanies();
+    int createAllCardCompanies();
 }

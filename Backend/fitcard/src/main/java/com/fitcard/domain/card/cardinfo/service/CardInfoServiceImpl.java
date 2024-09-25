@@ -51,7 +51,7 @@ public class CardInfoServiceImpl implements CardInfoService {
     }
 
     @Override
-    public int saveCardsFromFinancial() {
+    public int createCardsFromFinancial() {
 
         String response = restClient.get()
                 .uri(FINANCIAL_GET_CARDS)
