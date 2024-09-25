@@ -1,6 +1,8 @@
 package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.Branch;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetAllResponses;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantCategory;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
@@ -25,7 +27,7 @@ public class BranchServiceImpl implements BranchService {
     private final MerchantInfoRepository merchantInfoRepository;
 
     @Override
-    public int saveBranches(List<LocalInfo> localInfos) {
+    public int createBranches(List<LocalInfo> localInfos) {
 
         log.info("localInfo size: {}", localInfos.size());
         List<Branch> branches = localInfos.stream()
@@ -105,5 +107,14 @@ public class BranchServiceImpl implements BranchService {
         if(result.isEmpty()) return placeNameSplits[0];
 
         return result;
+    }
+
+    @Override
+    public List<BranchGetResponse> getBranchesByMerchantId(final Long merchantId){
+        List<Branch> branches = branchRepository.findBranchesByMerchantBranchId(merchantId);
+
+        return branches.stream()
+                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), Double.parseDouble(branch.getX()), Double.parseDouble(branch.getY()), branch.getKakaoUrl(), "예외"))
+                .toList();
     }
 }

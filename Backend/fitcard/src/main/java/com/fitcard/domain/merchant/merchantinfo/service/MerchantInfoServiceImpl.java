@@ -28,4 +28,9 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                 .toList();
         merchantInfoRepository.saveAll(merchantInfos);
     }
+
+    @Override
+    public MerchantInfo getMerchantByName(String merchantName) {
+        return merchantInfoRepository.findByName(merchantName).orElseThrow(() -> new RuntimeException("에러"));
+    }
 }
