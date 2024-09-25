@@ -1,6 +1,7 @@
 package com.financial.domain.bank.usercard.model.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,6 @@ public class BankUserCardSaveRequest {
     @NotBlank
     private String expiredDate;
 
-    @NotBlank
+    @NotNull
     private char cardMemberType;
 }
