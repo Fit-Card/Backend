@@ -34,14 +34,18 @@ public class BankUserCard extends BaseEntity {
     @NotBlank
     private String expiredDate;
 
-    public BankUserCard(BankCard bankCard, FinUser finUser, String globalBrand, String expiredDate) {
+    @NotBlank
+    private char cardMemberType;
+
+    public BankUserCard(BankCard bankCard, FinUser finUser, String globalBrand, String expiredDate, char cardMemberType) {
         this.bankCard = bankCard;
         this.finUser = finUser;
         this.globalBrand = globalBrand;
         this.expiredDate = expiredDate;
+        this.cardMemberType = cardMemberType;
     }
 
     public static BankUserCard of(BankUserCardSaveRequest request, BankCard bankCard, FinUser finUser) {
-        return new BankUserCard(bankCard, finUser, request.getGlobalBrand(), request.getExpiredDate());
+        return new BankUserCard(bankCard, finUser, request.getGlobalBrand(), request.getExpiredDate(), request.getCardMemberType());
     }
 }

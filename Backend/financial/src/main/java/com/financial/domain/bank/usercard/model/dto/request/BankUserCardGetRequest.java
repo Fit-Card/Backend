@@ -9,20 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class BankUserCardSaveRequest {
+public class BankUserCardGetRequest {
 
     @NotBlank
-    private String bankCardId;
-
-    @NotBlank
-    private String finUserId;
-
-    @NotBlank
-    private String globalBrand;
-
-    @NotBlank
-    private String expiredDate;
-
-    @NotBlank
-    private char cardMemberType;
+    private String userId;
 }

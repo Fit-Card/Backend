@@ -1,7 +1,9 @@
 package com.financial.domain.bank.usercard.controller;
 
 import com.financial.domain.bank.usercard.model.dto.request.BankUserCardDeleteRequest;
+import com.financial.domain.bank.usercard.model.dto.request.BankUserCardGetRequest;
 import com.financial.domain.bank.usercard.model.dto.request.BankUserCardSaveRequest;
+import com.financial.domain.bank.usercard.model.dto.response.BankUserCardGetResponses;
 import com.financial.domain.bank.usercard.service.BankUserCardService;
 import com.financial.domain.fin.cardcompany.model.dto.response.CardCompanyGetResponses;
 import com.financial.global.response.Response;
@@ -27,5 +29,11 @@ public class BankUserCardController {
     public Response<?> deleteUserCard(@RequestBody BankUserCardDeleteRequest request) {
         bankUserCardService.deleteUserCard(request);
         return Response.SUCCESS();
+    }
+
+    @GetMapping("/{userId}")
+    public Response<BankUserCardGetResponses> getAllUserCards(@PathVariable String userId) {
+        BankUserCardGetResponses response = bankUserCardService.getAllUserCards(new BankUserCardGetRequest(userId));
+        return Response.SUCCESS(response);
     }
 }
