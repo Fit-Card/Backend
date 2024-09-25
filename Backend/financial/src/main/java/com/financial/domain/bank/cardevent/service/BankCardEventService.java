@@ -1,5 +1,7 @@
 package com.financial.domain.bank.cardevent.service;
 
-public interface BankCardEventService {
+import com.financial.domain.bank.cardevent.model.BankCardEvent;
 
+public interface BankCardEventService {
+    void createBankCardEvent(final Integer bankCardId);
 }

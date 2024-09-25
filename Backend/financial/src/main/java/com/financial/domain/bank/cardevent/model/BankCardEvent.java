@@ -1,5 +1,6 @@
 package com.financial.domain.bank.cardevent.model;
 
+import com.financial.domain.fin.cardcompany.model.FinCardCompany;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,8 +20,9 @@ public class BankCardEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardEventId;
 
-    @NotEmpty
-    private Long cardCompanyId;
+    @ManyToOne
+    @JoinColumn(name="card_company_id")
+    private FinCardCompany finCardCompany;
 
     @NotEmpty
     private String target;
@@ -43,8 +45,8 @@ public class BankCardEvent {
     @NotEmpty
     private String content;
 
-    private BankCardEvent(Long cardCompanyId, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content) {
-        this.cardCompanyId = cardCompanyId;
+    private BankCardEvent(FinCardCompany finCardCompany, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content) {
+        this.finCardCompany = finCardCompany;
         this.target = target;
         this.isCategory = isCategory;
         this.eventUrl = eventUrl;
