@@ -34,7 +34,8 @@ public class MemberCardInfoController {
     @SwaggerApiSuccess(description = "사용자 카드 전체 생성을 성공했습니다.")
     @PostMapping("/post")
     public Response<?> createMemberCards(@RequestBody MemberCardCreateRequest request) {
-        return Response.SUCCESS(null, "사용자 카드 생성을 성공했습니다.");
+        memberCardInfoService.createMemberCards(request);
+        return Response.SUCCESS();
     }
 
     @Operation(summary = "사용자 카드 삭제 API", description = "사용자의 카드를 삭제합니다.")

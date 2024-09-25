@@ -37,11 +37,21 @@ public class MemberCardInfo {
     @NotNull
     private Boolean isPersonal;
 
+    @NotNull
+    private Long financialUserCardId;
+
     // private 생성자
-    private MemberCardInfo(Member member, CardVersion cardVersion, LocalDate expiredDate, String globalBrand, Boolean isPersonal) {
+    private MemberCardInfo(Member member, CardVersion cardVersion, LocalDate expiredDate, String globalBrand, Boolean isPersonal, Long financialUserCardId) {
         this.member = member;
         this.expiredDate = expiredDate;
         this.globalBrand = globalBrand;
         this.isPersonal = isPersonal;
+        this.financialUserCardId = financialUserCardId;
+    }
+
+    public static MemberCardInfo of(Member member, CardVersion cardVersion, String globalBrand, String expiredDate, String cardMemberType, long financialUserCardId) {
+        boolean isPersonal = cardMemberType.equals("P");
+        return new MemberCardInfo(member, cardVersion, LocalDate.parse(expiredDate), globalBrand, isPersonal, financialUserCardId);
+
     }
 }

@@ -31,4 +31,8 @@ public class CardVersion extends BaseEntity {
     @NotNull
     private int version;
 
+    //todo: 추후 CardVersion 저장 완료되면 삭제 예정
+    public static CardVersion empty() {
+        return new CardVersion();
+    }
 }
