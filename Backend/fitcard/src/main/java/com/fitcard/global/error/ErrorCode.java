@@ -27,7 +27,12 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(404, "M001", "사용자를 찾을 수 없습니다."),
     MEMBER_UPDATE_FAILED(404, "M002", "사용자 정보 수정에 실패했습니다."),
     DUPLICATE_MEMBER(404, "M003", "이미 존재하는 ID 입니다."),
-    INCORRECT_PASSWORD(400, "M004", "비밀번호가 틀렸습니다.");
+    INCORRECT_PASSWORD(400, "M004", "비밀번호가 틀렸습니다."),
+    NOT_FOUND_FINANCIAL_USER_SEQ(400, "M005", "user sequence number를 찾을 수 없습니다."),
+
+    //card
+    CARD_COMPANY_NOT_FOUND(404, "CA001", "카드사를 찾을 수 없습니다."),
+    CARD_NOT_FOUND(404, "CA002", "카드를 찾을 수 없습니다.");
 
 
     private final Integer status;

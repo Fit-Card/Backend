@@ -17,4 +17,8 @@ public class CardInfoGetResponses {
 
     @Schema(description = "목록 개수", example = "1")
     private int size;
+
+    public static CardInfoGetResponses from(List<CardInfoGetResponse> cardInfoGetResponses) {
+        return new CardInfoGetResponses(cardInfoGetResponses, cardInfoGetResponses.size());
+    }
 }

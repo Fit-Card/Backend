@@ -1,5 +1,6 @@
 package com.fitcard.domain.card.company.model.dto.response;
 
+import com.fitcard.domain.card.company.model.CardCompany;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,4 +21,8 @@ public class CardCompanyGetResponse {
 
     @Schema(description = "카드사 로고 이미지 url", example = "https://www.shinhancard.com/pconts/images/contents/card/plate/cdCheckBGND9K.png")
     private String companyImageUrl;
+
+    public static CardCompanyGetResponse of(CardCompany cardCompany) {
+        return new CardCompanyGetResponse(String.valueOf(cardCompany.getId()), cardCompany.getName(), cardCompany.getImageUrl());
+    }
 }

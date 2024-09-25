@@ -24,6 +24,14 @@ public class CardCompanyController {
     @SwaggerApiSuccess(description = "카드사 전체 조회를 성공했습니다.")
     @PostMapping("/get/all")
     public Response<CardCompanyGetAllResponses> getCardCompanies() {
-        return Response.SUCCESS(null, "사용자 알림 전체 조회를 성공했습니다.");
+        CardCompanyGetAllResponses response = cardCompanyService.getAllCardCompany();
+        return Response.SUCCESS(response, "카드사 전체 전체 조회를 성공했습니다.");
+    }
+
+    @Operation(hidden = true)
+    @PostMapping("/post/all")
+    public Response<Integer> createCardCompanies() {
+        int cardCompaniesNum = cardCompanyService.createAllCardCompanies();
+        return Response.SUCCESS(cardCompaniesNum);
     }
 }

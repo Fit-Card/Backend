@@ -1,5 +1,6 @@
 package com.fitcard.domain.card.company.model;
 
+import com.fitcard.domain.card.company.model.dto.response.FinancialCardCompanyGetResponses;
 import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,8 +18,22 @@ public class CardCompany extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String financialCardId;
+
     @NotEmpty
     private String name;
 
-    
+    private String imageUrl;
+
+    private CardCompany( String financialCardId, String name, String imageUrl) {
+        this.financialCardId = financialCardId;
+        this.name = name;
+        this.imageUrl = imageUrl;
+    }
+
+    public static CardCompany from(FinancialCardCompanyGetResponses.FinancialCardCompanyGetResponse financialCardCompanyGetAllResponse) {
+        return new CardCompany(financialCardCompanyGetAllResponse.getCompanyId(),
+                financialCardCompanyGetAllResponse.getCompanyName(),
+                financialCardCompanyGetAllResponse.getCompanyImageUrl());
+    }
 }

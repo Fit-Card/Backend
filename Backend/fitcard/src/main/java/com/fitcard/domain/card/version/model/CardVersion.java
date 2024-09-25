@@ -31,8 +31,4 @@ public class CardVersion extends BaseEntity {
     @NotNull
     private int version;
 
-    private boolean isCredit;
-
-    private boolean isBC;
-
 }
