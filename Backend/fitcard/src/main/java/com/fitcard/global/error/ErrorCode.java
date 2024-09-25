@@ -36,7 +36,8 @@ public enum ErrorCode {
     CARD_NOT_FOUND(404, "CA002", "카드를 찾을 수 없습니다."),
 
     //user card
-    NOT_FOUND_FINANCIAL_USER_CARD_ID(404, "CA002", "카드를 찾을 수 없습니다.");
+    NOT_FOUND_FINANCIAL_USER_CARD_ID(404, "CA002", "financial user card id가 없습니다."),
+    NOT_FOUND_MEMBER_CARD(404, "CA002", "사용자 카드를 찾을 수 없습니다.");
 
 
     private final Integer status;

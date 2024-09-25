@@ -24,7 +24,6 @@ public class MemberCardInfo {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-
     @ManyToOne
     @JoinColumn(name = "card_version_id", nullable = false)
     private CardVersion cardVersion;
@@ -43,15 +42,16 @@ public class MemberCardInfo {
     // private 생성자
     private MemberCardInfo(Member member, CardVersion cardVersion, LocalDate expiredDate, String globalBrand, Boolean isPersonal, Long financialUserCardId) {
         this.member = member;
+        this.cardVersion = cardVersion;
         this.expiredDate = expiredDate;
         this.globalBrand = globalBrand;
         this.isPersonal = isPersonal;
         this.financialUserCardId = financialUserCardId;
     }
 
-    public static MemberCardInfo of(Member member, CardVersion cardVersion, String globalBrand, String expiredDate, String cardMemberType, long financialUserCardId) {
+    public static MemberCardInfo of(Member member, CardVersion cardVersion, String globalBrand, LocalDate expiredDate, String cardMemberType, long financialUserCardId) {
         boolean isPersonal = cardMemberType.equals("P");
-        return new MemberCardInfo(member, cardVersion, LocalDate.parse(expiredDate), globalBrand, isPersonal, financialUserCardId);
+        return new MemberCardInfo(member, cardVersion, expiredDate, globalBrand, isPersonal, financialUserCardId);
 
     }
 }

@@ -42,7 +42,8 @@ public class MemberCardInfoController {
     @SwaggerApiSuccess(description = "사용자 카드 삭제를 성공했습니다.")
     @PostMapping("/delete")
     public Response<?> deleteMemberCards(@RequestBody MemberCardDeleteRequest request) {
-        return Response.SUCCESS(null, "사용자 카드 전체 조회를 성공했습니다.");
+        memberCardInfoService.deleteMemberCard(request);
+        return Response.SUCCESS();
     }
 
     @Operation(summary = "사용자 카드 갱신 정보 조회 API", description = "사용자의 카드를 추가하기 위해 갱신한 카드 정보를 조회합니다.")
