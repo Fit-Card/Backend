@@ -15,7 +15,7 @@ public class BankCardPerformanceAddRequest {
 
     @Schema(description = "카드 ID", example = "123")
     @NotNull
-    private Long cardId;
+    private String cardId;
 
     @Schema(description = "카드 실적 레벨", example = "1")
     @NotNull

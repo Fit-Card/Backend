@@ -31,9 +31,9 @@ public class MerchantInfoController {
 
     @Operation(hidden = true)
     @PostMapping("/post/")
-    public Response<?> saveMerchants(@Valid @RequestBody MerchantInfoSaveAllRequest request) {
+    public Response<?> createMerchants(@Valid @RequestBody MerchantInfoSaveAllRequest request) {
         log.info("request: {} {}", request.getMerchantNames(), request.getCategory());
-        merchantInfoService.saveAll(request);
+        merchantInfoService.createAll(request);
         return Response.SUCCESS();
     }
 

@@ -5,5 +5,5 @@ import com.fitcard.domain.merchant.merchantinfo.model.dto.request.MerchantInfoSa
 public interface MerchantInfoService {
 
     //가맹점 list 저장
-    void saveAll(MerchantInfoSaveAllRequest request);
+    void createAll(MerchantInfoSaveAllRequest request);
 }

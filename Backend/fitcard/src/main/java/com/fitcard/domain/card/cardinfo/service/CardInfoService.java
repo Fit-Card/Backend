@@ -6,5 +6,5 @@ public interface CardInfoService {
 
     CardInfoGetResponses getCardsByCompany(int cardCompanyId);
 
-    int saveCardsFromFinancial();
+    int createCardsFromFinancial();
 }
