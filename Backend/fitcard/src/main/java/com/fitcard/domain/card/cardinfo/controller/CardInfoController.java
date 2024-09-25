@@ -34,8 +34,8 @@ public class CardInfoController {
     }
 
     @PostMapping("/post")
-    public Response<Integer> saveCardsFromFinancail() {
-        int savedCardInfosNum = cardInfoService.saveCardsFromFinancial();
+    public Response<Integer> createCardsFromFinancail() {
+        int savedCardInfosNum = cardInfoService.createCardsFromFinancial();
         return Response.SUCCESS(savedCardInfosNum);
     }
 

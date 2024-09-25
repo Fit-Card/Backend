@@ -12,10 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "사용자 카드 관련 API")
 @RestController
@@ -34,7 +31,7 @@ public class MemberCardInfoController {
     }
 
     @Operation(summary = "사용자 카드 생성 API", description = "사용자의 카드를 생성합니다. 한 번에 여러개의 카드를 생성할 수 있습니다.")
-    @SwaggerApiSuccess(description = "사용자 카드 전체 조회를 성공했습니다.")
+    @SwaggerApiSuccess(description = "사용자 카드 전체 생성을 성공했습니다.")
     @PostMapping("/post")
     public Response<?> createMemberCards(@RequestBody MemberCardCreateRequest request) {
         return Response.SUCCESS(null, "사용자 카드 생성을 성공했습니다.");
@@ -49,9 +46,10 @@ public class MemberCardInfoController {
 
     @Operation(summary = "사용자 카드 갱신 정보 조회 API", description = "사용자의 카드를 추가하기 위해 갱신한 카드 정보를 조회합니다.")
     @SwaggerApiSuccess(description = "사용자 카드 갱신 정보 조회를 성공했습니다.")
-    @PostMapping("/get/renewal")
-    public Response<MemberCardGetAllRenewalResponses> getRenewalMemberCards() {
-        return Response.SUCCESS(null, "사용자 카드 갱신 정보 조회를 성공했습니다.");
+    @PostMapping("/get/renewal/{memberId}")
+    public Response<MemberCardGetAllRenewalResponses> getRenewalMemberCards(@PathVariable("memberId") Integer memberId) {
+        MemberCardGetAllRenewalResponses response = memberCardInfoService.getAllRenewalMemberCardsFromFinancial(memberId);
+        return Response.SUCCESS(response, "사용자 카드 갱신 정보 조회를 성공했습니다.");
     }
 
     @Operation(summary = "사용자 나이대 카드 사용순 조회 API", description = "사용자의 나이대에 해당하는 카드를 사용 순으로 조회합니다.")

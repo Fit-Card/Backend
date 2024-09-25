@@ -51,7 +51,7 @@ public class CardInfoServiceImpl implements CardInfoService {
     }
 
     @Override
-    public int saveCardsFromFinancial() {
+    public int createCardsFromFinancial() {
 
         String response = restClient.get()
                 .uri(FINANCIAL_GET_CARDS)
@@ -65,6 +65,7 @@ public class CardInfoServiceImpl implements CardInfoService {
             JsonNode jsonNode = objectMapper.readTree(response);
             JsonNode dataNode = jsonNode.get("data");
 //            log.info("data size: {}", dataNode.get("size"));
+
             financialCardInfoResponses = objectMapper.treeToValue(dataNode, FinancialCardInfoResponses.class);
 //            cardCompanyResponses = objectMapper.treeToValue(dataNode, FinancialCardCompanyGetResponses.class);
         } catch (Exception e) {
