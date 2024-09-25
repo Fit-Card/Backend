@@ -6,6 +6,7 @@ import com.financial.domain.fin.user.model.FinUser;
 import com.financial.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +35,7 @@ public class BankUserCard extends BaseEntity {
     @NotBlank
     private String expiredDate;
 
-    @NotBlank
+    @NotNull
     private char cardMemberType;
 
     public BankUserCard(BankCard bankCard, FinUser finUser, String globalBrand, String expiredDate, char cardMemberType) {
