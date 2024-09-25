@@ -24,4 +24,8 @@ public class BankCardPerformanceAddRequest {
     @Schema(description = "카드 실적 금액", example = "500000")
     @NotNull
     private int amount;
+    
+    @Schema(description = "카드 할인 한도", example = "5000")
+    @NotNull
+    private int benefitLimit;
 }

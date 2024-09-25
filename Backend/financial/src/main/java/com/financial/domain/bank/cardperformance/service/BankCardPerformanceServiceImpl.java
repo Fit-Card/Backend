@@ -29,7 +29,8 @@ public class BankCardPerformanceServiceImpl implements BankCardPerformanceServic
         BankCardPerformance bankCardPerformance = new BankCardPerformance(
                 bankCard,
                 request.getLevel(),
-                request.getAmount()
+                request.getAmount(),
+                request.getBenefitLimit()
         );
 
         // 데이터베이스에 저장
