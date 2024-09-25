@@ -59,7 +59,10 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
                 .retrieve()
                 .body(String.class);
 
-        log.info("response: {}",response);
+        return parsingGetAllRenewalMemberCardsFromJson(response);
+    }
+
+    private MemberCardGetAllRenewalResponses parsingGetAllRenewalMemberCardsFromJson(String response){
         ObjectMapper objectMapper = new ObjectMapper();
 
         List<MemberCardGetRenewalResponse> memberCardGetRenewalResponses = new ArrayList<>();
@@ -98,8 +101,6 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             log.error("{}", e.getStackTrace());
             throw new MemberCardGetAllRenewalException(ErrorCode.INTERNAL_SERVER_ERROR, "JSON 변환에 실패했습니다.");
         }
-
-
         return MemberCardGetAllRenewalResponses.from(memberCardGetRenewalResponses);
     }
 }

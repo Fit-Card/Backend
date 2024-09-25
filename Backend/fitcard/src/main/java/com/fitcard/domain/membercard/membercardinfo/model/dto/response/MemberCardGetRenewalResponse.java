@@ -33,7 +33,7 @@ public class MemberCardGetRenewalResponse {
     private String expiredDate;
 
     @Schema(description = "financial 사용자 카드 id", example = "1")
-    private Long userCardId;
+    private Long financialUserCardId;
 
     public static MemberCardGetRenewalResponse of(CardInfo cardInfo, CardCompany cardCompany, String expiredDate, Long  userCardId) {
         return new MemberCardGetRenewalResponse(cardInfo.getFinancialCardId(),
