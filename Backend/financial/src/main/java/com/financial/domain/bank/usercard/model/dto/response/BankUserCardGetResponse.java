@@ -34,12 +34,16 @@ public class BankUserCardGetResponse {
     @NotNull
     private char cardMemberType;
 
+    @NotBlank
+    private String finCardCompanyId;
+
     public static BankUserCardGetResponse from(BankUserCard bankUserCard) {
         return new BankUserCardGetResponse(bankUserCard.getId(),
                 bankUserCard.getBankCard().getCardId(),
                 bankUserCard.getFinUser().getId(),
                 bankUserCard.getGlobalBrand(),
                 bankUserCard.getExpiredDate(),
-                bankUserCard.getCardMemberType());
+                bankUserCard.getCardMemberType(),
+                bankUserCard.getBankCard().getFinCardCompany().getId());
     }
 }
