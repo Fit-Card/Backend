@@ -45,7 +45,7 @@ public class SecurityConfig {
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://j11a405.p.ssafy.io", "https://j11a405.p.ssafy.io")); // 허용할 도메인
+        configuration.setAllowedOrigins(List.of("http://j11a405.p.ssafy.io:8081", "https://j11a405.p.ssafy.io/api/fitcard")); // 허용할 도메인
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // 허용할 HTTP 메소드
         configuration.setAllowedHeaders(List.of("*"));  // 허용할 헤더
         configuration.addExposedHeader("Authorization");
