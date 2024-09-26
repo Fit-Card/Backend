@@ -13,7 +13,7 @@ import java.util.List;
 public class CardInfoGetResponses {
 
     @Schema(description = "카드 조회 목록")
-    private List<CardInfoGetResponse> alarmResponses;
+    private List<CardInfoGetResponse> cardInfoGetResponses;
 
     @Schema(description = "목록 개수", example = "1")
     private int size;
