@@ -8,6 +8,7 @@ import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCar
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
 import com.fitcard.domain.membercard.membercardinfo.service.MemberCardInfoService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
+import com.fitcard.global.guard.Login;
 import com.fitcard.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,8 +27,8 @@ public class MemberCardInfoController {
 
     @Operation(summary = "사용자 카드 전체 조회 API", description = "사용자의 카드 전체 목록을 조회합니다. 기본 정렬은 사전순입니다.")
     @SwaggerApiSuccess(description = "사용자 카드 전체 조회를 성공했습니다.")
-    @PostMapping("/get/all/{memberId}")
-    public Response<MemberCardGetResponses> getMemberCardAll(@PathVariable("memberId") Integer memberId) {
+    @PostMapping("/get/all")
+    public Response<MemberCardGetResponses> getMemberCardAll(@Login Integer memberId) {
         MemberCardGetResponses response = memberCardInfoService.getAllMemberCards(new MemberCardGetAllRequest(memberId));
         return Response.SUCCESS(response);
     }

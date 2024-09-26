@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
+            log.info("token: {}", token);
             // 다음 필터로 요청 전달
             filterChain.doFilter(request, response);
         } catch (TokenInvalidException | TokenExpiredException e) {

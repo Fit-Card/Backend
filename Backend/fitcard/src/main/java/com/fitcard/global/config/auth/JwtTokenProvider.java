@@ -5,6 +5,7 @@ import com.fitcard.global.config.auth.exception.TokenInvalidException;
 import com.fitcard.global.error.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -46,8 +48,8 @@ public class JwtTokenProvider {
     }
 
     // Refresh Token 생성
-    public String createRefreshToken(String username) {
-        Claims claims = Jwts.claims().setSubject(username);
+    public String createRefreshToken() {
+        Claims claims = Jwts.claims();
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenExpirationTime);
 
@@ -76,7 +78,9 @@ public class JwtTokenProvider {
 
     //토큰에서 사용자 id 추출
     public String getMemberId(String token) {
-        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
+        log.info("memberId: {}", getClaims(token).get("memberId"));
+        return getClaims(token).get("memberId").toString();
+//        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().get("memberId").toString();
     }
 
     // 클레임에서 Authentication 객체 생성
