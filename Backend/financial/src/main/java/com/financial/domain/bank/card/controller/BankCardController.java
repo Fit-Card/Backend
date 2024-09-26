@@ -22,14 +22,14 @@ public class BankCardController {
     private final BankCardService bankCardService;
 
     @GetMapping("/fetch")
-    public ResponseEntity<String> fetchCardData() {
+    public Response<String> fetchCardData() {
         try {
             for (int cardId = 1; cardId <= 2753; cardId++) {
                 cardGorillaWebClientService.fetchCardInfo(cardId);
             }
-            return ResponseEntity.ok("카드 정보 조회가 완료되었습니다.");
+            return Response.SUCCESS("카드 정보 조회가 완료되었습니다.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("카드 정보를 가져오는 중 오류가 발생했습니다.");
+            return Response.SUCCESS("카드 정보를 가져오는 중 오류가 발생했습니다.");
         }
     }
 

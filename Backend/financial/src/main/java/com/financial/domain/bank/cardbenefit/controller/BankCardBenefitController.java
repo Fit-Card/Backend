@@ -29,9 +29,9 @@ public class BankCardBenefitController {
     @Operation(summary = "카드사 카드 혜택 추가 API", description = "카드사의 카드 혜택을 추가합니다.")
     @SwaggerApiSuccess(description = "카드사 카드 혜택 추가를 성공했습니다.")
     @PostMapping("/add")
-    public ResponseEntity<String> addCardBenefit(@Valid @RequestBody List<BankCardBenefitAddRequest> bankCardBenefitAddRequests){
+    public Response<String> addCardBenefit(@Valid @RequestBody List<BankCardBenefitAddRequest> bankCardBenefitAddRequests){
         bankCardBenefitService.addCardBenefits(bankCardBenefitAddRequests);
-        return ResponseEntity.ok("카드사 카드 혜택 추가가 완료되었습니다.");
+        return Response.SUCCESS("카드사 카드 혜택 추가가 완료되었습니다.");
     }
 
     @GetMapping("")
