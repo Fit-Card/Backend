@@ -71,7 +71,6 @@ public class AuthServiceImpl implements AuthService {
         if (jwtTokenProvider.validateToken(refreshToken)) {
             String username = jwtTokenProvider.getUsername(jwtToken.getAccessToken());
             String memberId = jwtTokenProvider.getMemberId(jwtToken.getAccessToken());
-            log.info("username: {}, memberId: {}", username, memberId);
             String newAccessToken = jwtTokenProvider.createAccessToken(username, memberId);
             return RefreshTokenResponse.from(newAccessToken);
         } else {
