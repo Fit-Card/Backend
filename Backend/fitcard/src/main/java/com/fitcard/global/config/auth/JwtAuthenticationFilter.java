@@ -1,8 +1,10 @@
 package com.fitcard.global.config.auth;
 
-import com.fitcard.global.config.auth.exception.TokenExpiredException;
-import com.fitcard.global.config.auth.exception.TokenInvalidException;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -10,10 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
@@ -26,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        try {
+//        try {
             // Authorization 헤더에서 토큰 추출
             String token = resolveToken(request);
 
@@ -39,13 +37,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 다음 필터로 요청 전달
             filterChain.doFilter(request, response);
-        } catch (TokenInvalidException | TokenExpiredException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
-            return; // 필터 체인 중단
-        }
+//        } catch (TokenInvalidException | TokenExpiredException e) {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.setContentType("application/json");
+//            response.setCharacterEncoding("UTF-8");
+//            response.getWriter().write("{\"error\": \"" + e.getMessage() + "\"}");
+//            return; // 필터 체인 중단
+//        }
     }
 
     // Authorization 헤더에서 토큰 추출
