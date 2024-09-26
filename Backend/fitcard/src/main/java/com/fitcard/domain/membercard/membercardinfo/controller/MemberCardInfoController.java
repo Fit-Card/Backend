@@ -3,6 +3,7 @@ package com.fitcard.domain.membercard.membercardinfo.controller;
 import com.fitcard.domain.card.cardinfo.model.dto.response.CardInfoGetResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardCreateRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardDeleteRequest;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardGetAllRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
 import com.fitcard.domain.membercard.membercardinfo.service.MemberCardInfoService;
@@ -25,9 +26,10 @@ public class MemberCardInfoController {
 
     @Operation(summary = "사용자 카드 전체 조회 API", description = "사용자의 카드 전체 목록을 조회합니다. 기본 정렬은 사전순입니다.")
     @SwaggerApiSuccess(description = "사용자 카드 전체 조회를 성공했습니다.")
-    @PostMapping("/get/all")
-    public Response<MemberCardGetResponses> getMemberCardAll() {
-        return Response.SUCCESS(null, "사용자 카드 전체 조회를 성공했습니다.");
+    @PostMapping("/get/all/{memberId}")
+    public Response<MemberCardGetResponses> getMemberCardAll(@PathVariable("memberId") Integer memberId) {
+        MemberCardGetResponses response = memberCardInfoService.getAllMemberCards(new MemberCardGetAllRequest(memberId));
+        return Response.SUCCESS(response);
     }
 
     @Operation(summary = "사용자 카드 생성 API", description = "사용자의 카드를 생성합니다. 한 번에 여러개의 카드를 생성할 수 있습니다.")

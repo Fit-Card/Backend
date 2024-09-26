@@ -16,8 +16,11 @@ import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardGetAllRe
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardCreateRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardDeleteRequest;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardGetAllRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetRenewalResponse;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponse;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
 import com.fitcard.domain.membercard.membercardinfo.repository.MemberCardInfoRepository;
 import com.fitcard.global.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -96,6 +99,18 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         MemberCardInfo memberCardInfo = memberCardInfoRepository.findById(request.getMemberCardId())
                 .orElseThrow(() -> new MemberCardDeleteException(ErrorCode.NOT_FOUND_MEMBER_CARD, "해당하는 사용자 카드가 없습니다."));
         memberCardInfoRepository.delete(memberCardInfo);
+    }
+
+    @Override
+    public MemberCardGetResponses getAllMemberCards(MemberCardGetAllRequest request) {
+        Member member = memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new MemberCardCreateMemberCardsException(ErrorCode.MEMBER_NOT_FOUND, "해당하는 사용자가 없습니다."));
+
+        List<MemberCardGetResponse> memberCardGetResponses = memberCardInfoRepository.findByMember(member).stream()
+                .map(MemberCardGetResponse::from)
+                .toList();
+
+        return MemberCardGetResponses.from(memberCardGetResponses);
     }
 
     private MemberCardInfo getMemberCardInfoFromFinancial(long financialUserCardId, Member member) {
