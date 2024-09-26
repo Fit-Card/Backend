@@ -51,5 +51,4 @@ public class CardVersion extends BaseEntity {
                 version);
 
     }
-
 }

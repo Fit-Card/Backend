@@ -16,6 +16,7 @@ public enum ErrorCode {
     BAD_REQUEST(400, "C002", "잘못된 요청입니다."),
     INTERNAL_SERVER_ERROR(500, "C003", "서버 에러입니다"),
     UNAUTHORIZED(403, "C004", "권한이 없습니다."),
+    JSON_PARSING_ERROR(500, "C005", "JSON 파싱을 실패했습니다."),
 
     //auth
     UNAUTHORIZED_ACCESS(403, "A000", "접근 권한이 없습니다."),
@@ -32,7 +33,11 @@ public enum ErrorCode {
 
     //card
     CARD_COMPANY_NOT_FOUND(404, "CA001", "카드사를 찾을 수 없습니다."),
-    CARD_NOT_FOUND(404, "CA002", "카드를 찾을 수 없습니다.");
+    CARD_NOT_FOUND(404, "CA002", "카드를 찾을 수 없습니다."),
+
+    //user card
+    NOT_FOUND_FINANCIAL_USER_CARD_ID(404, "CA002", "financial user card id가 없습니다."),
+    NOT_FOUND_MEMBER_CARD(404, "CA002", "사용자 카드를 찾을 수 없습니다.");
 
 
     private final Integer status;

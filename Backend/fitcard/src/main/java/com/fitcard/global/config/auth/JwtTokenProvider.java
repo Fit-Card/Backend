@@ -5,6 +5,7 @@ import com.fitcard.global.config.auth.exception.TokenInvalidException;
 import com.fitcard.global.error.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenProvider {
 
@@ -31,8 +33,9 @@ public class JwtTokenProvider {
     }
 
     // Access Token 생성
-    public String createAccessToken(String username) {
+    public String createAccessToken(String username, String memberId) {
         Claims claims = Jwts.claims().setSubject(username);
+        claims.put("memberId", memberId);
         Date now = new Date();
         Date validity = new Date(now.getTime() + accessTokenExpirationTime);
 
@@ -45,8 +48,8 @@ public class JwtTokenProvider {
     }
 
     // Refresh Token 생성
-    public String createRefreshToken(String username) {
-        Claims claims = Jwts.claims().setSubject(username);
+    public String createRefreshToken() {
+        Claims claims = Jwts.claims();
         Date now = new Date();
         Date validity = new Date(now.getTime() + refreshTokenExpirationTime);
 
@@ -63,14 +66,33 @@ public class JwtTokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
+        }catch(SecurityException | MalformedJwtException e){
+            e.printStackTrace();
             throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.");
+        } catch (ExpiredJwtException e) {
+            e.printStackTrace();
+//            return false;
+            throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "만료된 토큰입니다.");
+        } catch (UnsupportedJwtException e){
+            e.printStackTrace();
+            throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "지원하지 않는 토큰입니다.");
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+            throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "형식이 맞지 않는 토큰입니다.");
         }
     }
 
     // 토큰에서 사용자 이름(Subject) 추출
     public String getUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    //토큰에서 사용자 id 추출
+    public String getMemberId(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody().get("memberId").toString();
     }
 
     // 클레임에서 Authentication 객체 생성
