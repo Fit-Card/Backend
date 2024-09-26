@@ -1,8 +1,11 @@
 package com.fitcard.domain.membercard.membercardinfo.repository;
 
+import com.fitcard.domain.member.model.Member;
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface MemberCardInfoRepository extends JpaRepository<MemberCardInfo, Integer> {
 
@@ -12,4 +15,6 @@ public interface MemberCardInfoRepository extends JpaRepository<MemberCardInfo, 
             "JOIN cv.cardInfo ci " +
             "WHERE ci.financialCardId = :cardCode")
     boolean existsByFinancialCardId(String cardCode);
+
+    List<MemberCardInfo> findByMember(Member member);
 }
