@@ -30,5 +30,4 @@ public class CardVersion extends BaseEntity {
 
     @NotNull
     private int version;
-
 }
