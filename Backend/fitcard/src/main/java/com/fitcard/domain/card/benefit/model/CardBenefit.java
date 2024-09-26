@@ -21,8 +21,7 @@ public class CardBenefit extends BaseEntity {
     private Integer id;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private BenefitType benefitType;
+    private String benefitType;
 
     @NotNull
     private String amountLimit;
@@ -51,7 +50,7 @@ public class CardBenefit extends BaseEntity {
 
     private CardBenefit(CardPerformance cardPerformance, BenefitType benefitType, String amountLimit, String countLimit, int minPayment, double benefitValue, int benefitPer, int merchantId, String exceptionTypes) {
         this.cardPerformance = cardPerformance;
-        this.benefitType = benefitType;
+        this.benefitType = benefitType.name();
         this.amountLimit = amountLimit;
         this.countLimit = countLimit;
         this.minPayment = minPayment;

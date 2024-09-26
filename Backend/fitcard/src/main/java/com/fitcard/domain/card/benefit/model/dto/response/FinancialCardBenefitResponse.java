@@ -18,13 +18,13 @@ import lombok.ToString;
 @ToString
 public class FinancialCardBenefitResponse {
 
+    @NotNull
     private Long cardBenefitId;
 
     @NotEmpty
     private Long cardPerformanceId;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
     private BenefitType benefitType;
 
     @NotNull

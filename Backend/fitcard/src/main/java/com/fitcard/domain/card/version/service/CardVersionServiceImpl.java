@@ -31,7 +31,8 @@ public class CardVersionServiceImpl implements CardVersionService {
     private final String FINANCIAL_GET_CARDS;
     private final RestClient restClient;
 
-    public CardVersionServiceImpl(CardInfoRepository cardInfoRepository, CardVersionRepository cardVersionRepository, CardCompanyRepository cardCompanyRepository, @Value("${financial.card.card-info.get-all}") String FINANCIAL_GET_CARDS) {
+    public CardVersionServiceImpl(CardInfoRepository cardInfoRepository, CardVersionRepository cardVersionRepository,
+                                  CardCompanyRepository cardCompanyRepository, @Value("${financial.card.card-info.get-all}") String FINANCIAL_GET_CARDS) {
         this.cardInfoRepository = cardInfoRepository;
         this.cardCompanyRepository = cardCompanyRepository;
         this.cardVersionRepository = cardVersionRepository;
@@ -53,7 +54,7 @@ public class CardVersionServiceImpl implements CardVersionService {
         try {
             JsonNode jsonNode = objectMapper.readTree(response);
             JsonNode dataNode = jsonNode.get("data");
-            log.info("data size: {}", dataNode.get("size"));
+//            log.info("data size: {}", dataNode.get("size"));
             financialCardInfoResponses = objectMapper.treeToValue(dataNode, FinancialCardInfoResponses.class);
         } catch (Exception e) {
             log.error("json 파싱 실패: {}", e.getMessage());
@@ -62,14 +63,14 @@ public class CardVersionServiceImpl implements CardVersionService {
 
         List<CardVersion> cardVersions = financialCardInfoResponses.getBankCardGetResponses().stream()
                 .filter(financialCardInfoResponse -> {
-                    log.info("card company: {}", financialCardInfoResponse.getCardCompanyId());
+//                    log.info("card company: {}", financialCardInfoResponse.getCardCompanyId());
 
                     // 카드 정보가 존재하는지 확인
                     return cardInfoRepository.existsCardInfoByFinancialCardId(financialCardInfoResponse.getCardId())
                             && cardCompanyRepository.existsByFinancialCardId(financialCardInfoResponse.getCardCompanyId());
                 })
                 .map(financialCardInfoResponse -> {
-                    log.info("여기!");
+//                    log.info("여기!");
                     // 카드 정보를 가져오기
                     CardInfo cardInfo = cardInfoRepository.findByFinancialCardId(financialCardInfoResponse.getCardId()).get();
 

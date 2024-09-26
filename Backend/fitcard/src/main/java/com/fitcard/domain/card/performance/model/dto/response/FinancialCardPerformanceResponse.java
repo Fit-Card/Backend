@@ -16,6 +16,8 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @ToString
 public class FinancialCardPerformanceResponse {
+
+    @NotNull
     private Long cardPerformanceId;
 
     @NotEmpty
