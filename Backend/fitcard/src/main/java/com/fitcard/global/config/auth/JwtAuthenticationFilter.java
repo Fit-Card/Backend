@@ -1,5 +1,7 @@
 package com.fitcard.global.config.auth;
 
+import com.fitcard.global.config.auth.exception.TokenInvalidException;
+import com.fitcard.global.error.ErrorCode;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,11 +31,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = resolveToken(request);
 
             // 토큰 검증 및 인증 설정
-            if (token != null && jwtTokenProvider.validateToken(token)) {
-                Claims claims = jwtTokenProvider.getClaims(token);
-                Authentication authentication = jwtTokenProvider.getAuthentication(claims);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+        if(token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if(!jwtTokenProvider.validateToken(token))
+            throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "Access token이 만료됐습니다.");
+//            if (token != null && jwtTokenProvider.validateToken(token)) {
+
+        Claims claims = jwtTokenProvider.getClaims(token);
+        Authentication authentication = jwtTokenProvider.getAuthentication(claims);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+//            }
 
             // 다음 필터로 요청 전달
             filterChain.doFilter(request, response);
