@@ -4,6 +4,7 @@ import com.fitcard.domain.member.model.dto.request.MemberLoginRequest;
 import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
 import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
 import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
+import com.fitcard.global.config.auth.JwtToken;
 
 public interface AuthService {
     void register(MemberRegisterRequest request);  // 회원가입 메서드
@@ -12,5 +13,5 @@ public interface AuthService {
 
     MemberLoginResponse login(MemberLoginRequest request);  // 로그인 메서드
 
-    RefreshTokenResponse refresh(String refreshToken);
+    RefreshTokenResponse refresh(JwtToken jwtToken);
 }

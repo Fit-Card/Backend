@@ -3,10 +3,12 @@ package com.financial.domain.bank.usercard.service;
 import com.financial.domain.bank.card.model.BankCard;
 import com.financial.domain.bank.card.repository.BankCardRepository;
 import com.financial.domain.bank.usercard.exception.BankUserCardGetAllUserCardsException;
+import com.financial.domain.bank.usercard.exception.BankUserCardGetUserCardException;
 import com.financial.domain.bank.usercard.exception.DeleteUserCardException;
 import com.financial.domain.bank.usercard.exception.SaveUserCardException;
 import com.financial.domain.bank.usercard.model.BankUserCard;
 import com.financial.domain.bank.usercard.model.dto.request.BankUserCardDeleteRequest;
+import com.financial.domain.bank.usercard.model.dto.request.BankUserCardGetAllRequest;
 import com.financial.domain.bank.usercard.model.dto.request.BankUserCardGetRequest;
 import com.financial.domain.bank.usercard.model.dto.request.BankUserCardSaveRequest;
 import com.financial.domain.bank.usercard.model.dto.response.BankUserCardGetResponse;
@@ -52,12 +54,20 @@ public class BankUserCardServiceImpl implements BankUserCardService {
     }
 
     @Override
-    public BankUserCardGetResponses getAllUserCards(BankUserCardGetRequest request) {
+    public BankUserCardGetResponses getAllUserCards(BankUserCardGetAllRequest request) {
         FinUser finUser = finUserRepository.findById(request.getUserId())
                 .orElseThrow(() -> new BankUserCardGetAllUserCardsException(ErrorCode.BAD_REQUEST, "사용자가 존재하지 않습니다."));
         List<BankUserCardGetResponse> bankUserCardGetResponses = bankUserCardRepository.findByFinUser(finUser).stream()
                 .map(BankUserCardGetResponse::from)
                 .toList();
         return BankUserCardGetResponses.from(bankUserCardGetResponses);
+    }
+
+    @Override
+    public BankUserCardGetResponse getUserCard(BankUserCardGetRequest request) {
+        BankUserCard bankUserCard = bankUserCardRepository.findById(request.getBankUserCardId())
+                .orElseThrow(() -> new BankUserCardGetUserCardException(ErrorCode.BAD_REQUEST, "사용자 카드가 존재하지 않습니다."));
+
+        return BankUserCardGetResponse.from(bankUserCard);
     }
 }
