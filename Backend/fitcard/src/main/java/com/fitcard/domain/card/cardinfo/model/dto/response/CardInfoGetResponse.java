@@ -12,7 +12,7 @@ import lombok.Getter;
 public class CardInfoGetResponse {
 
     @Schema(description = "카드 id", example = "2")
-    private String cardId;
+    private int cardId;
 
     @Schema(description = "카드 이름", example = "신한")
     private String cardName;
@@ -21,7 +21,7 @@ public class CardInfoGetResponse {
     private String cardImageUrl;
 
     public static CardInfoGetResponse of(CardInfo cardInfo) {
-        return new CardInfoGetResponse(String.valueOf(cardInfo.getId()), cardInfo.getName(), cardInfo.getCardImage());
+        return new CardInfoGetResponse(cardInfo.getId(), cardInfo.getName(), cardInfo.getCardImage());
     }
 
 }

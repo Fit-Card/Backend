@@ -14,7 +14,7 @@ import lombok.ToString;
 public class CardCompanyGetResponse {
 
     @Schema(description = "카드사 id", example = "2")
-    private String companyId;
+    private int companyId;
 
     @Schema(description = "카드사 이름", example = "신한")
     private String companyName;
@@ -23,6 +23,6 @@ public class CardCompanyGetResponse {
     private String companyImageUrl;
 
     public static CardCompanyGetResponse of(CardCompany cardCompany) {
-        return new CardCompanyGetResponse(String.valueOf(cardCompany.getId()), cardCompany.getName(), cardCompany.getImageUrl());
+        return new CardCompanyGetResponse(cardCompany.getId(), cardCompany.getName(), cardCompany.getImageUrl());
     }
 }
