@@ -31,8 +31,9 @@ public class JwtTokenProvider {
     }
 
     // Access Token 생성
-    public String createAccessToken(String username) {
+    public String createAccessToken(String username, String memberId) {
         Claims claims = Jwts.claims().setSubject(username);
+        claims.put("memberId", memberId);
         Date now = new Date();
         Date validity = new Date(now.getTime() + accessTokenExpirationTime);
 
@@ -70,6 +71,11 @@ public class JwtTokenProvider {
 
     // 토큰에서 사용자 이름(Subject) 추출
     public String getUsername(String token) {
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+    //토큰에서 사용자 id 추출
+    public String getMemberId(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
     }
 

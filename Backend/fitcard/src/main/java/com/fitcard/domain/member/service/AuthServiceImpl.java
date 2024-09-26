@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectPasswordException(ErrorCode.INCORRECT_PASSWORD, "아이디와 비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId());
+        String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId(), String.valueOf(member.getMemberId()));
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getLoginId());
 
         // 클라이언트에게 Access Token과 Refresh Token 모두 반환
@@ -69,7 +69,8 @@ public class AuthServiceImpl implements AuthService {
 
         if (jwtTokenProvider.validateToken(refreshToken)) {
             String username = jwtTokenProvider.getUsername(refreshToken);
-            String newAccessToken = jwtTokenProvider.createAccessToken(username);
+            String memberId = jwtTokenProvider.getMemberId(refreshToken);
+            String newAccessToken = jwtTokenProvider.createAccessToken(username, memberId);
             return RefreshTokenResponse.from(newAccessToken);
         } else {
             throw new InvalidRefreshTokenException(ErrorCode.INVALID_REFRESH_TOKEN, "유효하지 않은 RefreshToken 토큰입니다.");
