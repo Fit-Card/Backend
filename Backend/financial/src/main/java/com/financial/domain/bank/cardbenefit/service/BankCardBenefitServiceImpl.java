@@ -3,6 +3,8 @@ package com.financial.domain.bank.cardbenefit.service;
 import com.financial.domain.bank.cardbenefit.model.BankCardBenefit;
 import com.financial.domain.bank.cardbenefit.model.BenefitType;
 import com.financial.domain.bank.cardbenefit.model.dto.request.BankCardBenefitAddRequest;
+import com.financial.domain.bank.cardbenefit.model.dto.response.BankCardBenefitGetResponse;
+import com.financial.domain.bank.cardbenefit.model.dto.response.BankCardBenefitGetResponses;
 import com.financial.domain.bank.cardbenefit.repository.BankCardBenefitRepository;
 import com.financial.domain.bank.cardperformance.model.BankCardPerformance;
 import com.financial.domain.bank.cardperformance.repository.BankCardPerformanceRepository;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -46,6 +49,15 @@ public class BankCardBenefitServiceImpl implements BankCardBenefitService {
 
             bankCardBenefitRepository.save(bankCardBenefit);  // 각 혜택을 저장
         }
+    }
+
+    @Override
+    public BankCardBenefitGetResponses getAllBenefits() {
+        List<BankCardBenefitGetResponse> bankCardBenefitGetResponses = bankCardBenefitRepository.findAll().stream()
+                .map(BankCardBenefitGetResponse::of)
+                .toList();
+
+        return BankCardBenefitGetResponses.from(bankCardBenefitGetResponses);
     }
 
 }

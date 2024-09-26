@@ -1,8 +1,10 @@
 package com.financial.domain.bank.cardbenefit.controller;
 
 import com.financial.domain.bank.cardbenefit.model.dto.request.BankCardBenefitAddRequest;
+import com.financial.domain.bank.cardbenefit.model.dto.response.BankCardBenefitGetResponses;
 import com.financial.domain.bank.cardbenefit.service.BankCardBenefitService;
 import com.financial.global.config.swagger.SwaggerApiSuccess;
+import com.financial.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,10 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,4 +34,9 @@ public class BankCardBenefitController {
         return ResponseEntity.ok("카드사 카드 혜택 추가가 완료되었습니다.");
     }
 
+    @GetMapping("")
+    public Response<BankCardBenefitGetResponses> getAllBenefits() {
+        BankCardBenefitGetResponses response = bankCardBenefitService.getAllBenefits();
+        return Response.SUCCESS(response);
+    }
 }
