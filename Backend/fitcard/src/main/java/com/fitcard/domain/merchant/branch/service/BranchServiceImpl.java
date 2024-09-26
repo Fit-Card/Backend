@@ -1,6 +1,7 @@
 package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.Branch;
+import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetAllResponses;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
@@ -10,6 +11,9 @@ import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepositor
 import com.fitcard.infra.kakao.model.LocalInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,13 +112,30 @@ public class BranchServiceImpl implements BranchService {
 
         return result;
     }
-
     @Override
     public List<BranchGetResponse> getBranchesByMerchantId(final Long merchantId){
+
         List<Branch> branches = branchRepository.findBranchesByMerchantBranchId(merchantId);
+        return branches.stream()
+                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), branch.getX(), branch.getY(), branch.getKakaoUrl()))
+                .toList();
+    }
+
+    @Override
+    public List<BranchGetResponse> getBranchesByMerchantKeyword(BranchSearchRequest request) {
+        List<Branch> branches = branchRepository.findBranchesByMerchantNameKeyword(request.getMerchantNameKeyword());
 
         return branches.stream()
-                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), Double.parseDouble(branch.getX()), Double.parseDouble(branch.getY()), branch.getKakaoUrl(), "예외"))
+                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), branch.getX(), branch.getY(), branch.getKakaoUrl()))
+                .toList();
+    }
+
+    @Override
+    public List<BranchGetResponse> getBranchesByMerchantKeywordPagination(BranchSearchRequest request, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo, 10);
+        Page<Branch> branches = branchRepository.findBranchesByMerchantNameAndLocation(request.getMerchantNameKeyword(), request.getLatitude(), request.getLongitude(), pageable);
+        return branches.stream()
+                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), branch.getX(), branch.getY(), branch.getKakaoUrl()))
                 .toList();
     }
 }

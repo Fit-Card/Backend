@@ -1,5 +1,6 @@
 package com.fitcard.domain.merchant.branch.controller;
 
+import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetAllResponses;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponses;
@@ -9,9 +10,7 @@ import com.fitcard.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,8 +29,14 @@ public class BranchController {
     }
 
     @PostMapping("/search")
-    public Response<BranchGetResponses> getBranchesByMerchantName(final Long merchantId){
-        List<BranchGetResponse> branches = branchService.getBranchesByMerchantId(merchantId);
+    public Response<BranchGetResponses> getBranchesByMerchantName(@RequestBody final BranchSearchRequest request){
+        List<BranchGetResponse> branches = branchService.getBranchesByMerchantKeyword(request);
+        return Response.SUCCESS(BranchGetResponses.from(branches), "예아");
+    }
+
+    @PostMapping("/search-page")
+    public Response<BranchGetResponses> getBranchesByMerchantName(@RequestBody final BranchSearchRequest request, @RequestParam int pageNo){
+        List<BranchGetResponse> branches = branchService.getBranchesByMerchantKeywordPagination(request, pageNo);
         return Response.SUCCESS(BranchGetResponses.from(branches), "예아");
     }
 }

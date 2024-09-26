@@ -7,18 +7,14 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Schema(description = "분점 목록 DTO")
+@Schema(description = "분점 목록")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BranchGetResponses {
 
-    @Schema(description = "분점 목록")
     private List<BranchGetResponse> branchResponses;
 
-    @Schema(description = "목록 개수", example = "1")
-    private int size;
-
     public static BranchGetResponses from(List<BranchGetResponse> branchResponses) {
-        return new BranchGetResponses(branchResponses, branchResponses.size());
+        return new BranchGetResponses(branchResponses);
     }
 }

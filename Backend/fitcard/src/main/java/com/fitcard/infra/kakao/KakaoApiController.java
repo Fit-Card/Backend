@@ -25,7 +25,7 @@ public class KakaoApiController {
     @PostMapping("/post/local")
     public Response<?> getGridLocal(@RequestBody KakaoLocalWithCategoryFromGridInfoRequest request) {
         List<LocalInfo> localInfos = kakaoLocalService.getLocalWithCategoryInGridUsingRect(request);
-        int savedBranchesNum = branchService.saveBranches(localInfos);
+        int savedBranchesNum = branchService.createBranches(localInfos);
 
         return Response.SUCCESS("size: "+savedBranchesNum);
     }

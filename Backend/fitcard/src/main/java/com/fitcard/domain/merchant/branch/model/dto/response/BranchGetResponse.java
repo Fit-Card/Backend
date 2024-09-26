@@ -24,10 +24,7 @@ public class BranchGetResponse {
     @Schema(description = "카카오맵 링크", example = "https://map.kakao.com/link/map/37.5665,126.9780")
     private String kakaoUrl;
 
-    @Schema(description = "예외 타입", example = "공항")
-    private String exceptionType;
-
-    public static BranchGetResponse of(final String branchName, final String branchAddress, final Double latitude, final Double longitude, String kakaoUrl, String exceptionType){
-        return new BranchGetResponse(branchName, branchAddress, latitude, longitude, kakaoUrl, exceptionType);
+    public static BranchGetResponse of(final String branchName, final String branchAddress, final Double latitude, final Double longitude, String kakaoUrl){
+        return new BranchGetResponse(branchName, branchAddress, latitude, longitude, kakaoUrl);
     }
 }
