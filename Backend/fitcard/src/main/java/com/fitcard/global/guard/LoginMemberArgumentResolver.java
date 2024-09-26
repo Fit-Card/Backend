@@ -24,9 +24,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public Integer resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        log.info("header: {}",webRequest.getHeader("Authorization"));
         String accessToken = jwtTokenProvider.resolveToken(webRequest.getHeader("Authorization"));
-        log.info("access token: {}", accessToken);
         String memberId = jwtTokenProvider.getMemberId(accessToken);
         return Integer.valueOf(memberId);
     }

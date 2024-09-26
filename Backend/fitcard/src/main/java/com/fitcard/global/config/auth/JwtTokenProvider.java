@@ -89,9 +89,10 @@ public class JwtTokenProvider {
 
     //토큰에서 사용자 id 추출
     public String getMemberId(String token) {
-        log.info("memberId: {}", getClaims(token).get("memberId"));
-        return getClaims(token).get("memberId").toString();
-//        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().get("memberId").toString();
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody().get("memberId").toString();
     }
 
     // 클레임에서 Authentication 객체 생성
