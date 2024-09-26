@@ -66,8 +66,19 @@ public class JwtTokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
+        }catch(SecurityException | MalformedJwtException e){
+            e.printStackTrace();
             throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "유효하지 않은 토큰입니다.");
+        } catch (ExpiredJwtException e) {
+            e.printStackTrace();
+//            return false;
+            throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "만료된 토큰입니다.");
+        } catch (UnsupportedJwtException e){
+            e.printStackTrace();
+            throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "지원하지 않는 토큰입니다.");
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+            throw new TokenInvalidException(ErrorCode.INVALID_TOKEN, "형식이 맞지 않는 토큰입니다.");
         }
     }
 
