@@ -83,8 +83,8 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
     }
 
     @Override
-    public void createMemberCards(MemberCardCreateRequest request) {
-        Member member = memberRepository.findById(request.getMemberId())
+    public void createMemberCards(MemberCardCreateRequest request, Integer memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberCardCreateMemberCardsException(ErrorCode.MEMBER_NOT_FOUND, "해당하는 사용자가 없습니다."));
         List<MemberCardInfo> memberCardInfos = new ArrayList<>();
         request.getFinancialUserCardIds().forEach(financialUserCardId -> {
@@ -161,7 +161,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             }
         } catch (Exception e) {
             log.error("json 파싱 실패!! {}", e.getMessage());
-            log.error("{}", e.getStackTrace());
+            e.printStackTrace();
             throw new MemberCardGetAllRenewalException(ErrorCode.JSON_PARSING_ERROR, "JSON 변환에 실패했습니다.");
         }
         return MemberCardGetAllRenewalResponses.from(memberCardGetRenewalResponses);
@@ -199,7 +199,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             return MemberCardInfo.of(member, cardVersion, globalBrand, expiredDate, cardMemberType, financialUserCardId);
         } catch (Exception e){
             log.error("json 파싱 실패!! {}", e.getMessage());
-            log.error("{}", e.getStackTrace());
+            e.printStackTrace();
             throw new MemberCardCreateMemberCardsException(ErrorCode.JSON_PARSING_ERROR, "JSON 변환에 실패했습니다.");
         }
     }

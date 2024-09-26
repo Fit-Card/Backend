@@ -25,7 +25,7 @@ public class BankCardBenefit extends BaseEntity {
     private BenefitType benefitType;
 
     @NotNull
-    private int amountLimit;
+    private String amountLimit;
 
     @NotEmpty
     private String countLimit;
@@ -52,7 +52,7 @@ public class BankCardBenefit extends BaseEntity {
     @JoinColumn(name = "card_performance_id", nullable = false)
     private BankCardPerformance bankCardPerformance;
 
-    public BankCardBenefit(BankCardPerformance bankCardPerformance, BenefitType benefitType, int amountLimit,
+    public BankCardBenefit(BankCardPerformance bankCardPerformance, BenefitType benefitType, String amountLimit,
                            String countLimit, int minPayment, double benefitValue, int benefitPer,
                            String merchantCategory, int merchantId, String exceptionTypeList) {
         this.bankCardPerformance = bankCardPerformance;

@@ -10,7 +10,7 @@ public interface MemberCardInfoService {
 
     MemberCardGetAllRenewalResponses getAllRenewalMemberCardsFromFinancial(int memberId);
 
-    void createMemberCards(MemberCardCreateRequest request);
+    void createMemberCards(MemberCardCreateRequest request, Integer memberId);
 
     void deleteMemberCard(MemberCardDeleteRequest request);
 

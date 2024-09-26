@@ -19,7 +19,7 @@ public class BankUserCard extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "bank_card_id", nullable = false)

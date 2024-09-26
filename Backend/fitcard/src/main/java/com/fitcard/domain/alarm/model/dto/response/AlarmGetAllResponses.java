@@ -7,12 +7,12 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Schema(description = "알람 목록 DTO")
+@Schema(name = "AlarmGetAllResponses", description = "알람 목록 DTO")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AlarmGetAllResponses {
 
-    @Schema(description = "알람 목록")
+    @Schema(name = "alarmResponses", description = "알람 목록")
     private List<AlarmGetAllResponse> alarmResponses;
 
     @Schema(description = "목록 개수", example = "1")

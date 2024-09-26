@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
@@ -17,14 +18,15 @@ import org.springframework.context.annotation.Configuration;
                 title = "FitCard API",
                 description = "FitCard API 목록입니다.",
                 version = "v1.0"
-        )
+        ),
+        security = {@SecurityRequirement(name = "Authorization")}
 )
 @SecurityScheme(
         name = "Authorization",
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
-        in = SecuritySchemeIn.HEADER,
         scheme = "Bearer",
+        in = SecuritySchemeIn.HEADER,
         description = "access token"
 )
 public class SwaggerConfig {
