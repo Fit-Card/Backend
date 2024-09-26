@@ -17,7 +17,7 @@ import lombok.ToString;
 public class BankUserCardGetResponse {
 
     @NotNull
-    private Long bankUserCardId;
+    private int bankUserCardId;
 
     @NotBlank
     private String bankCardId;

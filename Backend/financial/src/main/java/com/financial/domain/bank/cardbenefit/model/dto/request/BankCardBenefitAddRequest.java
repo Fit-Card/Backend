@@ -21,9 +21,9 @@ public class BankCardBenefitAddRequest {
     @NotNull
     private String benefitType;
 
-    @Schema(description = "카드 할인 금액 한도", example = "10000")
+    @Schema(description = "카드 할인 금액 한도", example = "월 10000원")
     @NotNull
-    private int amountLimit;
+    private String amountLimit;
 
     @Schema(description = "카드 할인 횟수 한도", example = "일 1회")
     @NotNull

@@ -1,5 +1,6 @@
 package com.fitcard.domain.card.benefit.model;
 
+import com.fitcard.domain.card.benefit.model.dto.response.FinancialCardBenefitResponse;
 import com.fitcard.domain.card.performance.model.CardPerformance;
 import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -20,11 +21,10 @@ public class CardBenefit extends BaseEntity {
     private Integer id;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private BenefitType benefitType;
+    private String benefitType;
 
     @NotNull
-    private int amountLimit;
+    private String amountLimit;
 
     @NotEmpty
     private String countLimit;
@@ -48,4 +48,27 @@ public class CardBenefit extends BaseEntity {
     @JoinColumn(name = "card_performance_id", nullable = false)
     private CardPerformance cardPerformance;
 
+    private CardBenefit(CardPerformance cardPerformance, BenefitType benefitType, String amountLimit, String countLimit, int minPayment, double benefitValue, int benefitPer, int merchantId, String exceptionTypes) {
+        this.cardPerformance = cardPerformance;
+        this.benefitType = benefitType.name();
+        this.amountLimit = amountLimit;
+        this.countLimit = countLimit;
+        this.minPayment = minPayment;
+        this.benefitValue = benefitValue;
+        this.benefitPer = benefitPer;
+        this.merchantId = merchantId;
+        this.exceptionTypes = exceptionTypes;
+    }
+
+    public static CardBenefit of(CardPerformance cardPerformance, FinancialCardBenefitResponse financialCardBenefitResponse) {
+        return new CardBenefit(cardPerformance,
+                financialCardBenefitResponse.getBenefitType(),
+                financialCardBenefitResponse.getAmountLimit(),
+                financialCardBenefitResponse.getCountLimit(),
+                financialCardBenefitResponse.getMinPayment(),
+                financialCardBenefitResponse.getBenefitValue(),
+                financialCardBenefitResponse.getBenefitPer(),
+                financialCardBenefitResponse.getMerchantId(),
+                financialCardBenefitResponse.getExceptionTypeList());
+    }
 }
