@@ -7,12 +7,13 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Schema(description = "카드사 전체 조회 목록 DTO")
+@Schema(name = "CardCompanyGetAllResponses", description = "카드사 전체 조회 목록 DTO")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class CardCompanyGetAllResponses {
 
-    private List<CardCompanyGetResponse> cardCompanies;
+    @Schema(name = "cardCompanyGetResponses", description = "카드사 목록")
+    private List<CardCompanyGetResponse> cardCompanyGetResponses;
 
     @Schema(description = "목록 개수", example = "1")
     private int size;

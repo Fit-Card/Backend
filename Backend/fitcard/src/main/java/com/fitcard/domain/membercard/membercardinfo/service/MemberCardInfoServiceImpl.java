@@ -161,7 +161,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             }
         } catch (Exception e) {
             log.error("json 파싱 실패!! {}", e.getMessage());
-            log.error("{}", e.getStackTrace());
+            e.printStackTrace();
             throw new MemberCardGetAllRenewalException(ErrorCode.JSON_PARSING_ERROR, "JSON 변환에 실패했습니다.");
         }
         return MemberCardGetAllRenewalResponses.from(memberCardGetRenewalResponses);
@@ -199,7 +199,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             return MemberCardInfo.of(member, cardVersion, globalBrand, expiredDate, cardMemberType, financialUserCardId);
         } catch (Exception e){
             log.error("json 파싱 실패!! {}", e.getMessage());
-            log.error("{}", e.getStackTrace());
+            e.printStackTrace();
             throw new MemberCardCreateMemberCardsException(ErrorCode.JSON_PARSING_ERROR, "JSON 변환에 실패했습니다.");
         }
     }
