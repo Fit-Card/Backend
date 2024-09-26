@@ -83,8 +83,8 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
     }
 
     @Override
-    public void createMemberCards(MemberCardCreateRequest request) {
-        Member member = memberRepository.findById(request.getMemberId())
+    public void createMemberCards(MemberCardCreateRequest request, Integer memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberCardCreateMemberCardsException(ErrorCode.MEMBER_NOT_FOUND, "해당하는 사용자가 없습니다."));
         List<MemberCardInfo> memberCardInfos = new ArrayList<>();
         request.getFinancialUserCardIds().forEach(financialUserCardId -> {

@@ -6,6 +6,7 @@ import com.fitcard.domain.member.model.dto.response.MemberCheckIdResponse;
 import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
 import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
 import com.fitcard.domain.member.service.AuthService;
+import com.fitcard.global.config.auth.JwtToken;
 import com.fitcard.global.config.swagger.SwaggerApiError;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
 import com.fitcard.global.error.ErrorCode;
@@ -56,8 +57,8 @@ public class AuthController {
     @SwaggerApiSuccess(description = "JWT 토큰 재발급을 성공했습니다.")
     @SwaggerApiError({ErrorCode.INVALID_REFRESH_TOKEN})
     @PostMapping("/refresh")
-    public Response<RefreshTokenResponse> refreshAccessToken(@RequestHeader("Authorization") String refreshToken) {
-        RefreshTokenResponse response = authService.refresh(refreshToken);
+    public Response<RefreshTokenResponse> refreshAccessToken(@RequestBody JwtToken jwtToken) {
+        RefreshTokenResponse response = authService.refresh(jwtToken);
         return Response.SUCCESS(response, "JWT 토큰 재발급을 성공했습니다.");
     }
 
