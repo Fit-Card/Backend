@@ -44,8 +44,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean checkDuplicatedId(String userId) {
-        return memberRepository.existsByLoginId(userId);
+    public boolean checkDuplicatedId(String loginId) {
+        return memberRepository.existsByLoginId(loginId);
     }
 
     @Override

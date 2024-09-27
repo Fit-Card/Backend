@@ -9,7 +9,7 @@ import com.fitcard.global.config.auth.JwtToken;
 public interface AuthService {
     void register(MemberRegisterRequest request);  // 회원가입 메서드
 
-    boolean checkDuplicatedId(String userId);  // 아이디 중복 확인 메서드
+    boolean checkDuplicatedId(String loginId);  // 아이디 중복 확인 메서드
 
     MemberLoginResponse login(MemberLoginRequest request);  // 로그인 메서드
 
