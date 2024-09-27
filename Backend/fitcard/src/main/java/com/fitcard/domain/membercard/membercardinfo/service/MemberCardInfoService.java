@@ -4,6 +4,7 @@ import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCard
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardDeleteRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardGetAllRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetByAgeSpecificResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
 
 public interface MemberCardInfoService {
@@ -15,5 +16,7 @@ public interface MemberCardInfoService {
     void deleteMemberCard(MemberCardDeleteRequest request);
 
     MemberCardGetResponses getAllMemberCards(MemberCardGetAllRequest request);
+
+    MemberCardGetByAgeSpecificResponses getMemberCardsByAgeSpecific(Integer memberId, int size);
 
 }
