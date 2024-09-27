@@ -126,15 +126,6 @@ public class BranchServiceImpl implements BranchService {
         return BranchGetResponse.from(branch);
     }
 
-//    @Override
-//    public List<BranchGetResponse> getBranchesByMerchantId(final Long merchantId){
-//
-//        List<Branch> branches = branchRepository.findBranchesByMerchantBranchId(merchantId);
-//        return branches.stream()
-//                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), branch.getX(), branch.getY(), branch.getKakaoUrl()))
-//                .toList();
-//    }
-
     @Override
     public List<BranchGetResponse> getBranchesByMerchantKeyword(BranchSearchRequest request) {
         List<Branch> branches = branchRepository.findBranchesByMerchantNameKeyword(request.getMerchantNameKeyword());

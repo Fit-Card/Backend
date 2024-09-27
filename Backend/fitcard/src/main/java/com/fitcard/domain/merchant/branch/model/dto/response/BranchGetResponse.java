@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BranchGetResponse {
     @Schema(description = "분점 Id", example = "1")
-    private Long merChantBranchId;
+    private Long merchantBranchId;
 
     @Schema(description = "분점 이름", example = "신한카드 본점")
     private String branchName;
