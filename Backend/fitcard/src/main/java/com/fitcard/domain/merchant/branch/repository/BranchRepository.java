@@ -12,10 +12,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BranchRepository extends JpaRepository<Branch, Integer> {
+public interface BranchRepository extends JpaRepository<Branch, Long> {
     boolean existsByKakaoLocalId(String kakaoLocalId);
-    @Query("SELECT b FROM Branch b WHERE b.merchantInfo.merchantId = :merchant_Id")
-    List<Branch> findBranchesByMerchantBranchId(@Param("merchant_Id") final Long merchantId);
 
     @Query("SELECT b FROM Branch b JOIN b.merchantInfo a WHERE a.name LIKE CONCAT('%', :keyword, '%')")
     List<Branch> findBranchesByMerchantNameKeyword(@Param("keyword") final String keyword);
@@ -25,4 +23,5 @@ public interface BranchRepository extends JpaRepository<Branch, Integer> {
             "ORDER BY (6371 * acos(cos(radians(:lat)) * cos(radians(b.y)) " +
             "* cos(radians(b.x) - radians(:lon)) + sin(radians(:lat)) * sin(radians(b.y)))) ASC")
     Page<Branch> findBranchesByMerchantNameAndLocation(@Param("keyword") final String keyword, @Param("lat") Double latitude, @Param("lon") Double longitude, Pageable pageable);
+
 }

@@ -2,7 +2,6 @@ package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.Branch;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetAllResponses;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantCategory;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -113,29 +113,43 @@ public class BranchServiceImpl implements BranchService {
         return result;
     }
     @Override
-    public List<BranchGetResponse> getBranchesByMerchantId(final Long merchantId){
-
-        List<Branch> branches = branchRepository.findBranchesByMerchantBranchId(merchantId);
+    public List<BranchGetResponse> getBranchesAll() {
+        List<Branch> branches = branchRepository.findAll();
         return branches.stream()
-                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), branch.getX(), branch.getY(), branch.getKakaoUrl()))
+                .map(BranchGetResponse::from)
                 .toList();
     }
+
+    @Override
+    public BranchGetResponse getBranchById(final Long merchantBranchId) {
+        Branch branch = branchRepository.findById(merchantBranchId).orElseThrow(() -> new NotFoundException("branch not found"));
+        return BranchGetResponse.from(branch);
+    }
+
+//    @Override
+//    public List<BranchGetResponse> getBranchesByMerchantId(final Long merchantId){
+//
+//        List<Branch> branches = branchRepository.findBranchesByMerchantBranchId(merchantId);
+//        return branches.stream()
+//                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), branch.getX(), branch.getY(), branch.getKakaoUrl()))
+//                .toList();
+//    }
 
     @Override
     public List<BranchGetResponse> getBranchesByMerchantKeyword(BranchSearchRequest request) {
         List<Branch> branches = branchRepository.findBranchesByMerchantNameKeyword(request.getMerchantNameKeyword());
 
         return branches.stream()
-                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), branch.getX(), branch.getY(), branch.getKakaoUrl()))
+                .map(BranchGetResponse::from)
                 .toList();
     }
 
     @Override
     public List<BranchGetResponse> getBranchesByMerchantKeywordPagination(BranchSearchRequest request, int pageNo) {
-        Pageable pageable = PageRequest.of(pageNo, 10);
+        Pageable pageable = PageRequest.of(pageNo - 1, 10);
         Page<Branch> branches = branchRepository.findBranchesByMerchantNameAndLocation(request.getMerchantNameKeyword(), request.getLatitude(), request.getLongitude(), pageable);
         return branches.stream()
-                .map(branch -> BranchGetResponse.of(branch.getBranchName(), branch.getAddress(), branch.getX(), branch.getY(), branch.getKakaoUrl()))
+                .map(BranchGetResponse::from)
                 .toList();
     }
 }
