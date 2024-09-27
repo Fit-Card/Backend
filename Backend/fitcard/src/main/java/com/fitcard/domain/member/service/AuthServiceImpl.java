@@ -10,6 +10,7 @@ import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
 import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
 import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
 import com.fitcard.domain.member.repository.MemberRepository;
+import com.fitcard.global.config.auth.JwtToken;
 import com.fitcard.global.config.auth.JwtTokenProvider;
 import com.fitcard.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +44,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean checkDuplicatedId(String userId) {
-        return memberRepository.existsByLoginId(userId);
+    public boolean checkDuplicatedId(String loginId) {
+        return memberRepository.existsByLoginId(loginId);
     }
 
     @Override
@@ -56,20 +57,21 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectPasswordException(ErrorCode.INCORRECT_PASSWORD, "아이디와 비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId());
-        String refreshToken = jwtTokenProvider.createRefreshToken(member.getLoginId());
+        String accessToken = jwtTokenProvider.createAccessToken(member.getLoginId(), String.valueOf(member.getMemberId()));
+        String refreshToken = jwtTokenProvider.createRefreshToken();
 
         // 클라이언트에게 Access Token과 Refresh Token 모두 반환
         return MemberLoginResponse.of(accessToken, refreshToken, "로그인 성공");
     }
 
     @Override
-    public RefreshTokenResponse refresh(String refreshToken) {
-        refreshToken = jwtTokenProvider.resolveToken(refreshToken);
+    public RefreshTokenResponse refresh(JwtToken jwtToken) {
+        String refreshToken = jwtTokenProvider.resolveToken(jwtToken.getRefreshToken());
 
         if (jwtTokenProvider.validateToken(refreshToken)) {
-            String username = jwtTokenProvider.getUsername(refreshToken);
-            String newAccessToken = jwtTokenProvider.createAccessToken(username);
+            String username = jwtTokenProvider.getUsername(jwtToken.getAccessToken());
+            String memberId = jwtTokenProvider.getMemberId(jwtToken.getAccessToken());
+            String newAccessToken = jwtTokenProvider.createAccessToken(username, memberId);
             return RefreshTokenResponse.from(newAccessToken);
         } else {
             throw new InvalidRefreshTokenException(ErrorCode.INVALID_REFRESH_TOKEN, "유효하지 않은 RefreshToken 토큰입니다.");

@@ -2,12 +2,14 @@ package com.fitcard.domain.merchant.merchantinfo.service;
 
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.model.dto.request.MerchantInfoSaveAllRequest;
+import com.fitcard.domain.merchant.merchantinfo.model.dto.response.MerchantGetResponse;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import com.fitcard.global.util.StringArrayListConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -28,4 +30,11 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
                 .toList();
         merchantInfoRepository.saveAll(merchantInfos);
     }
+
+    @Override
+    public MerchantGetResponse getMerchant(Integer merchantId) {
+        MerchantInfo merchantInfo = merchantInfoRepository.findById(merchantId).orElseThrow(() -> new NotFoundException("not found"));
+        return MerchantGetResponse.of(merchantInfo.getCategory(), merchantInfo.getName());
+    }
+
 }

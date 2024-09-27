@@ -13,14 +13,12 @@ import com.fitcard.domain.member.repository.MemberRepository;
 import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardCreateMemberCardsException;
 import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardDeleteException;
 import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardGetAllRenewalException;
+import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardGetByAgeSpecificException;
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardCreateRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardDeleteRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardGetAllRequest;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetRenewalResponse;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponse;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.*;
 import com.fitcard.domain.membercard.membercardinfo.repository.MemberCardInfoRepository;
 import com.fitcard.global.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -83,8 +82,8 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
     }
 
     @Override
-    public void createMemberCards(MemberCardCreateRequest request) {
-        Member member = memberRepository.findById(request.getMemberId())
+    public void createMemberCards(MemberCardCreateRequest request, Integer memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberCardCreateMemberCardsException(ErrorCode.MEMBER_NOT_FOUND, "해당하는 사용자가 없습니다."));
         List<MemberCardInfo> memberCardInfos = new ArrayList<>();
         request.getFinancialUserCardIds().forEach(financialUserCardId -> {
@@ -111,6 +110,39 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
                 .toList();
 
         return MemberCardGetResponses.from(memberCardGetResponses);
+    }
+
+    @Override
+    public MemberCardGetByAgeSpecificResponses getMemberCardsByAgeSpecific(Integer memberId, int size) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberCardGetByAgeSpecificException(ErrorCode.MEMBER_NOT_FOUND, "해당하는 사용자가 없습니다."));
+
+        //10대 20대 30대
+        //사용자 나이대 계산
+        LocalDate birthDate = member.getBirthDate();
+        // 사용자 나이 계산
+        int age = Period.between(birthDate, LocalDate.now()).getYears();
+
+        // 나이대 계산 (ex: 20대 -> 20, 30대 -> 30)
+        int ageGroup = (age / 10) * 10;
+
+        int currentYear = LocalDate.now().getYear();
+        int startYear = currentYear - ageGroup; //20대일 경우에 20살의 birth date
+
+        // 나이대의 시작일 (20세 1월 1일)
+        LocalDate endDate = LocalDate.of(startYear, 12, 31);
+        // 나이대의 종료일 (29세 12월 31일)
+        LocalDate startDate = LocalDate.of(startYear - 9, 1, 1);
+
+        //사용자 나이대의 사람이 사용하는 카드 count desc 정렬
+        //memberCard의 member의 birthDate가 between startDate, endDate 인 memberCard를 cardId로 group by하고 count(memberId)
+        //해서 order by desc 5개
+        List<MemberCardGetByAgeSpecificResponse> memberCardGetByAgeSpecificResponses = memberCardInfoRepository.findMemberCardInfoByBirthDateRangeWithCardCount(startDate, endDate).stream()
+                .map(MemberCardGetByAgeSpecificResponse::of)
+                .limit(size)
+                .toList();
+
+        return MemberCardGetByAgeSpecificResponses.from(memberCardGetByAgeSpecificResponses);
     }
 
     private MemberCardInfo getMemberCardInfoFromFinancial(long financialUserCardId, Member member) {
@@ -161,7 +193,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             }
         } catch (Exception e) {
             log.error("json 파싱 실패!! {}", e.getMessage());
-            log.error("{}", e.getStackTrace());
+            e.printStackTrace();
             throw new MemberCardGetAllRenewalException(ErrorCode.JSON_PARSING_ERROR, "JSON 변환에 실패했습니다.");
         }
         return MemberCardGetAllRenewalResponses.from(memberCardGetRenewalResponses);
@@ -199,7 +231,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             return MemberCardInfo.of(member, cardVersion, globalBrand, expiredDate, cardMemberType, financialUserCardId);
         } catch (Exception e){
             log.error("json 파싱 실패!! {}", e.getMessage());
-            log.error("{}", e.getStackTrace());
+            e.printStackTrace();
             throw new MemberCardCreateMemberCardsException(ErrorCode.JSON_PARSING_ERROR, "JSON 변환에 실패했습니다.");
         }
     }

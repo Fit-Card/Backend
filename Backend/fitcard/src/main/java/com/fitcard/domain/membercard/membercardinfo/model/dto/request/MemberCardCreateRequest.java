@@ -15,10 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class MemberCardCreateRequest {
 
-    @Schema(description = "member id, 추후 token에서 꺼내도록 변경되면 사용되지 않을 예정입니다.", example = "2")
-    @NotNull(message = "member id를 입력하세요.")
-    private int memberId;
-
     @Schema(description = "financial user card id", example = "[2,3,5]")
     @NotNull(message = "financial user card id를 입력하세요.")
     private List<Long> financialUserCardIds;

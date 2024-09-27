@@ -31,10 +31,10 @@ public class Branch extends BaseEntity {
     private String branchName;
 
     @NotEmpty
-    private String x;
+    private Double x;
 
     @NotEmpty
-    private String y;
+    private Double y;
 
     private String kakaoUrl;
 
@@ -42,7 +42,7 @@ public class Branch extends BaseEntity {
     private String kakaoLocalId;
 
     // private 생성자
-    private Branch(MerchantInfo merchantInfo, String address, String branchName, String kakaoUrl, String x, String y, String kakaoLocalId) {
+    private Branch(MerchantInfo merchantInfo, String address, String branchName, String kakaoUrl, Double x, Double y, String kakaoLocalId) {
         this.merchantInfo = merchantInfo;
         this.address = address;
         this.branchName = branchName;
@@ -54,6 +54,6 @@ public class Branch extends BaseEntity {
 
     public static Branch of(LocalInfo localInfo, MerchantInfo merchantInfo){
         return new Branch(merchantInfo, localInfo.getRoadAddressName(), localInfo.getPlaceName(),
-                localInfo.getPlaceUrl(), localInfo.getX(), localInfo.getY(), localInfo.getPlaceId());
+                localInfo.getPlaceUrl(), Double.parseDouble(localInfo.getX()), Double.parseDouble(localInfo.getY()), localInfo.getPlaceId());
     }
 }
