@@ -1,5 +1,6 @@
 package com.fitcard.domain.card.benefit.model.dto.response;
 
+import com.fitcard.domain.card.benefit.model.BenefitType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,10 +12,10 @@ import lombok.Getter;
 public class CardBenefitGetResponse {
 
     @Schema(description = "카드 혜택 타입 (DISCOUNT, POINT, ...)", example = "DISCOUNT")
-    private String benefitType;
+    private BenefitType benefitType;
 
     @Schema(description = "카드 할인 금액 한도", example = "15000")
-    private int amountLimit;
+    private String amountLimit;
 
     @Schema(description = "카드 할인 횟수 한도", example = "3")
     private String countLimit;

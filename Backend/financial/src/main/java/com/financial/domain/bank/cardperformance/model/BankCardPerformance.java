@@ -24,14 +24,18 @@ public class BankCardPerformance extends BaseEntity {
     @NotNull
     private int amount;
 
+    @NotNull
+    private int benefitLimit;
+
     @ManyToOne
     @JoinColumn(name = "card_id", nullable = false)
     private BankCard bankCard;
 
-    public BankCardPerformance(BankCard bankCard, int level, int amount) {
+    public BankCardPerformance(BankCard bankCard, int level, int amount, int benefitLimit) {
         this.bankCard = bankCard;
         this.level = level;
         this.amount = amount;
+        this.benefitLimit = benefitLimit;
     }
 
 }

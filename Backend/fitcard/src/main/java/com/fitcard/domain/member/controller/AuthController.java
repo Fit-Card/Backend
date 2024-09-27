@@ -1,5 +1,6 @@
 package com.fitcard.domain.member.controller;
 
+import com.fitcard.domain.member.model.dto.request.MemberCheckIdRequest;
 import com.fitcard.domain.member.model.dto.request.MemberLoginRequest;
 import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
 import com.fitcard.domain.member.model.dto.response.MemberCheckIdResponse;
@@ -38,8 +39,8 @@ public class AuthController {
     @SwaggerApiSuccess(description = "아이디 중복 확인을 성공했습니다.")
     @SwaggerApiError({ErrorCode.DUPLICATE_MEMBER})
     @PostMapping("/checkid")
-    public Response<MemberCheckIdResponse> checkDuplicatedId(@RequestParam String userId) {
-        boolean isDuplicated = authService.checkDuplicatedId(userId);
+    public Response<MemberCheckIdResponse> checkDuplicatedId(@RequestBody MemberCheckIdRequest request) {
+        boolean isDuplicated = authService.checkDuplicatedId(request.getLoginId());
         MemberCheckIdResponse response = MemberCheckIdResponse.of(isDuplicated);
         return Response.SUCCESS(response, "아이디 중복 확인을 성공했습니다.");
     }

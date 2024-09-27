@@ -42,4 +42,10 @@ public class CardBenefitController {
 
     }
 
+    @PostMapping("/import")
+    public Response<Integer> createCardBenefitsFromFinancial(){
+        int savedBenefitCount = cardBenefitService.createCardBenefitsFromFinancial();
+        return Response.SUCCESS(savedBenefitCount);
+    }
+
 }
