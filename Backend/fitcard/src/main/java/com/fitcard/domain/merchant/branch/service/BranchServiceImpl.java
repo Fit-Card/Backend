@@ -3,6 +3,7 @@ package com.fitcard.domain.merchant.branch.service;
 import com.fitcard.domain.merchant.branch.model.Branch;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchSearchResponse;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantCategory;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
@@ -136,11 +137,22 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<BranchGetResponse> getBranchesByMerchantKeywordPagination(BranchSearchRequest request, int pageNo) {
+    public List<BranchSearchResponse> getBranchesByMerchantKeywordPagination(BranchSearchRequest request, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo - 1, 10);
-        Page<Branch> branches = branchRepository.findBranchesByMerchantNameAndLocation(request.getMerchantNameKeyword(), request.getLatitude(), request.getLongitude(), pageable);
-        return branches.stream()
-                .map(BranchGetResponse::from)
-                .toList();
+
+        List<Object[]> results = branchRepository.findBranchesByMerchantNameAndLocation(
+                request.getMerchantNameKeyword(),
+                request.getLatitude(),
+                request.getLongitude(),
+                pageable
+        );
+
+        return results.stream()
+                .map(result -> {
+                    Branch branch = (Branch) result[0];  // 첫 번째 요소는 Branch 객체
+                    Double distance = (Double) result[1];  // 두 번째 요소는 계산된 거리 값
+                    return BranchSearchResponse.of(branch, distance);
+                })
+                .collect(Collectors.toList());
     }
 }
