@@ -17,6 +17,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "C003", "서버 에러입니다"),
     UNAUTHORIZED(403, "C004", "권한이 없습니다."),
     JSON_PARSING_ERROR(500, "C005", "JSON 파싱을 실패했습니다."),
+    FIREBASE_ERROR(500, "C006", "Firebase function 요청에 실패했습니다."),
 
     //auth
     UNAUTHORIZED_ACCESS(403, "A000", "접근 권한이 없습니다."),
