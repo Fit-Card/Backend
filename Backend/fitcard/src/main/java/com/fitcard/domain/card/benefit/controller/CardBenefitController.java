@@ -1,5 +1,6 @@
 package com.fitcard.domain.card.benefit.controller;
 
+import com.fitcard.domain.card.benefit.model.dto.request.CardBenefitRequest;
 import com.fitcard.domain.card.benefit.model.dto.response.CardBenefitGetResponse;
 import com.fitcard.domain.card.benefit.model.dto.response.CardBenefitResponse;
 import com.fitcard.domain.card.benefit.service.CardBenefitService;
@@ -30,8 +31,8 @@ public class CardBenefitController {
     @PostMapping("/get")
     public Response<CardBenefitResponse> getCardBenefit(
             @Parameter(description = "카드 버전 id", example = "3")
-            @RequestBody int cardVersionId) {
-        CardBenefitResponse response = cardBenefitService.getCardBenefits(cardVersionId);
+            @RequestBody CardBenefitRequest request) {
+        CardBenefitResponse response = cardBenefitService.getCardBenefits(request.getCardVersionId(), request.getLevel());
         return Response.SUCCESS(response, "카드 혜택 조회를 성공했습니다.");
     }
     

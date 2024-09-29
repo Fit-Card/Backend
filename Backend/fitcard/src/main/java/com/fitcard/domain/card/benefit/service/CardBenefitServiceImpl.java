@@ -82,12 +82,12 @@ public class CardBenefitServiceImpl implements CardBenefitService {
     }
 
     @Override
-    public CardBenefitResponse getCardBenefits(int cardVersionId) {
+    public CardBenefitResponse getCardBenefits(int cardVersionId, int level) {
         // 1. 카드 버전 정보 조회
         CardVersion cardVersion = cardVersionRepository.findById(cardVersionId).get();
 
-        // 2. 카드 버전의 level 1 실적 데이터 조회
-        CardPerformance cardPerformance = cardPerformanceRepository.findByCardVersionAndLevel(cardVersion, 1).get();
+        // 2. 카드 버전의 level에 맞는 실적 데이터 조회
+        CardPerformance cardPerformance = cardPerformanceRepository.findByCardVersionAndLevel(cardVersion, level).get();
 
         // 3. 카드 퍼포먼스 ID로 혜택 목록 조회
         List<CardBenefit> cardBenefits = cardBenefitRepository.findByCardPerformance(cardPerformance);
