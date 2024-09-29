@@ -55,13 +55,4 @@ public class SwaggerConfig {
                 .addOperationCustomizer(operationCustomizer)
                 .build();
     }
-
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .addServersItem(new Server().url("https://j11a405.p.ssafy.io/api/fitcard"))  // 배포 서버
-                .addServersItem(new Server().url("http://j11a405.p.ssafy.io:8081"))
-                .addServersItem(new Server().url("http://localhost:8080"))  // 로컬 개발 서버
-                .info(new Info().title("FitCard API").description("API Documentation").version("v1.0"));
-    }
 }
