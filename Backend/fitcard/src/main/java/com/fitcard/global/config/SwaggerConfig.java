@@ -3,9 +3,11 @@ package com.fitcard.global.config;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -14,11 +16,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        info = @Info(
-                title = "FitCard API",
-                description = "FitCard API 목록입니다.",
-                version = "v1.0"
-        ),
         security = {@SecurityRequirement(name = "Authorization")}
 )
 @SecurityScheme(
@@ -57,5 +54,14 @@ public class SwaggerConfig {
                 .pathsToExclude(noRequiredTokenApi)
                 .addOperationCustomizer(operationCustomizer)
                 .build();
+    }
+
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .addServersItem(new Server().url("https://j11a405.p.ssafy.io/api/fitcard"))  // 배포 서버
+                .addServersItem(new Server().url("http://j11a405.p.ssafy.io:8080"))
+                .addServersItem(new Server().url("http://localhost:8080"))  // 로컬 개발 서버
+                .info(new Info().title("FitCard API").description("API Documentation").version("v1.0"));
     }
 }
