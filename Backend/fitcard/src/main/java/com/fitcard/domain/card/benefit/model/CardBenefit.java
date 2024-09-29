@@ -39,7 +39,7 @@ public class CardBenefit extends BaseEntity {
     private int benefitPer;
 
     @NotNull
-    private int merchantId;
+    private Integer merchantId;
 
     @NotEmpty
     private String exceptionTypes; //todo: exceptionType Enum 만들고 string -> list list -> string convertor 만들어야 한다.
