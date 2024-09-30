@@ -1,5 +1,6 @@
 package com.fitcard.domain.member.controller;
 
+import com.fitcard.domain.member.model.dto.request.MemberSaveFcmTokenRequest;
 import com.fitcard.domain.member.model.dto.request.MemberUpdateRequest;
 import com.fitcard.domain.member.model.dto.response.MemberGetResponse;
 import com.fitcard.domain.member.model.dto.response.MemberUpdateResponse;
@@ -8,6 +9,7 @@ import com.fitcard.global.config.auth.SecurityUtil;
 import com.fitcard.global.config.swagger.SwaggerApiError;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
 import com.fitcard.global.error.ErrorCode;
+import com.fitcard.global.guard.Login;
 import com.fitcard.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,5 +44,15 @@ public class MemberController {
         String loginId = SecurityUtil.getLoginId();
         MemberUpdateResponse response = memberService.updateUser(loginId, request);
         return Response.SUCCESS(response, "사용자 정보 수정에 성공헀습니다.");
+    }
+
+    @Operation(summary = "Fcm token 저장 API", description = "이벤트 알림을 위한 사용자의 Fcm 토큰을 저장합니다.")
+    @SwaggerApiSuccess(description = "Fcm token 저장에 성공했습니다.")
+    @SwaggerApiError({ErrorCode.MEMBER_NOT_FOUND,ErrorCode.INVALID_TOKEN})
+    @PostMapping("/fcmtoken")
+    public Response<?> createFcmToken(@Login Integer memberId,
+                                      @RequestBody MemberSaveFcmTokenRequest request) {
+        memberService.createFcmToken(request, memberId);
+        return Response.SUCCESS();
     }
 }
