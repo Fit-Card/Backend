@@ -37,7 +37,17 @@ public enum ErrorCode {
 
     //user card
     NOT_FOUND_FINANCIAL_USER_CARD_ID(404, "CA002", "financial user card id가 없습니다."),
-    NOT_FOUND_MEMBER_CARD(404, "CA002", "사용자 카드를 찾을 수 없습니다.");
+    NOT_FOUND_MEMBER_CARD(404, "CA002", "사용자 카드를 찾을 수 없습니다."),
+
+    // card version
+    CARD_VERSION_NOT_FOUND(404, "CA003", "카드 버전을 찾을 수 없습니다."),
+
+    // card performance
+    CARD_PERFORMANCE_NOT_FOUND(404, "CA004", "카드 실적 정보를 찾을 수 없습니다."),
+
+    // card benefit
+    CARD_BENEFIT_NOT_FOUND(404, "CA005", "카드 혜택 정보를 찾을 수 없습니다.");
+
 
 
     private final Integer status;

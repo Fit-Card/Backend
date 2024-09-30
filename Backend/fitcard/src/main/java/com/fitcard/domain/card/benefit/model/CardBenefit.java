@@ -39,16 +39,20 @@ public class CardBenefit extends BaseEntity {
     private int benefitPer;
 
     @NotNull
-    private int merchantId;
+    private Long merchantId;
 
     @NotEmpty
     private String exceptionTypes; //todo: exceptionType Enum 만들고 string -> list list -> string convertor 만들어야 한다.
+
+    @NotEmpty
+    private String merchantCategory;
 
     @ManyToOne
     @JoinColumn(name = "card_performance_id", nullable = false)
     private CardPerformance cardPerformance;
 
-    private CardBenefit(CardPerformance cardPerformance, BenefitType benefitType, String amountLimit, String countLimit, int minPayment, double benefitValue, int benefitPer, int merchantId, String exceptionTypes) {
+    private CardBenefit(CardPerformance cardPerformance, BenefitType benefitType, String amountLimit, String countLimit,
+                        int minPayment, double benefitValue, int benefitPer, Long merchantId, String exceptionTypes, String merchantCategory) {
         this.cardPerformance = cardPerformance;
         this.benefitType = benefitType.name();
         this.amountLimit = amountLimit;
@@ -58,6 +62,7 @@ public class CardBenefit extends BaseEntity {
         this.benefitPer = benefitPer;
         this.merchantId = merchantId;
         this.exceptionTypes = exceptionTypes;
+        this.merchantCategory = merchantCategory;
     }
 
     public static CardBenefit of(CardPerformance cardPerformance, FinancialCardBenefitResponse financialCardBenefitResponse) {
@@ -69,6 +74,7 @@ public class CardBenefit extends BaseEntity {
                 financialCardBenefitResponse.getBenefitValue(),
                 financialCardBenefitResponse.getBenefitPer(),
                 financialCardBenefitResponse.getMerchantId(),
-                financialCardBenefitResponse.getExceptionTypeList());
+                financialCardBenefitResponse.getExceptionTypeList(),
+                financialCardBenefitResponse.getMerchantCategory());
     }
 }

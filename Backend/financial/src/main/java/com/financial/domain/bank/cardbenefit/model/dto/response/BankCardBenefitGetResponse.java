@@ -64,8 +64,8 @@ public class BankCardBenefitGetResponse {
                 benefit.getBenefitValue(),
                 benefit.getBenefitPer(),
                 benefit.getMerchantId(),
-                benefit.getMerchantCategory(),
                 benefit.getExceptionTypeList(),
+                benefit.getMerchantCategory(),
                 benefit.getUpdatedAt().format(formatter));
     }
 

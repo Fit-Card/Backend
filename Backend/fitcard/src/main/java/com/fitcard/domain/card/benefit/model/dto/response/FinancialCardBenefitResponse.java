@@ -43,7 +43,7 @@ public class FinancialCardBenefitResponse {
     private int benefitPer;
 
     @NotNull
-    private int merchantId;
+    private Long merchantId;
 
     @NotEmpty
     private String exceptionTypeList;

@@ -41,14 +41,14 @@ public class BankCardBenefitAddRequest {
     @NotNull
     private int benefitPer;
 
-    @Schema(description = "가맹점 카테고리", example = "편의점")
-    @NotNull
-    private String merchantCategory;
-
     @Schema(description = "가맹점 ID", example = "15000")
     @NotNull
     private int merchantId;
 
     @Schema(description = "할인 예외 항목", example = "공항, 면세점")
     private String exceptionTypeList;
+
+    @Schema(description = "가맹점 카테고리", example = "편의점")
+    @NotNull
+    private String merchantCategory;
 }
