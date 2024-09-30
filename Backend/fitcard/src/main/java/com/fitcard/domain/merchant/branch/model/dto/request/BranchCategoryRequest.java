@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BranchCategoryRequest {
 
-//    @Schema(description = "카테고리", example = "FD6")
+    @Schema(description = "카테고리", example = "FD6")
     @NotEmpty(message = "카테고리를 입력하세요")
     private String category;
 

@@ -2,7 +2,10 @@ package com.fitcard.domain.merchant.merchantinfo.service;
 
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.model.dto.request.MerchantInfoSaveAllRequest;
+import com.fitcard.domain.merchant.merchantinfo.model.dto.request.MerchantSearchRequest;
 import com.fitcard.domain.merchant.merchantinfo.model.dto.response.MerchantGetResponse;
+import com.fitcard.domain.merchant.merchantinfo.model.dto.response.MerchantSearchResponse;
+import com.fitcard.domain.merchant.merchantinfo.model.dto.response.MerchantSearchResponses;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import com.fitcard.global.util.StringArrayListConverter;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +38,15 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
     public MerchantGetResponse getMerchant(Integer merchantId) {
         MerchantInfo merchantInfo = merchantInfoRepository.findById(merchantId).orElseThrow(() -> new NotFoundException("not found"));
         return MerchantGetResponse.of(merchantInfo.getCategory(), merchantInfo.getName());
+    }
+
+    @Override
+    public List<MerchantSearchResponse> getMerchantByMerchantNameKeyword(MerchantSearchRequest request) {
+        System.out.println(request.getMerchantNameKeyword());
+        List<MerchantInfo> result = merchantInfoRepository.findMerchantListByMerchantNameKeyword(request.getMerchantNameKeyword());
+        return result.stream()
+                .map(MerchantSearchResponse::from)
+                .toList();
     }
 
 }
