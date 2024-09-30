@@ -30,9 +30,8 @@ public class CardBenefitController {
     @SwaggerApiSuccess(description = "카드 혜택 조회를 성공했습니다.")
     @PostMapping("/get")
     public Response<CardBenefitResponse> getCardBenefit(
-            @Parameter(description = "카드 버전 id", example = "3")
             @RequestBody CardBenefitRequest request) {
-        CardBenefitResponse response = cardBenefitService.getCardBenefits(request.getCardVersionId(), request.getLevel());
+        CardBenefitResponse response = cardBenefitService.getCardBenefits(request.getCardId(), request.getLevel());
         return Response.SUCCESS(response, "카드 혜택 조회를 성공했습니다.");
     }
     

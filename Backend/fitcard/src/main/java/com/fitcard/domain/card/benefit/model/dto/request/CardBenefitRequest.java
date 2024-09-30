@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CardBenefitRequest {
 
-    @Schema(description = "카드 버전 ID", example = "3")
-    private int cardVersionId;
+    @Schema(description = "카드 ID", example = "3")
+    private int cardId;
 
     @Schema(description = "카드 실적 레벨", example = "1")
     private int level;

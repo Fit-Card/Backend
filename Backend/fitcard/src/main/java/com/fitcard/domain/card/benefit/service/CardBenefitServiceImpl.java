@@ -7,10 +7,12 @@ import com.fitcard.domain.card.benefit.model.CardBenefit;
 import com.fitcard.domain.card.benefit.model.dto.response.*;
 import com.fitcard.domain.card.benefit.repository.CardBenefitRepository;
 import com.fitcard.domain.card.cardinfo.repository.CardInfoRepository;
+import com.fitcard.domain.card.performance.exception.CardPerformanceNotFoundException;
 import com.fitcard.domain.card.performance.exception.SavePerformancesFromFinancialException;
 import com.fitcard.domain.card.performance.model.CardPerformance;
 import com.fitcard.domain.card.performance.model.dto.response.FinancialCardPerformanceResponses;
 import com.fitcard.domain.card.performance.repository.CardPerformanceRepository;
+import com.fitcard.domain.card.version.exception.CardVersionNotFoundException;
 import com.fitcard.domain.card.version.model.CardVersion;
 import com.fitcard.domain.card.version.repository.CardVersionRepository;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,15 +85,17 @@ public class CardBenefitServiceImpl implements CardBenefitService {
     }
 
     @Override
-    public CardBenefitResponse getCardBenefits(int cardVersionId, int level) {
+    public CardBenefitResponse getCardBenefits(int cardId, int level) {
         // 1. 카드 버전 정보 조회
-        CardVersion cardVersion = cardVersionRepository.findById(cardVersionId).get();
+        CardVersion cardVersion = cardVersionRepository.findTopByCardInfoIdOrderByVersionDesc(cardId)
+                .orElseThrow(() -> new CardVersionNotFoundException(ErrorCode.CARD_VERSION_NOT_FOUND,"해당 카드 버전을 찾을 수 없습니다."));
 
         // 2. 카드 버전의 level에 맞는 실적 데이터 조회
-        CardPerformance cardPerformance = cardPerformanceRepository.findByCardVersionAndLevel(cardVersion, level).get();
+        CardPerformance cardPerformance = cardPerformanceRepository.findByCardVersionAndLevel(cardVersion, level)
+                .orElseThrow(() -> new CardPerformanceNotFoundException(ErrorCode.CARD_PERFORMANCE_NOT_FOUND, "해당 카드 버전과 레벨에 맞는 실적 정보를 찾을 수 없습니다."));
 
         // 3. 카드 퍼포먼스 ID로 혜택 목록 조회
-        List<CardBenefit> cardBenefits = cardBenefitRepository.findByCardPerformance(cardPerformance);
+        List<CardBenefit> cardBenefits = cardBenefitRepository.findAllByCardPerformance(cardPerformance);
 
 
         String cardName = cardVersion.getCardInfo().getName();
@@ -100,12 +105,16 @@ public class CardBenefitServiceImpl implements CardBenefitService {
         Map<String, List<BenefitDetail>> benefitsByCategory = new HashMap<>();
         for (CardBenefit benefit : cardBenefits) {
             String merchantName = merchantInfoRepository.findByMerchantId(benefit.getMerchantId()).getName();
+            String amountLimit = benefit.getAmountLimit();
+            String countLimit = benefit.getCountLimit();
+            int minPayment = benefit.getMinPayment();
+            String exceptionTypes = benefit.getExceptionTypes();
 
             String discount = buildDiscountString(benefit);
 
             // 카테고리 별로 혜택을 추가
             benefitsByCategory.computeIfAbsent(benefit.getMerchantCategory(), k -> new ArrayList<>())
-                    .add(BenefitDetail.of(merchantName, discount));
+                    .add(BenefitDetail.of(merchantName, discount, amountLimit, countLimit, minPayment, exceptionTypes));
         }
 
         // 5. 카테고리별 응답 데이터 생성
@@ -133,12 +142,23 @@ public class CardBenefitServiceImpl implements CardBenefitService {
 
         if (benefit.getBenefitPer() > 0) {
             if (benefit.getBenefitType().equals("LITER_DISCOUNT")) {
-                return String.format("%d리터당 %.1f%s", benefit.getBenefitPer(), benefit.getBenefitValue(), discountType);
+                return String.format("%d리터당 %s%s", benefit.getBenefitPer(), formatBenefitValue(benefit.getBenefitValue()), discountType);
             } else {
-                return String.format("%d원당 %.1f%s", benefit.getBenefitPer(), benefit.getBenefitValue(), discountType);
+                return String.format("%d원당 %s%s", benefit.getBenefitPer(), formatBenefitValue(benefit.getBenefitValue()), discountType);
             }
         } else {
-            return String.format("%.1f%s", benefit.getBenefitValue(), discountType);
+            return String.format("%s%s", formatBenefitValue(benefit.getBenefitValue()), discountType);
+        }
+    }
+
+    private String formatBenefitValue(double benefitValue) {
+        if (benefitValue == (int) benefitValue) {
+            // 정수라면 소수점 제거
+            return String.format("%d", (int) benefitValue);
+        } else {
+            // 정수가 아니라면 소수점 1자리까지 출력
+            DecimalFormat decimalFormat = new DecimalFormat("#.0");
+            return decimalFormat.format(benefitValue);
         }
     }
 
