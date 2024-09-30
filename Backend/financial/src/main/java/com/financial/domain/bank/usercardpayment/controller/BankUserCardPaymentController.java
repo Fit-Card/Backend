@@ -16,7 +16,7 @@ public class BankUserCardPaymentController {
 
     private final BankUserCardPaymentService bankUserCardPaymentService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public Response<BankUserCardPaymentGetResponses> getUserCardPayments(@RequestParam Long bankUserCardId,
                                                                              @RequestParam Integer lastId) {
         BankUserCardPaymentGetResponses response = bankUserCardPaymentService.getBankUserCardPayments(new BankUserCardPaymentGetRequest(bankUserCardId, lastId));

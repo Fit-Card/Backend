@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface MemberCardInfoRepository extends JpaRepository<MemberCardInfo, Integer> {
+public interface MemberCardInfoRepository extends JpaRepository<MemberCardInfo, Long> {
 
     @Query("SELECT CASE WHEN COUNT(mc) > 0 THEN true ELSE false END " +
             "FROM MemberCardInfo mc " +
