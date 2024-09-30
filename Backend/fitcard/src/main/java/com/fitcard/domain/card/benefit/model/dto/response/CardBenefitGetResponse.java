@@ -33,10 +33,7 @@ public class CardBenefitGetResponse {
     private String merchantCategory;
 
     @Schema(description = "가맹점 ID ", example = "15000")
-    private int merchantId;
-
-    @Schema(description = "가맹점 이름, All이면 카테고리 전체, 아니면 특정 가맹점 이름", example = "파리바게트")
-    private String merchantName;
+    private Long merchantId;
 
     @Schema(description = "할인 예외 리스트", example = "[공항, 면세점]")
     private String exceptionTypes;

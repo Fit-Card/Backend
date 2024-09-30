@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface MerchantInfoRepository extends JpaRepository<MerchantInfo, Integer> {
 
     Optional<MerchantInfo> findByName(String merchantName);
+
+    MerchantInfo findByMerchantId(Long merchantId);
 }

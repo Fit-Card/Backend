@@ -1,6 +1,8 @@
 package com.fitcard.domain.card.benefit.controller;
 
+import com.fitcard.domain.card.benefit.model.dto.request.CardBenefitRequest;
 import com.fitcard.domain.card.benefit.model.dto.response.CardBenefitGetResponse;
+import com.fitcard.domain.card.benefit.model.dto.response.CardBenefitResponse;
 import com.fitcard.domain.card.benefit.service.CardBenefitService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
 import com.fitcard.global.response.Response;
@@ -26,11 +28,11 @@ public class CardBenefitController {
 
     @Operation(summary = "카드 혜택 조회 API", description = "카드의 혜택을 조회합니다.")
     @SwaggerApiSuccess(description = "카드 혜택 조회를 성공했습니다.")
-    @PostMapping("/get/{id}")
-    public Response<CardBenefitGetResponse> getCardBenefit(
-            @Parameter(description = "카드 id", example = "3")
-            @PathVariable("id") int id) {
-        return Response.SUCCESS(null, "사용자 알림 전체 조회를 성공했습니다.");
+    @PostMapping("/get")
+    public Response<CardBenefitResponse> getCardBenefit(
+            @RequestBody CardBenefitRequest request) {
+        CardBenefitResponse response = cardBenefitService.getCardBenefits(request.getCardId(), request.getLevel());
+        return Response.SUCCESS(response, "카드 혜택 조회를 성공했습니다.");
     }
     
     @GetMapping("/fetch")

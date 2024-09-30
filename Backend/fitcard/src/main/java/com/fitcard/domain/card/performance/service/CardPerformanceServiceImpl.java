@@ -68,4 +68,11 @@ public class CardPerformanceServiceImpl implements CardPerformanceService {
         return cardPerformanceRepository.saveAll(cardPerformances).size();
     }
 
+    @Override
+    public List<CardPerformance> getCardPerformances(int cardVersionId){
+        CardVersion cardVersion = cardVersionRepository.findById(cardVersionId).get();
+        return cardPerformanceRepository.findByCardVersion(cardVersion);
+
+    }
+
 }
