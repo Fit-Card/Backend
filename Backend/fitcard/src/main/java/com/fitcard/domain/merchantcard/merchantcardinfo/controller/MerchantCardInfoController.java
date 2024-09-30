@@ -28,4 +28,10 @@ public class MerchantCardInfoController {
         List<MerchantCardResponse> merchantCardInfoList = merchantCardInfoService.getMerchantCardInfo(merchantId);
         return Response.SUCCESS(MerchantCardResponses.from(merchantCardInfoList), "가맹점 혜택 조회에 성공했습니다.");
     }
+
+    @PostMapping("/post")
+    public Response<?> createAll(){
+        merchantCardInfoService.createAll();
+        return Response.SUCCESS("저장 완료");
+    }
 }

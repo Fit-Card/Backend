@@ -7,4 +7,5 @@ import java.util.List;
 public interface MerchantCardInfoService {
     List<MerchantCardResponse> merchantCards(Integer merchantId);
     List<MerchantCardResponse> getMerchantCardInfo(Integer merchantId);
+    void createAll();
 }

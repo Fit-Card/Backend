@@ -22,4 +22,13 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfo, Inte
             "WHERE m.merchantId = :merchantId " +
             "GROUP BY cv.id")
     List<Object[]> findMerchantWithCardVersion(@Param("merchantId") Integer merchantId);
+
+    @Query("SELECT m.merchantId, cv.id as cardVersionId " +
+            "FROM MerchantInfo m " +
+            "LEFT JOIN CardBenefit cb ON m.merchantId = cb.merchantId " +
+            "LEFT JOIN CardPerformance cp ON cb.cardPerformance.id = cp.id " +
+            "LEFT JOIN CardVersion cv ON cp.cardVersion.id = cv.id " +
+            "WHERE cv.id IS NOT NULL " +
+            "GROUP BY m.merchantId, cv.id")
+    List<Object[]> findMerchantCard();
 }
