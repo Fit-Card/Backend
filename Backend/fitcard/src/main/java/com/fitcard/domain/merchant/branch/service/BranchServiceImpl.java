@@ -1,7 +1,9 @@
 package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.Branch;
+import com.fitcard.domain.merchant.branch.model.dto.request.BranchCategoryRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponse;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchSearchResponse;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -154,5 +157,46 @@ public class BranchServiceImpl implements BranchService {
                     return BranchSearchResponse.of(branch, distance);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BranchCategoryResponse> getBranchesByMerchantCategoryPagination(BranchCategoryRequest request, int pageNo) {
+        Pageable pageable = PageRequest.of(pageNo - 1, 10);
+        if(request.getCategory().equals("ALL")) {
+            System.out.println("카테고리 없음");
+            System.out.println(request.getCategory());
+
+            List<Object[]> results = branchRepository.findMerchantsNoCategoryWithinRectangle(
+                    request.getLeftLatitude(),
+                    request.getLeftLongitude(),
+                    request.getRightLatitude(),
+                    request.getRightLongitude(),
+                    pageable
+            );
+
+            return results.stream()
+                    .map(result -> {
+                        MerchantInfo merchantInfo = (MerchantInfo) result[0];
+                        Branch branch = (Branch) result[1];
+                        return BranchCategoryResponse.of(branch, merchantInfo);
+                    })
+                    .collect(Collectors.toList());
+        }
+        List<Object[]> results = branchRepository.findMerchantsWithinRectangle(
+                    request.getCategory(),
+                    request.getLeftLatitude(),
+                    request.getLeftLongitude(),
+                    request.getRightLatitude(),
+                    request.getRightLongitude(),
+                    pageable);
+
+        return results.stream()
+                .map(result -> {
+                    MerchantInfo merchantInfo = (MerchantInfo) result[0];
+                    Branch branch = (Branch) result[1];
+                    return BranchCategoryResponse.of(branch, merchantInfo);
+                })
+                .collect(Collectors.toList());
+
     }
 }
