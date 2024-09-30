@@ -54,7 +54,7 @@ public class BankCardBenefit extends BaseEntity {
 
     public BankCardBenefit(BankCardPerformance bankCardPerformance, BenefitType benefitType, String amountLimit,
                            String countLimit, int minPayment, double benefitValue, int benefitPer,
-                           String merchantCategory, int merchantId, String exceptionTypeList) {
+                            int merchantId, String exceptionTypeList, String merchantCategory) {
         this.bankCardPerformance = bankCardPerformance;
         this.benefitType = benefitType;
         this.amountLimit = amountLimit;
@@ -62,8 +62,8 @@ public class BankCardBenefit extends BaseEntity {
         this.minPayment = minPayment;
         this.benefitValue = benefitValue;
         this.benefitPer = benefitPer;
-        this.merchantCategory = merchantCategory;
         this.merchantId = merchantId;
         this.exceptionTypeList = exceptionTypeList;
+        this.merchantCategory = merchantCategory;
     }
 }

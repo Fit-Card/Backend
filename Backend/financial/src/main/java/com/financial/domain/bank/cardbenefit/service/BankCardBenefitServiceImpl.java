@@ -42,9 +42,9 @@ public class BankCardBenefitServiceImpl implements BankCardBenefitService {
                     request.getMinPayment(),
                     request.getBenefitValue(),
                     request.getBenefitPer(),
-                    request.getMerchantCategory(),
                     request.getMerchantId(),
-                    request.getExceptionTypeList()
+                    request.getExceptionTypeList(),
+                    request.getMerchantCategory()
             );
 
             bankCardBenefitRepository.save(bankCardBenefit);  // 각 혜택을 저장
