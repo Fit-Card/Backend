@@ -4,6 +4,7 @@ import com.fitcard.domain.merchant.branch.model.Branch;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchCategoryRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponse;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponses;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchSearchResponse;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
@@ -160,13 +161,16 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<BranchCategoryResponse> getBranchesByMerchantCategoryPagination(BranchCategoryRequest request, int pageNo) {
+    public BranchCategoryResponses getBranchesByMerchantCategoryPagination(BranchCategoryRequest request, int pageNo) {
         Pageable pageable = PageRequest.of(pageNo - 1, 10);
+
+        Page<Object[]> results;
+
         if(request.getCategory().equals("ALL")) {
             System.out.println("카테고리 없음");
             System.out.println(request.getCategory());
 
-            List<Object[]> results = branchRepository.findMerchantsNoCategoryWithinRectangle(
+            results = branchRepository.findMerchantsNoCategoryWithinRectangle(
                     request.getLeftLatitude(),
                     request.getLeftLongitude(),
                     request.getRightLatitude(),
@@ -174,15 +178,9 @@ public class BranchServiceImpl implements BranchService {
                     pageable
             );
 
-            return results.stream()
-                    .map(result -> {
-                        MerchantInfo merchantInfo = (MerchantInfo) result[0];
-                        Branch branch = (Branch) result[1];
-                        return BranchCategoryResponse.of(branch, merchantInfo);
-                    })
-                    .collect(Collectors.toList());
-        }
-        List<Object[]> results = branchRepository.findMerchantsWithinRectangle(
+
+        }else{
+            results = branchRepository.findMerchantsWithinRectangle(
                     request.getCategory(),
                     request.getLeftLatitude(),
                     request.getLeftLongitude(),
@@ -190,7 +188,9 @@ public class BranchServiceImpl implements BranchService {
                     request.getRightLongitude(),
                     pageable);
 
-        return results.stream()
+        }
+
+        List<BranchCategoryResponse> list =  results.stream()
                 .map(result -> {
                     MerchantInfo merchantInfo = (MerchantInfo) result[0];
                     Branch branch = (Branch) result[1];
@@ -198,5 +198,6 @@ public class BranchServiceImpl implements BranchService {
                 })
                 .collect(Collectors.toList());
 
+        return BranchCategoryResponses.of(list, results);
     }
 }
