@@ -15,4 +15,6 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfo, Inte
 
     @Query("SELECT b FROM MerchantInfo b WHERE b.name LIKE CONCAT('%', :keyword, '%')")
     List<MerchantInfo> findMerchantListByMerchantNameKeyword(@Param("keyword") final String keyword);
+
+    MerchantInfo findByMerchantId(Long merchantId);
 }
