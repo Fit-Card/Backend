@@ -41,7 +41,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
             "AND b.y BETWEEN :rightLatitude AND :leftLatitude " +
             "AND b.x BETWEEN :leftLongitude AND :rightLongitude " +
             "ORDER BY b.branchName")
-    List<Object[]> findMerchantsWithinRectangle(
+    Page<Object[]> findMerchantsWithinRectangle(
             @Param("category") String category,
             @Param("leftLatitude") Double leftLatitude,
             @Param("leftLongitude") Double leftLongitude,
@@ -59,7 +59,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
             "WHERE b.y BETWEEN :rightLatitude AND :leftLatitude " +
             "AND b.x BETWEEN :leftLongitude AND :rightLongitude " +
             "ORDER BY b.branchName")
-    List<Object[]> findMerchantsNoCategoryWithinRectangle(
+    Page<Object[]> findMerchantsNoCategoryWithinRectangle(
             @Param("leftLatitude") Double leftLatitude,
             @Param("leftLongitude") Double leftLongitude,
             @Param("rightLatitude") Double rightLatitude,

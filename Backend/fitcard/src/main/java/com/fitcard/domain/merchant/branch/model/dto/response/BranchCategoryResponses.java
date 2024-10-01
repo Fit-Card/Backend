@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,7 +15,11 @@ public class BranchCategoryResponses {
 
     private List<BranchCategoryResponse> branchResponses;
 
-    public static BranchCategoryResponses from(List<BranchCategoryResponse> branchResponses) {
-        return new BranchCategoryResponses(branchResponses);
+    private int currentPage;
+
+    private int totalPages;
+
+    public static BranchCategoryResponses of(List<BranchCategoryResponse> branchResponses, Page<Object[]> page) {
+        return new BranchCategoryResponses(branchResponses, page.getNumber() + 1, page.getTotalPages());
     }
 }
