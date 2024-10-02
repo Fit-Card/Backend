@@ -2,8 +2,10 @@ package com.fitcard.global.firebase;
 
 import com.fitcard.domain.member.model.dto.request.MemberSendJoinFirebaseRequest;
 import com.fitcard.global.error.ErrorCode;
+import com.fitcard.global.firebase.dto.FirebaseCardInfoRequest;
 import com.fitcard.infra.kakao.model.KakaoCategoryLocalApiResponses;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,16 @@ public class FirebaseServiceImpl implements FirebaseService {
         sendToFirebase("/join", body);
     }
 
+    @Override
+    public void addCardsToFirebase(String userId, List<FirebaseCardInfoRequest> cardInfoRequests) throws FirebaseException {
+        Map<String, Object> body = new HashMap<>();
+        body.put("userId", userId);
+        body.put("cardInfos", cardInfoRequests); // 카드 정보 리스트를 전송
+        
+        sendToFirebase2("/addCard", body);
+    }
+
+
     private void sendToFirebase(String uri, Map<String, String> body) throws FirebaseException{
         restClient.post()
                 .uri(uri)
@@ -51,5 +63,17 @@ public class FirebaseServiceImpl implements FirebaseService {
 //                Pet pet = convertResponse(response);
 //                return pet;
 //            }
+    }
+
+    private void sendToFirebase2(String uri, Map<String, Object> body) throws FirebaseException {
+        restClient.post()
+                .uri(uri)
+                .body(body)
+                .retrieve()
+                .onStatus(HttpStatusCode::isError, (request, response) -> {
+                    String errorMsg = "Failed to send FCM message with status code: " + response.toString();
+                    log.error(errorMsg);
+                    throw new FirebaseException(ErrorCode.FIREBASE_ERROR, "firebase에 요청 보내기를 실패했습니다");
+                });
     }
 }

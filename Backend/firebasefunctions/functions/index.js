@@ -51,3 +51,36 @@ exports.join = onRequest(async (req, res) => {
         return res.status(500).send('Error saving user data');
     }
 });
+
+exports.addCard = onRequest(async (req, res) => {
+    const { userId, cardInfos } = req.body;
+
+    if (!userId || !cardInfos) {
+        return res.status(400).send('userId and cardInfos are required.');
+    }
+
+    try {
+        const userDocRef = admin.firestore().collection('users').doc(userId);
+        const userDoc = await userDocRef.get();
+
+        if (!userDoc.exists) {
+            return res.status(404).send('User not found');
+        }
+
+        const userData = userDoc.data();
+        const existingCardInfos = userData.cardInfos || [];
+
+        // 새로운 카드 정보를 기존 카드 목록에 추가
+        const updatedCardInfos = [...existingCardInfos, ...cardInfos];
+
+        // 업데이트된 카드 목록을 Firestore에 저장
+        await userDocRef.update({
+            cardInfos: updatedCardInfos
+        });
+
+        return res.status(200).send('Card added successfully');
+    } catch (error) {
+        console.error('Error updating cardInfos:', error);
+        return res.status(500).send('Error updating cardInfos');
+    }
+});

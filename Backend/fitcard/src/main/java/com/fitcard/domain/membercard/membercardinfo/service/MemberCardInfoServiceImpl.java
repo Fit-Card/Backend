@@ -21,6 +21,9 @@ import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCard
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.*;
 import com.fitcard.domain.membercard.membercardinfo.repository.MemberCardInfoRepository;
 import com.fitcard.global.error.ErrorCode;
+import com.fitcard.global.firebase.FirebaseService;
+import com.fitcard.global.firebase.FirebaseServiceImpl;
+import com.fitcard.global.firebase.dto.FirebaseCardInfoRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
@@ -49,12 +52,13 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
     private final RestClient restClient;
     private final String ALL_MEMBER_CARD_INFO_GET_URI;
     private final String MEMBER_CARD_INFO_GET_URI;
+    private final FirebaseService firebaseService;
 
     public MemberCardInfoServiceImpl(MemberCardInfoRepository memberCardInfoRepository, MemberRepository memberRepository,
                                      CardCompanyRepository cardCompanyRepository, CardInfoRepository cardInfoRepository,
                                      CardVersionRepository cardVersionRepository,
                                      @Value("${financial.user-card.get-all}")String allMemberCardInfoGetUri,
-                                     @Value("${financial.user-card.get}")String memberCardInfoGetUri) {
+                                     @Value("${financial.user-card.get}")String memberCardInfoGetUri, FirebaseService firebaseService) {
         this.cardCompanyRepository = cardCompanyRepository;
         this.memberCardInfoRepository = memberCardInfoRepository;
         this.memberRepository = memberRepository;
@@ -63,6 +67,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         this.restClient = RestClient.create();
         this.ALL_MEMBER_CARD_INFO_GET_URI = allMemberCardInfoGetUri;
         this.MEMBER_CARD_INFO_GET_URI = memberCardInfoGetUri;
+        this.firebaseService = firebaseService;
     }
 
     @Override
@@ -86,11 +91,21 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberCardCreateMemberCardsException(ErrorCode.MEMBER_NOT_FOUND, "해당하는 사용자가 없습니다."));
         List<MemberCardInfo> memberCardInfos = new ArrayList<>();
+        List<FirebaseCardInfoRequest> firebaseCardInfoRequests = new ArrayList<>();
+
         request.getFinancialUserCardIds().forEach(financialUserCardId -> {
-            memberCardInfos.add(getMemberCardInfoFromFinancial(financialUserCardId, member));
+            MemberCardInfo memberCardInfo = getMemberCardInfoFromFinancial(financialUserCardId, member);
+            memberCardInfos.add(memberCardInfo);
+
+            FirebaseCardInfoRequest cardInfoRequest = FirebaseCardInfoRequest.from(memberCardInfo);
+            firebaseCardInfoRequests.add(cardInfoRequest);
         });
 
         memberCardInfoRepository.saveAll(memberCardInfos);
+
+        if (!firebaseCardInfoRequests.isEmpty()) {
+            firebaseService.addCardsToFirebase(String.valueOf(memberId), firebaseCardInfoRequests);
+        }
     }
 
     @Override
@@ -221,7 +236,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             CardInfo cardInfo = optionalCardInfo.get();
             
             //todo: cardversion 찾아야 함 - cardInfo와 expireDate-5년 한 date가 version의 생성일자보다 이후인 가장 작은 버전 찾기
-            CardVersion cardVersion = cardVersionRepository.findById(1).orElseThrow(() -> new MemberCardCreateMemberCardsException(ErrorCode.NOT_FOUND_DATA, "card version 1번을 넣고 실행해야 합니다. test용"));
+            CardVersion cardVersion = cardVersionRepository.findFirstByCardInfoOrderByCreatedAtAsc(cardInfo).orElseThrow(() -> new MemberCardCreateMemberCardsException(ErrorCode.NOT_FOUND_DATA, "card version 1번을 넣고 실행해야 합니다. test용"));
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
             YearMonth yearMonth = YearMonth.parse(expiredDateString, formatter);
