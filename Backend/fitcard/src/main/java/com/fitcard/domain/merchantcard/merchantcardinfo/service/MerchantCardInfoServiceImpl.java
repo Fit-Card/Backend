@@ -1,14 +1,18 @@
 package com.fitcard.domain.merchantcard.merchantcardinfo.service;
 
+import com.fitcard.domain.card.cardinfo.model.CardInfo;
+import com.fitcard.domain.card.company.model.CardCompany;
 import com.fitcard.domain.card.version.model.CardVersion;
 import com.fitcard.domain.card.version.repository.CardVersionRepository;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.model.dto.response.MerchantSearchResponse;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.MerchantCardInfo;
+import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardBankResponse;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardResponse;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardResponses;
 import com.fitcard.domain.merchantcard.merchantcardinfo.repository.MerchantCardInfoRepository;
+import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,7 +51,6 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
     @Override
     public void createAll() {
         List<Object[]> mappings = merchantInfoRepository.findMerchantCard();
-        System.out.println(mappings.size());
         // 조회된 데이터를 매핑 테이블에 삽입
         for (Object[] mapping : mappings) {
             Long merchantIdValue = (Long) mapping[0];  // merchant_id는 Long 타입
@@ -61,6 +64,20 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
             MerchantCardInfo merchantCardInfo = MerchantCardInfo.of(merchantInfo, cardVersion);
             merchantCardInfoRepository.save(merchantCardInfo);  // 매핑 엔티티 저장
         }
+    }
+
+    @Override
+    public List<MerchantCardBankResponse> getMerchantCardBank(Integer merchantId) {
+        List<Object[]> results = merchantCardInfoRepository.findMerchantCardBank(merchantId);
+        // Object 배열을 MerchantCardBankResponse로 변환
+
+        return results.stream()
+                .map(result -> MerchantCardBankResponse.from(
+                        (Integer) result[0],
+                        (String) result[1],
+                        ((Long) result[2]).intValue()  // count, Long을 int로 변환
+                ))
+                .collect(Collectors.toList());
     }
 
 }
