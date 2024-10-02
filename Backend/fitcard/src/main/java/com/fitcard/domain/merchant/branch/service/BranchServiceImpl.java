@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -162,7 +161,7 @@ public class BranchServiceImpl implements BranchService {
 
     @Override
     public BranchCategoryResponses getBranchesByMerchantCategoryPagination(BranchCategoryRequest request, int pageNo) {
-        Pageable pageable = PageRequest.of(pageNo - 1, 10);
+        Pageable pageable = PageRequest.of(0, 50); // 한 번에 최대 50개의 데이터만 가져옴
 
         Page<Object[]> results;
 
@@ -190,14 +189,21 @@ public class BranchServiceImpl implements BranchService {
 
         }
 
-        List<BranchCategoryResponse> list =  results.stream()
+        // 최대 50개의 데이터를 가져온 후, 페이지네이션 적용 (10개씩 나눠서 보여줌)
+        List<Object[]> limitedResults = results.getContent().stream().limit(50).collect(Collectors.toList());
+        int start = (pageNo - 1) * 10;
+        int end = Math.min((start + 10), limitedResults.size()); // 페이지당 10개씩 나눔
+
+        List<BranchCategoryResponse> paginatedList = limitedResults.subList(start, end).stream()
                 .map(result -> {
                     MerchantInfo merchantInfo = (MerchantInfo) result[0];
                     Branch branch = (Branch) result[1];
                     return BranchCategoryResponse.of(branch, merchantInfo);
                 })
                 .collect(Collectors.toList());
+        int totalElements = limitedResults.size();
+        int totalPages = (int) Math.ceil((double) totalElements / 10); // 10개씩 나
 
-        return BranchCategoryResponses.of(list, results);
+        return BranchCategoryResponses.of(paginatedList, pageNo, totalPages); // 페이지 결과 반환
     }
 }
