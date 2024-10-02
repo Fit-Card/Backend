@@ -5,7 +5,7 @@ import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.Merch
 import java.util.List;
 
 public interface MerchantCardInfoService {
-    List<MerchantCardResponse> merchantCards(Integer merchantId);
+    List<MerchantCardResponse> getMerchantCards();
     List<MerchantCardResponse> getMerchantCardInfo(Integer merchantId);
     void createAll();
 }

@@ -13,9 +13,9 @@ import java.util.List;
 public class MerchantCardResponses {
 
     @Schema(description = "혜택 카드 목록")
-    private List<MerchantCardResponse> merchantCardBenefitResponses;
+    private List<MerchantCardResponse> merchantCardResponses;
 
-    public static MerchantCardResponses from(List<MerchantCardResponse> merchantCardBenefitResponses){
-        return new MerchantCardResponses(merchantCardBenefitResponses);
+    public static MerchantCardResponses from(List<MerchantCardResponse> merchantCardResponses){
+        return new MerchantCardResponses(merchantCardResponses);
     }
 }

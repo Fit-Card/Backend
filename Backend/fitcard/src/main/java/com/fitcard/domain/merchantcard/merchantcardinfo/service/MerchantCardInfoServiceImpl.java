@@ -3,9 +3,11 @@ package com.fitcard.domain.merchantcard.merchantcardinfo.service;
 import com.fitcard.domain.card.version.model.CardVersion;
 import com.fitcard.domain.card.version.repository.CardVersionRepository;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
+import com.fitcard.domain.merchant.merchantinfo.model.dto.response.MerchantSearchResponse;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.MerchantCardInfo;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardResponse;
+import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardResponses;
 import com.fitcard.domain.merchantcard.merchantcardinfo.repository.MerchantCardInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,22 +26,22 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
     private final MerchantInfoRepository merchantInfoRepository;
     private final MerchantCardInfoRepository merchantCardInfoRepository;
     private final CardVersionRepository cardVersionRepository;
+
     @Override
-    public List<MerchantCardResponse> merchantCards(Integer merchantId) {
-//        List<MerchantCardBenefitDescriptionResponse> = merchantCardInfoRepository.findAllById(merchantId);
-        return null;
+    public List<MerchantCardResponse> getMerchantCards() {
+        List<MerchantCardInfo> list = merchantCardInfoRepository.findAll();
+        return list.stream()
+                .map(MerchantCardResponse::from)
+                .toList();
     }
 
     @Override
     public List<MerchantCardResponse> getMerchantCardInfo(Integer merchantId) {
-        List<Object[]> list = merchantInfoRepository.findMerchantWithCardVersion(merchantId);
+        MerchantInfo merchantInfo = merchantInfoRepository.findByMerchantId(Long.valueOf(merchantId));
+        List<MerchantCardInfo> list = merchantCardInfoRepository.findAllByMerchantId(merchantInfo);
         return list.stream()
-                .map(result -> {
-                    Long merchantIdValue = (Long) result[0];  // merchantId는 Integer로 반환
-                    Integer cardVersionId = (Integer) result[1];    // cardVersionId도 Integer로 반환
-                    return MerchantCardResponse.of(merchantIdValue, cardVersionId);
-                })
-                .collect(Collectors.toList());
+                .map(MerchantCardResponse::from)
+                .toList();
     }
 
     @Override

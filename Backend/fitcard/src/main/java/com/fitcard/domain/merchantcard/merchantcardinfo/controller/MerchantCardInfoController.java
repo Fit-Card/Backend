@@ -29,9 +29,19 @@ public class MerchantCardInfoController {
         return Response.SUCCESS(MerchantCardResponses.from(merchantCardInfoList), "가맹점 혜택 조회에 성공했습니다.");
     }
 
+    @Operation(summary = "가맹점 혜택 조회 API", description = "가맹점 혜택에 해당되는 카드 리스트를 조회합니다.")
+    @SwaggerApiSuccess(description = "가맹점 혜택 조회에 성공했습니다.")
+    @PostMapping("/get/all/benefits")
+    public Response<MerchantCardResponses> getAllMerchantCard() {
+        List<MerchantCardResponse> merchantCardInfoList = merchantCardInfoService.getMerchantCards();
+        return Response.SUCCESS(MerchantCardResponses.from(merchantCardInfoList), "가맹점 혜택 조회에 성공했습니다.");
+    }
+
     @PostMapping("/post")
     public Response<?> createAll(){
         merchantCardInfoService.createAll();
         return Response.SUCCESS("저장 완료");
     }
+
+
 }

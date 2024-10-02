@@ -1,5 +1,6 @@
 package com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response;
 
+import com.fitcard.domain.merchantcard.merchantcardinfo.model.MerchantCardInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class MerchantCardResponse {
     @Schema(description = "카드 버전 ID", example = "2")
     private Integer cardVersionId;
 
-    public static MerchantCardResponse of(Long merchantId, Integer cardVersionId){
-        return new MerchantCardResponse(merchantId, cardVersionId);
+    public static MerchantCardResponse from(MerchantCardInfo merchantCardInfo){
+        return new MerchantCardResponse(merchantCardInfo.getMerchantId().getMerchantId(), merchantCardInfo.getCardVersionId().getId());
     }
 }
