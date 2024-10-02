@@ -21,4 +21,9 @@ public class MemberCardPaymentGetStatusResponse {
 
     @Schema(description = "실적 구간 레벨", example = "2")
     private int performanceLevel;
+
+    public static MemberCardPaymentGetStatusResponse of(int totalPayment, int performanceStart, int performanceEnd, int performanceLevel) {
+        return new MemberCardPaymentGetStatusResponse(totalPayment, performanceStart, performanceEnd, performanceLevel);
+    }
+
 }
