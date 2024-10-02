@@ -19,7 +19,7 @@ public class BranchCategoryResponses {
 
     private int totalPages;
 
-    public static BranchCategoryResponses of(List<BranchCategoryResponse> branchResponses, Page<Object[]> page) {
-        return new BranchCategoryResponses(branchResponses, page.getNumber() + 1, page.getTotalPages());
+    public static BranchCategoryResponses of(List<BranchCategoryResponse> branchResponses, int currentPage, int totalPages) {
+        return new BranchCategoryResponses(branchResponses, currentPage, totalPages);
     }
 }
