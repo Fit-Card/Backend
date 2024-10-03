@@ -8,7 +8,9 @@ import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.model.dto.response.MerchantSearchResponse;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.MerchantCardInfo;
+import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.request.MerchantCardBenefitRequest;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardBankResponse;
+import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardBenefitResponse;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardResponse;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardResponses;
 import com.fitcard.domain.merchantcard.merchantcardinfo.repository.MerchantCardInfoRepository;
@@ -76,6 +78,21 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
                         (Integer) result[0],
                         (String) result[1],
                         ((Long) result[2]).intValue()  // count, Long을 int로 변환
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MerchantCardBenefitResponse> getMerchantCardBenefit(MerchantCardBenefitRequest request) {
+        List<Object[]> results = merchantCardInfoRepository.findMerchantCardBenefit(Math.toIntExact(request.getMerchantId()), request.getCardCompanyId());
+
+        return results.stream()
+                .map(result -> MerchantCardBenefitResponse.of(
+                        (Integer) result[0],
+                        (String) result[1],
+                        (String) result[2],
+                        (String) result[3],
+                        (String) result[4]
                 ))
                 .collect(Collectors.toList());
     }
