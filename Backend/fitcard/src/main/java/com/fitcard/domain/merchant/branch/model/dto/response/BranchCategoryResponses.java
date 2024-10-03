@@ -4,17 +4,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Schema(description = "분점 목록")
+@Schema(description = "카드사 혜택 목록")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BranchCategoryResponses {
 
     private List<BranchCategoryResponse> branchResponses;
 
-    public static BranchCategoryResponses from(List<BranchCategoryResponse> branchResponses) {
-        return new BranchCategoryResponses(branchResponses);
+    private int currentPage;
+
+    private int totalPages;
+
+    public static BranchCategoryResponses of(List<BranchCategoryResponse> branchResponses, int currentPage, int totalPages) {
+        return new BranchCategoryResponses(branchResponses, currentPage, totalPages);
     }
 }

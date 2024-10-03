@@ -9,6 +9,7 @@ import com.fitcard.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,7 +57,7 @@ public class BranchController {
     @SwaggerApiSuccess(description = "가맹점 분점 카테고리 조회에 성공했습니다.(페이지네이션)")
     @PostMapping("/category-page")
     public Response<BranchCategoryResponses> getBranchesByMerchantCategory(@RequestBody final BranchCategoryRequest request, @RequestParam int pageNo){
-        List<BranchCategoryResponse> branches = branchService.getBranchesByMerchantCategoryPagination(request, pageNo);
-        return Response.SUCCESS(BranchCategoryResponses.from(branches), "가맹점 분점 카테고리 리스트 조회에 성공했습니다.(페이지네이션)");
+        BranchCategoryResponses  branchCategoryResponses  = branchService.getBranchesByMerchantCategoryPagination(request, pageNo);
+        return Response.SUCCESS(branchCategoryResponses, "가맹점 분점 카테고리 리스트 조회에 성공했습니다.(페이지네이션)");
     }
 }
