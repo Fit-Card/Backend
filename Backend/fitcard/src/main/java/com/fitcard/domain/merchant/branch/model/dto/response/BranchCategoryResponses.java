@@ -14,7 +14,11 @@ public class BranchCategoryResponses {
 
     private List<BranchCategoryResponse> branchResponses;
 
-    public static BranchCategoryResponses from(List<BranchCategoryResponse> branchResponses) {
-        return new BranchCategoryResponses(branchResponses);
+    private int currentPage;
+
+    private int totalPages;
+
+    public static BranchCategoryResponses of(List<BranchCategoryResponse> branchResponses, int currentPage, int totalPages) {
+        return new BranchCategoryResponses(branchResponses, currentPage, totalPages);
     }
 }
