@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@Schema(name = "", description = "")
+@Schema(name = "가맹점-카드 혜택 조회 응답 DTO", description = "가맹점-카드 혜택 조회 응답 DTO")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MerchantCardBenefitResponse {
     @Schema(description = "은행사 이름", example = "신한은행")

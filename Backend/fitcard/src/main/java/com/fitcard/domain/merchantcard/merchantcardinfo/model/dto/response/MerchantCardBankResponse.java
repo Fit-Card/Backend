@@ -1,14 +1,12 @@
 package com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response;
 
-import com.fitcard.domain.card.cardinfo.model.CardInfo;
-import com.fitcard.domain.card.company.model.CardCompany;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@Schema(name = "", description = "")
+@Schema(name = "가맹점-카드 은행사 조회 응답 DTO", description = "가맹점-카드 은행사 조회 응답 DTO")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MerchantCardBankResponse {
     @Schema(description = "은행사 ID", example = "1")

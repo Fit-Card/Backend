@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-@Schema(name = "", description = "")
+@Schema(description = "카드사 목록")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MerchantCardBankResponses {
 
