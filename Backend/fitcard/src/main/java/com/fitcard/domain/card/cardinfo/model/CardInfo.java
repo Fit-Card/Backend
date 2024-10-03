@@ -35,6 +35,8 @@ public class CardInfo extends BaseEntity {
 
     private boolean isBC;
 
+    private boolean performanceAdded;
+
     private CardInfo(String name, CardCompany cardCompany, String cardImage, String financialCardId, boolean isCredit, boolean isBC) {
         this.name = name;
         this.cardCompany = cardCompany;
