@@ -15,5 +15,5 @@ public class MemberCardDeleteRequest {
 
     @Schema(description = "멤버 카드 id", example = "3")
     @NotNull(message = "멤버 카드 id를 입력하세요.")
-    private int memberCardId;
+    private long memberCardId;
 }
