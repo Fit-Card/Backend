@@ -31,10 +31,12 @@ public class PaymentController {
         return Response.SUCCESS(null, "사용자 카드 전체 조회를 성공했습니다.");
     }
 
-    @Operation(summary = "사용자 카드 실적 현황 조회 API", description = "사용자 카드 실적 현황을 조회합니다.")
-    @SwaggerApiSuccess(description = "사용자 카드 실적 현황 조회를 성공했습니다.")
-    @PostMapping("/get/performance")
-    public Response<MemberCardPaymentGetStatusResponse> getMemberCardPaymentStatus(@RequestBody MemberCardPaymentGetStatusRequest request) {
+    @Operation(summary = "사용자 카드 실적 현황과 랜덤 혜택 조회 API", description = "사용자 카드 실적 현황과 랜덤 혜택을 조회합니다.")
+    @SwaggerApiSuccess(description = "사용자 카드 실적 현황과 랜덤 혜택 조회를 성공했습니다.")
+    @PostMapping("/get/performance-and-benefit")
+    public Response<MemberCardPaymentGetStatusResponse> getMemberCardPaymentStatusAndBenefits(@RequestBody MemberCardPaymentGetStatusRequest request) {
+//        MemberCardPaymentGetStatusResponse memberCardPaymentStatus = paymentService.getMemberCardPaymentStatus(request);
+
         MemberCardPaymentGetStatusResponse response = paymentService.getMemberCardPaymentStatus(request);
         return Response.SUCCESS(response);
     }

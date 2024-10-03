@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -56,27 +57,30 @@ public class PaymentServiceImpl implements PaymentService {
     public MemberCardPaymentGetStatusResponse getMemberCardPaymentStatus(MemberCardPaymentGetStatusRequest request) {
         MemberCardInfo memberCardInfo = memberCardInfoRepository.findById(request.getMemberCardId())
                 .orElseThrow(() -> new MemberCardPaymentGetStatusException(ErrorCode.NOT_FOUND_MEMBER_CARD, "사용자 카드가 없습니다."));
-//        List<Payment> payments = paymentRepository.findAllByMemberCardInfo(memberCardInfo);
+
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
-        MemberCardPerformance memberCardPerformance = memberCardPerformanceRepository.findByMemberCardAndYearAndMonth(memberCardInfo, year, month)
-                .orElse(MemberCardPerformance.empty(year, month, memberCardInfo));
+        Optional<MemberCardPerformance> optionalMemberCardPerformance = memberCardPerformanceRepository.findByMemberCardAndYearAndMonth(memberCardInfo, year, month);
+        MemberCardPerformance memberCardPerformance = optionalMemberCardPerformance
+                .orElseGet(() -> memberCardPerformanceRepository.save(MemberCardPerformance.empty(year, month, memberCardInfo)));
 
-        log.info("year: {}, month: {}", year, month);
+
+//        log.info("year: {}, month: {}", year, month);
+//        log.info("memberCardPerformance: {}", memberCardPerformance);
         //payments 모두 계산
         MemberCardPaymentInfos memberCardPaymentInfos = saveMemberCardPaymentsFromFinancial(memberCardInfo, memberCardInfo.getFinancialUserCardId(), memberCardPerformance.getLastFinancialId());
 
         if(memberCardPaymentInfos.getPayments().isEmpty()){
-            log.info("empty payment list");
+//            log.info("empty payment list");
             return makeMemberCardPaymentGetStatusResponse(memberCardInfo, memberCardPerformance);
         }
         int totalAmount = memberCardPerformance.getAmount() + memberCardPaymentInfos.getTotalAmount();
-        log.info("total amount {}", totalAmount);
+//        log.info("total amount {}", totalAmount);
         int lastId = memberCardPerformance.getLastFinancialId();
         lastId = memberCardPaymentInfos.getPayments().stream()
                 .map(Payment::getFinancialMemberCardPaymentId)
-                .max((a, b) -> b.compareTo(a)).get();
-        log.info("last id {}", lastId);
+                .max(Integer::compareTo).get();
+//        log.info("last id {}", lastId);
 
         memberCardPerformance.setLastFinancialId(lastId, totalAmount);
 
@@ -94,9 +98,11 @@ public class PaymentServiceImpl implements PaymentService {
         int level = 0;
         int startAmount = 0;
         int endAmount = 0;
+        int cardPerformanceId = 0;
 
         for(int i=0;i<cardPerformances.size();i++){
             CardPerformance cardPerformance = cardPerformances.get(i);
+            cardPerformanceId = cardPerformance.getId();
             endAmount = cardPerformance.getAmount();
             if(memberCardPerformance.getAmount() >= startAmount){
                 if(memberCardPerformance.getAmount() < endAmount){
@@ -112,7 +118,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         MemberCardPaymentGetStatusResponse memberCardPaymentGetStatusResponse =
-                MemberCardPaymentGetStatusResponse.of(memberCardPerformance.getAmount(),startAmount, endAmount, level);
+                MemberCardPaymentGetStatusResponse.of(cardPerformanceId, memberCardPerformance.getAmount(),startAmount, endAmount, level);
 
         return memberCardPaymentGetStatusResponse;
     }
@@ -121,7 +127,7 @@ public class PaymentServiceImpl implements PaymentService {
     private MemberCardPaymentInfos saveMemberCardPaymentsFromFinancial(MemberCardInfo memberCardInfo, long bankUserCardId, int lastId ) {
         String requestUri = GET_MEMBER_CARD_PAYMENT + "?bankUserCardId=" + bankUserCardId + "&lastId=" + lastId;
 
-        log.info("requestUri: {}", requestUri);
+//        log.info("requestUri: {}", requestUri);
         String response = restClient.get()
                 .uri(requestUri)
                 .retrieve()
@@ -132,7 +138,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         MemberCardPaymentInfos memberCardPaymentInfos = parsingGetAllRenewalMemberCardsFromJson(response, memberCardInfo);
         List<Payment> payments = paymentRepository.saveAll(memberCardPaymentInfos.getPayments());
-        log.info("payments size: {}", payments.size());
+//        log.info("payments size: {}", payments.size());
         return MemberCardPaymentInfos.of(payments, memberCardPaymentInfos.getTotalAmount());
     }
 
@@ -156,9 +162,9 @@ public class PaymentServiceImpl implements PaymentService {
                 String paymentName = bankUserCardPaymentGetResponse.get("paymentName").asText();
                 String paymentCategory = bankUserCardPaymentGetResponse.get("paymentCategory").asText();
 
-                log.info("paymentDateStr: {}", paymentDateStr);
+//                log.info("paymentDateStr: {}", paymentDateStr);
                 if (paymentRepository.existsByFinancialMemberCardPaymentId(financialMemberCardPaymentId)) {
-                    log.info("이미 있음!!");
+//                    log.info("이미 있음!!");
                     continue;
                 }
 
