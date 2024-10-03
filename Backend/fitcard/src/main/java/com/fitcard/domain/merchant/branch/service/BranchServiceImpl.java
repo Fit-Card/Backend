@@ -4,6 +4,7 @@ import com.fitcard.domain.merchant.branch.model.Branch;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchCategoryRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponse;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponses;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchSearchResponse;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
@@ -160,13 +161,16 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<BranchCategoryResponse> getBranchesByMerchantCategoryPagination(BranchCategoryRequest request, int pageNo) {
-        Pageable pageable = PageRequest.of(pageNo - 1, 10);
+    public BranchCategoryResponses getBranchesByMerchantCategoryPagination(BranchCategoryRequest request, int pageNo) {
+        Pageable pageable = PageRequest.of(0, 50); // 한 번에 최대 50개의 데이터만 가져옴
+
+        Page<Object[]> results;
+
         if(request.getCategory().equals("ALL")) {
             System.out.println("카테고리 없음");
             System.out.println(request.getCategory());
 
-            List<Object[]> results = branchRepository.findMerchantsNoCategoryWithinRectangle(
+            results = branchRepository.findMerchantsNoCategoryWithinRectangle(
                     request.getLeftLatitude(),
                     request.getLeftLongitude(),
                     request.getRightLatitude(),
@@ -174,15 +178,9 @@ public class BranchServiceImpl implements BranchService {
                     pageable
             );
 
-            return results.stream()
-                    .map(result -> {
-                        MerchantInfo merchantInfo = (MerchantInfo) result[0];
-                        Branch branch = (Branch) result[1];
-                        return BranchCategoryResponse.of(branch, merchantInfo);
-                    })
-                    .collect(Collectors.toList());
-        }
-        List<Object[]> results = branchRepository.findMerchantsWithinRectangle(
+
+        }else{
+            results = branchRepository.findMerchantsWithinRectangle(
                     request.getCategory(),
                     request.getLeftLatitude(),
                     request.getLeftLongitude(),
@@ -190,13 +188,23 @@ public class BranchServiceImpl implements BranchService {
                     request.getRightLongitude(),
                     pageable);
 
-        return results.stream()
+        }
+
+        // 최대 50개의 데이터를 가져온 후, 페이지네이션 적용 (10개씩 나눠서 보여줌)
+        List<Object[]> limitedResults = results.getContent().stream().limit(50).collect(Collectors.toList());
+        int start = (pageNo - 1) * 10;
+        int end = Math.min((start + 10), limitedResults.size()); // 페이지당 10개씩 나눔
+
+        List<BranchCategoryResponse> paginatedList = limitedResults.subList(start, end).stream()
                 .map(result -> {
                     MerchantInfo merchantInfo = (MerchantInfo) result[0];
                     Branch branch = (Branch) result[1];
                     return BranchCategoryResponse.of(branch, merchantInfo);
                 })
                 .collect(Collectors.toList());
+        int totalElements = limitedResults.size();
+        int totalPages = (int) Math.ceil((double) totalElements / 10); // 10개씩 나
 
+        return BranchCategoryResponses.of(paginatedList, pageNo, totalPages); // 페이지 결과 반환
     }
 }
