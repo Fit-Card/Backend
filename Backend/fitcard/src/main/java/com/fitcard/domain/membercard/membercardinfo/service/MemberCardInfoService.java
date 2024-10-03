@@ -6,6 +6,7 @@ import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCard
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetByAgeSpecificResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardPerformanceAndBenefitResponses;
 
 public interface MemberCardInfoService {
 
@@ -18,5 +19,7 @@ public interface MemberCardInfoService {
     MemberCardGetResponses getAllMemberCards(MemberCardGetAllRequest request);
 
     MemberCardGetByAgeSpecificResponses getMemberCardsByAgeSpecific(Integer memberId, int size);
+
+    MemberCardPerformanceAndBenefitResponses getMemberCardPerformanceAndBenefits(Integer memberId);
 
 }

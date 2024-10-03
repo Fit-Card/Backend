@@ -36,11 +36,19 @@ public class Payment extends BaseEntity {
     @NotEmpty
     private String paymentCategory;
 
-    private Payment(MemberCardInfo memberCard, Integer amount, LocalDateTime paymentDate, String paymentName, String paymentCategory) {
+    @NotNull
+    private Integer financialMemberCardPaymentId;
+
+    public Payment(MemberCardInfo memberCard, Integer amount, LocalDateTime paymentDate, String paymentName, String paymentCategory, Integer financialMemberCardPaymentId) {
         this.memberCard = memberCard;
         this.amount = amount;
         this.paymentDate = paymentDate;
         this.paymentName = paymentName;
         this.paymentCategory = paymentCategory;
+        this.financialMemberCardPaymentId = financialMemberCardPaymentId;
+    }
+
+    public static Payment of(MemberCardInfo memberCardInfo, Integer financialMemberCardPaymentId, Integer amount, LocalDateTime paymentDate, String paymentName, String paymentCategory) {
+        return new Payment(memberCardInfo, amount, paymentDate, paymentName, paymentCategory, financialMemberCardPaymentId);
     }
 }
