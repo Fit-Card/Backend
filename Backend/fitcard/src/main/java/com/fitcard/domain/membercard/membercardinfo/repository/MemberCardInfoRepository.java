@@ -32,4 +32,5 @@ public interface MemberCardInfoRepository extends JpaRepository<MemberCardInfo, 
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
 
+    List<MemberCardInfo> findAllByMember(Member member);
 }

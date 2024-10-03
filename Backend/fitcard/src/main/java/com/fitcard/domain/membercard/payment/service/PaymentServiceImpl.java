@@ -43,7 +43,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final RestClient restClient;
 
     public PaymentServiceImpl(PaymentRepository paymentRepository, MemberCardInfoRepository memberCardInfoRepository,
-                              MemberCardPerformanceRepository memberCardPerformanceRepository,CardPerformanceRepository cardPerformanceRepository,
+                              MemberCardPerformanceRepository memberCardPerformanceRepository, CardPerformanceRepository cardPerformanceRepository,
                               @Value("${financial.user-card.payment.get-all}") String GET_MEMBER_CARD_PAYMENT) {
         this.paymentRepository = paymentRepository;
         this.memberCardInfoRepository = memberCardInfoRepository;

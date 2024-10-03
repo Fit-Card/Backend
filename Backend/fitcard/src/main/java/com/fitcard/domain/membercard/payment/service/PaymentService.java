@@ -5,6 +5,7 @@ import com.fitcard.domain.membercard.payment.model.dto.response.MemberCardPaymen
 
 public interface PaymentService {
 
+//    MemberCardPaymentAndBenefitResponses getMemberCardPaymentAndBenefits(Integer MemberId);
     MemberCardPaymentGetStatusResponse getMemberCardPaymentStatus(MemberCardPaymentGetStatusRequest request);
 
 }

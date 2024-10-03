@@ -6,6 +6,7 @@ import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCard
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetByAgeSpecificResponses;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardPerformanceAndBenefitResponses;
 import com.fitcard.domain.membercard.membercardinfo.service.MemberCardInfoService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
 import com.fitcard.global.guard.Login;
@@ -65,6 +66,14 @@ public class MemberCardInfoController {
     public Response<MemberCardGetByAgeSpecificResponses> getMemberCardsByAgeSpecific(@Login Integer memberId,
                                                                                      @PathVariable("size") int size) {
         MemberCardGetByAgeSpecificResponses response = memberCardInfoService.getMemberCardsByAgeSpecific(memberId, size);
+        return Response.SUCCESS(response);
+    }
+
+    @Operation(summary = "사용자 카드 실적 현황과 랜덤 혜택 조회 API", description = "사용자 카드 실적 현황과 랜덤 혜택을 조회합니다.")
+    @SwaggerApiSuccess(description = "사용자 카드 실적 현황과 랜덤 혜택 조회를 성공했습니다.")
+    @PostMapping("/get/performance-and-benefit")
+    public Response<MemberCardPerformanceAndBenefitResponses> getMemberCardPaymentStatusAndBenefits(@Login Integer memberId) {
+        MemberCardPerformanceAndBenefitResponses response = memberCardInfoService.getMemberCardPerformanceAndBenefits(memberId);
         return Response.SUCCESS(response);
     }
 }
