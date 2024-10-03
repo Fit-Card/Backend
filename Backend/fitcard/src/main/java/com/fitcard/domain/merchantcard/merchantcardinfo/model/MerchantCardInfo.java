@@ -23,11 +23,15 @@ public class MerchantCardInfo extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "card_version_id", nullable = false)
-    private CardVersion cardVersion;
+    private CardVersion cardVersionId;
 
     // private 생성자
-    private MerchantCardInfo(MerchantInfo merchantId, CardVersion cardVersion) {
+    private MerchantCardInfo(MerchantInfo merchantId, CardVersion cardVersionId) {
         this.merchantId = merchantId;
-        this.cardVersion = cardVersion;
+        this.cardVersionId = cardVersionId;
+    }
+
+    public static MerchantCardInfo of(MerchantInfo merchantId, CardVersion cardVersionId) {
+        return new MerchantCardInfo(merchantId, cardVersionId);
     }
 }

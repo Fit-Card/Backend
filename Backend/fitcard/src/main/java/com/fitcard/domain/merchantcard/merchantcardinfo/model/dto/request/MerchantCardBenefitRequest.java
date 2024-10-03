@@ -16,4 +16,8 @@ public class MerchantCardBenefitRequest {
     @Schema(description = "가맹점 ID", example = "1")
     @NotNull(message = "가맹점 ID는 필수 항목입니다.")
     private Long merchantId;
+
+    @Schema(description = "은행사 ID", example = "1")
+    @NotNull(message = "은행사 ID는 필수 항목입니다.")
+    private Integer cardCompanyId;
 }
