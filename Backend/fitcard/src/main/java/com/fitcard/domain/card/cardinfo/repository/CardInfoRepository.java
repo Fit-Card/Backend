@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface CardInfoRepository extends JpaRepository<CardInfo, Integer> {
-    List<CardInfo> findByCardCompany(CardCompany cardCompany);
+    List<CardInfo> findByCardCompanyAndPerformanceAddedTrue(CardCompany cardCompany);
 
     boolean existsCardInfoByFinancialCardId(String cardId);
 
