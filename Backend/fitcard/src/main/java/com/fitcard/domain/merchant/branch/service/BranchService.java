@@ -1,6 +1,9 @@
 package com.fitcard.domain.merchant.branch.service;
 
+import com.fitcard.domain.merchant.branch.model.dto.request.BranchCategoryRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponse;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponses;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchSearchResponse;
 import com.fitcard.infra.kakao.model.LocalInfo;
@@ -15,4 +18,5 @@ public interface BranchService {
     BranchGetResponse getBranchById(final Long merchantBranchId);
     List<BranchGetResponse> getBranchesByMerchantKeyword(final BranchSearchRequest request);
     List<BranchSearchResponse> getBranchesByMerchantKeywordPagination(final BranchSearchRequest request, final int page);
+    BranchCategoryResponses getBranchesByMerchantCategoryPagination(final BranchCategoryRequest request, final int page);
 }

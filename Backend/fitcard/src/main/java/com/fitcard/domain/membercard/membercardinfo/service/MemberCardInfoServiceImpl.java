@@ -2,6 +2,7 @@ package com.fitcard.domain.membercard.membercardinfo.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitcard.domain.card.benefit.service.CardBenefitServiceImpl;
 import com.fitcard.domain.card.cardinfo.model.CardInfo;
 import com.fitcard.domain.card.cardinfo.repository.CardInfoRepository;
 import com.fitcard.domain.card.company.model.CardCompany;
@@ -10,16 +11,16 @@ import com.fitcard.domain.card.version.model.CardVersion;
 import com.fitcard.domain.card.version.repository.CardVersionRepository;
 import com.fitcard.domain.member.model.Member;
 import com.fitcard.domain.member.repository.MemberRepository;
-import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardCreateMemberCardsException;
-import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardDeleteException;
-import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardGetAllRenewalException;
-import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardGetByAgeSpecificException;
+import com.fitcard.domain.membercard.membercardinfo.exception.*;
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardCreateRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardDeleteRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardGetAllRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.response.*;
 import com.fitcard.domain.membercard.membercardinfo.repository.MemberCardInfoRepository;
+import com.fitcard.domain.membercard.payment.model.dto.request.MemberCardPaymentGetStatusRequest;
+import com.fitcard.domain.membercard.payment.model.dto.response.MemberCardPaymentGetStatusResponse;
+import com.fitcard.domain.membercard.payment.service.PaymentService;
 import com.fitcard.global.error.ErrorCode;
 import com.fitcard.global.firebase.FirebaseService;
 import com.fitcard.global.firebase.FirebaseServiceImpl;
@@ -53,12 +54,15 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
     private final String ALL_MEMBER_CARD_INFO_GET_URI;
     private final String MEMBER_CARD_INFO_GET_URI;
     private final FirebaseService firebaseService;
+    private final PaymentService paymentService;
+    private final CardBenefitServiceImpl cardBenefitServiceImpl;
 
     public MemberCardInfoServiceImpl(MemberCardInfoRepository memberCardInfoRepository, MemberRepository memberRepository,
                                      CardCompanyRepository cardCompanyRepository, CardInfoRepository cardInfoRepository,
-                                     CardVersionRepository cardVersionRepository,
+                                     CardVersionRepository cardVersionRepository, PaymentService paymentService,
                                      @Value("${financial.user-card.get-all}")String allMemberCardInfoGetUri,
-                                     @Value("${financial.user-card.get}")String memberCardInfoGetUri, FirebaseService firebaseService) {
+                                     @Value("${financial.user-card.get}")String memberCardInfoGetUri, FirebaseService firebaseService, CardBenefitServiceImpl cardBenefitServiceImpl) {
+
         this.cardCompanyRepository = cardCompanyRepository;
         this.memberCardInfoRepository = memberCardInfoRepository;
         this.memberRepository = memberRepository;
@@ -68,6 +72,8 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         this.ALL_MEMBER_CARD_INFO_GET_URI = allMemberCardInfoGetUri;
         this.MEMBER_CARD_INFO_GET_URI = memberCardInfoGetUri;
         this.firebaseService = firebaseService;
+        this.paymentService = paymentService;
+        this.cardBenefitServiceImpl = cardBenefitServiceImpl;
     }
 
     @Override
@@ -158,6 +164,23 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
                 .toList();
 
         return MemberCardGetByAgeSpecificResponses.from(memberCardGetByAgeSpecificResponses);
+    }
+
+    @Override
+    public MemberCardPerformanceAndBenefitResponses getMemberCardPerformanceAndBenefits(Integer memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberCardGetPerformanceAndBenefitsException(ErrorCode.MEMBER_NOT_FOUND, "사용자가 존재하지 않습니다."));
+        List<MemberCardInfo> memberCards = memberCardInfoRepository.findAllByMember(member);
+
+        List<MemberCardPerformanceAndBenefitResponse> memberCardPerformanceAndBenefitResponses = new ArrayList<>();
+        for (MemberCardInfo memberCardInfo : memberCards) {
+            MemberCardPaymentGetStatusResponse memberCardPaymentStatus = paymentService.getMemberCardPaymentStatus(new MemberCardPaymentGetStatusRequest(memberCardInfo.getMemberCardId()));
+            //todo: benefits를 랜덤으로 만들어 줘야 한다.
+            List<String> cardBenefits = List.of("스타벅스 10% 할인", "바나프레소 5% 할인", "버거킹 5% 할인");
+            memberCardPerformanceAndBenefitResponses.add(MemberCardPerformanceAndBenefitResponse.of(memberCardInfo.getCardVersion().getCardInfo(),
+                    memberCardPaymentStatus, cardBenefits));
+        }
+        return MemberCardPerformanceAndBenefitResponses.from(memberCardPerformanceAndBenefitResponses);
     }
 
     private MemberCardInfo getMemberCardInfoFromFinancial(long financialUserCardId, Member member) {

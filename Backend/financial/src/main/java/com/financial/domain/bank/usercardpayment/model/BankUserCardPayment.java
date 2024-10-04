@@ -18,7 +18,7 @@ public class BankUserCardPayment extends BaseEntity {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "bank_user_card", nullable = false)
+    @JoinColumn(name = "bank_user_card_id", nullable = false)
     private BankUserCard bankUserCard;
 
     @NotBlank
@@ -28,5 +28,8 @@ public class BankUserCardPayment extends BaseEntity {
     private String paymentDate;
 
     @NotBlank
-    private String merchantName;
+    private String paymentName;
+
+    @NotBlank
+    private String paymentCategory;
 }
