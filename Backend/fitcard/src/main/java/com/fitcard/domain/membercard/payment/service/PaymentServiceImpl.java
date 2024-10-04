@@ -134,6 +134,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .uri(requestUri)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, (req, res) -> {
+                    log.info("error!!! response: {}", res);
                     throw new MemberCardCreateMemberCardsException(ErrorCode.NOT_FOUND_FINANCIAL_USER_CARD_ID, "financial에 해당하는 user card id가 없습니다");
                 })
                 .body(String.class);
