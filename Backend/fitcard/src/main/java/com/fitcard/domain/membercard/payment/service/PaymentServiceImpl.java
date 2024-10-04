@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitcard.domain.card.performance.model.CardPerformance;
 import com.fitcard.domain.card.performance.repository.CardPerformanceRepository;
-import com.fitcard.domain.membercard.membercardinfo.exception.MemberCardCreateMemberCardsException;
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
 import com.fitcard.domain.membercard.membercardinfo.repository.MemberCardInfoRepository;
 import com.fitcard.domain.membercard.payment.exception.MemberCardPaymentGetStatusException;
@@ -135,7 +134,9 @@ public class PaymentServiceImpl implements PaymentService {
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, (req, res) -> {
                     log.info("error!!! response: {}", res);
-                    throw new MemberCardCreateMemberCardsException(ErrorCode.NOT_FOUND_FINANCIAL_USER_CARD_ID, "financial에 해당하는 user card id가 없습니다");
+                    log.info("error!!!! error getStatusText: {}", res.getStatusText());
+                    log.info("error!!!! error get status code: {}", res.getStatusCode());
+                    throw new MemberCardPaymentGetStatusException(ErrorCode.NOT_FOUND_FINANCIAL_USER_CARD_ID, "financial에 해당하는 user card id가 없습니다");
                 })
                 .body(String.class);
 
