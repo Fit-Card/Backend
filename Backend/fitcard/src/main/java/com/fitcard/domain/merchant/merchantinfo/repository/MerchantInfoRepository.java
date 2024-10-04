@@ -1,6 +1,5 @@
 package com.fitcard.domain.merchant.merchantinfo.repository;
 
-import com.fitcard.domain.merchant.branch.model.Branch;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +14,8 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfo, Inte
 
     @Query("SELECT b FROM MerchantInfo b WHERE b.name LIKE CONCAT('%', :keyword, '%')")
     List<MerchantInfo> findMerchantListByMerchantNameKeyword(@Param("keyword") final String keyword);
+
+    MerchantInfo findByMerchantId(Long merchantId);
 
     @Query("SELECT m.merchantId, cv.id as cardVersionId " +
             "FROM MerchantInfo m " +
@@ -33,4 +34,5 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfo, Inte
             "WHERE cv.id IS NOT NULL " +
             "GROUP BY m.merchantId, cv.id")
     List<Object[]> findMerchantCard();
+
 }
