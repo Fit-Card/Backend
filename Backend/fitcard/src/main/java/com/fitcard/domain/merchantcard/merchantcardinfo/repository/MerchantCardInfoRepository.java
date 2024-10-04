@@ -20,7 +20,8 @@ public interface MerchantCardInfoRepository extends JpaRepository<MerchantCardIn
 
     @Query("SELECT ci.cardCompany.id as cardCompanyId, " +
             "concat(cc.name, '은행') as bankName, " +
-            "count(ci.cardCompany.id) as count " +
+            "count(ci.cardCompany.id) as count, " +
+            "ci.cardCompany.imageUrl as cardCompanyImgUrl " +
             "FROM MerchantCardInfo mc " +
             "LEFT JOIN mc.cardVersionId cv " +
             "LEFT JOIN cv.cardInfo ci " +
