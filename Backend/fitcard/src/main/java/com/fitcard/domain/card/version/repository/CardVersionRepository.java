@@ -15,4 +15,6 @@ public interface CardVersionRepository extends JpaRepository<CardVersion, Intege
 
     @Query("SELECT cv FROM CardVersion cv WHERE cv.cardInfo.id = :cardId ORDER BY cv.version DESC")
     Optional<CardVersion> findTopByCardInfoIdOrderByVersionDesc(@Param("cardId") int cardId);
+
+    Optional<CardVersion> findFirstByCardInfoOrderByCreatedAtAsc(CardInfo cardInfo);
 }

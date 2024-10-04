@@ -3,11 +3,14 @@ package com.fitcard.domain.member.service;
 import com.fitcard.domain.member.exception.MemberNotFoundException;
 import com.fitcard.domain.member.exception.MemberUpdateFailedException;
 import com.fitcard.domain.member.model.Member;
+import com.fitcard.domain.member.model.dto.request.MemberSaveFcmTokenRequest;
+import com.fitcard.domain.member.model.dto.request.MemberSendJoinFirebaseRequest;
 import com.fitcard.domain.member.model.dto.request.MemberUpdateRequest;
 import com.fitcard.domain.member.model.dto.response.MemberGetResponse;
 import com.fitcard.domain.member.model.dto.response.MemberUpdateResponse;
 import com.fitcard.domain.member.repository.MemberRepository;
 import com.fitcard.global.error.ErrorCode;
+import com.fitcard.global.firebase.FirebaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +25,7 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FirebaseService firebaseService;
 
     @Override
     public MemberGetResponse getUser(String loginId) {
@@ -52,6 +56,12 @@ public class MemberServiceImpl implements MemberService {
 
         // 수정된 사용자 정보 반환
         return MemberUpdateResponse.of(member);
+    }
+
+    @Override
+    public void createFcmToken(MemberSaveFcmTokenRequest request, Integer memberId) {
+        //todo: 예외처리 필요
+        firebaseService.sendJoinRequest(MemberSendJoinFirebaseRequest.of(request, memberId));
     }
 
 }
