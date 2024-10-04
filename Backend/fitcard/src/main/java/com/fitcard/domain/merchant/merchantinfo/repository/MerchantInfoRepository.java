@@ -1,13 +1,36 @@
 package com.fitcard.domain.merchant.merchantinfo.repository;
 
+import com.fitcard.domain.merchant.branch.model.Branch;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MerchantInfoRepository extends JpaRepository<MerchantInfo, Integer> {
 
     Optional<MerchantInfo> findByName(String merchantName);
 
-    MerchantInfo findByMerchantId(Long merchantId);
+    @Query("SELECT b FROM MerchantInfo b WHERE b.name LIKE CONCAT('%', :keyword, '%')")
+    List<MerchantInfo> findMerchantListByMerchantNameKeyword(@Param("keyword") final String keyword);
+
+    @Query("SELECT m.merchantId, cv.id as cardVersionId " +
+            "FROM MerchantInfo m " +
+            "LEFT JOIN CardBenefit cb ON m.merchantId = cb.merchantId " +
+            "LEFT JOIN CardPerformance cp ON cb.cardPerformance.id = cp.id " +
+            "LEFT JOIN CardVersion cv ON cp.cardVersion.id = cv.id " +
+            "WHERE m.merchantId = :merchantId " +
+            "GROUP BY cv.id")
+    List<Object[]> findMerchantWithCardVersion(@Param("merchantId") Integer merchantId);
+
+    @Query("SELECT m.merchantId, cv.id as cardVersionId " +
+            "FROM MerchantInfo m " +
+            "LEFT JOIN CardBenefit cb ON m.merchantId = cb.merchantId " +
+            "LEFT JOIN CardPerformance cp ON cb.cardPerformance.id = cp.id " +
+            "LEFT JOIN CardVersion cv ON cp.cardVersion.id = cv.id " +
+            "WHERE cv.id IS NOT NULL " +
+            "GROUP BY m.merchantId, cv.id")
+    List<Object[]> findMerchantCard();
 }

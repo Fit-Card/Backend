@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -32,7 +34,11 @@ public class BankUserCardPaymentServiceImpl implements BankUserCardPaymentServic
 
         BankUserCard bankUserCard = bankUserCardRepository.findById(request.getBankUserCardId())
                 .orElseThrow(() -> new BankUserCardPaymentGetException(ErrorCode.BAD_REQUEST, "해당하는 사용자 카드가 없습니다."));
-        List<BankUserCardPayment> bankUserCardPayments = bankUserCardPaymentRepository.findAllByBankUserCardAndIdGreaterThan(bankUserCard, request.getLastId());
+
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd[ H:mm][ HH:mm]"));
+        List<BankUserCardPayment> bankUserCardPayments = bankUserCardPaymentRepository.findAllByBankUserCardAndIdGreaterThanAndPaymentDateBefore(bankUserCard, request.getLastId(), now);
+
+//        List<BankUserCardPayment> bankUserCardPayments = bankUserCardPaymentRepository.findAllByBankUserCardAndIdGreaterThan(bankUserCard, request.getLastId());
         List<BankUserCardPaymentGetResponse> bankUserCardPaymentGetResponses = bankUserCardPayments.stream()
                 .map(BankUserCardPaymentGetResponse::from)
                 .toList();
