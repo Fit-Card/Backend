@@ -129,7 +129,7 @@ public class PaymentServiceImpl implements PaymentService {
     private MemberCardPaymentInfos saveMemberCardPaymentsFromFinancial(MemberCardInfo memberCardInfo, long bankUserCardId, int lastId ) {
         String requestUri = GET_MEMBER_CARD_PAYMENT + "?bankUserCardId=" + bankUserCardId + "&lastId=" + lastId;
 
-//        log.info("requestUri: {}", requestUri);
+        log.info("requestUri: {}", requestUri);
         String response = restClient.get()
                 .uri(requestUri)
                 .retrieve()
