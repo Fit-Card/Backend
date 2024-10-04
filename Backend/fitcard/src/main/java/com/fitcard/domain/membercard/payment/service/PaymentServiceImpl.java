@@ -85,7 +85,9 @@ public class PaymentServiceImpl implements PaymentService {
         memberCardPerformance.setLastFinancialId(lastId, totalAmount);
 
         //실적 구간 찾기
-        return makeMemberCardPaymentGetStatusResponse(memberCardInfo, memberCardPerformance);
+        MemberCardPaymentGetStatusResponse memberCardPaymentGetStatusResponse = makeMemberCardPaymentGetStatusResponse(memberCardInfo, memberCardPerformance);
+        memberCardPerformance.setCardPerformance(memberCardPaymentGetStatusResponse.getCardPerformanceId(), memberCardPaymentGetStatusResponse.getPerformanceLevel());
+        return memberCardPaymentGetStatusResponse;
     }
 
     private MemberCardPaymentGetStatusResponse makeMemberCardPaymentGetStatusResponse(MemberCardInfo memberCardInfo, MemberCardPerformance memberCardPerformance){

@@ -43,7 +43,7 @@ public class CardInfoServiceImpl implements CardInfoService {
 
         CardCompany cardCompany = cardCompanyRepository.findById(cardCompanyId).orElseThrow(
                 () -> new GetCardsByCompanyException(ErrorCode.CARD_COMPANY_NOT_FOUND, "해당하는 카드사가 없습니다."));
-        List<CardInfoGetResponse> cardInfoGetResponses = cardInfoRepository.findByCardCompany(cardCompany).stream()
+        List<CardInfoGetResponse> cardInfoGetResponses = cardInfoRepository.findByCardCompanyAndPerformanceAddedTrue(cardCompany).stream()
                 .map(CardInfoGetResponse::of)
                 .toList();
 
