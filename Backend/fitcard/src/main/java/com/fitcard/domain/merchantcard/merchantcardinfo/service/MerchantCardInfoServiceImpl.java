@@ -77,7 +77,8 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
                 .map(result -> MerchantCardBankResponse.from(
                         (Integer) result[0],
                         (String) result[1],
-                        ((Long) result[2]).intValue()  // count, Long을 int로 변환
+                        ((Long) result[2]).intValue(),  // count, Long을 int로 변환
+                        (String) result[3]
                 ))
                 .collect(Collectors.toList());
     }
