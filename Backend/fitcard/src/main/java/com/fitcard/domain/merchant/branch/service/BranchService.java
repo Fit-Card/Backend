@@ -2,6 +2,7 @@ package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchCategoryRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
+import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponse;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponses;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
 import com.fitcard.domain.merchant.branch.model.dto.response.BranchSearchResponse;
