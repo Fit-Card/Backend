@@ -71,9 +71,10 @@ public class MemberCardInfoController {
 
     @Operation(summary = "사용자 카드 실적 현황과 랜덤 혜택 조회 API", description = "사용자 카드 실적 현황과 랜덤 혜택을 조회합니다.")
     @SwaggerApiSuccess(description = "사용자 카드 실적 현황과 랜덤 혜택 조회를 성공했습니다.")
-    @PostMapping("/get/performance-and-benefit")
-    public Response<MemberCardPerformanceAndBenefitResponses> getMemberCardPaymentStatusAndBenefits(@Login Integer memberId) {
-        MemberCardPerformanceAndBenefitResponses response = memberCardInfoService.getMemberCardPerformanceAndBenefits(memberId);
+    @PostMapping("/get/performance-and-benefit/{size}")
+    public Response<MemberCardPerformanceAndBenefitResponses> getMemberCardPaymentStatusAndBenefits(@Login Integer memberId,
+                                                                                                    @PathVariable("size") int num) {
+        MemberCardPerformanceAndBenefitResponses response = memberCardInfoService.getMemberCardPerformanceAndBenefits(memberId, num);
         return Response.SUCCESS(response);
     }
 }
