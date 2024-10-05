@@ -1,5 +1,6 @@
 package com.fitcard.domain.merchantcard.merchantcardinfo.service;
 
+import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.request.MerchantCardBankRequest;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.request.MerchantCardBenefitRequest;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardBankResponse;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardBenefitResponse;
@@ -11,6 +12,6 @@ public interface MerchantCardInfoService {
     List<MerchantCardResponse> getMerchantCards();
     List<MerchantCardResponse> getMerchantCardInfo(Integer merchantId);
     void createAll();
-    List<MerchantCardBankResponse> getMerchantCardBank(Integer merchantId);
+    List<MerchantCardBankResponse> getMerchantCardBank(Integer loginId, MerchantCardBankRequest request);
     List<MerchantCardBenefitResponse> getMerchantCardBenefit(MerchantCardBenefitRequest merchantCardBenefitRequest);
 }
