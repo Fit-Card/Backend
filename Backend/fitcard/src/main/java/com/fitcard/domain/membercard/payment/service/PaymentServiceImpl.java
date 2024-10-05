@@ -4,16 +4,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fitcard.domain.card.performance.model.CardPerformance;
 import com.fitcard.domain.card.performance.repository.CardPerformanceRepository;
+import com.fitcard.domain.member.model.Member;
+import com.fitcard.domain.member.repository.MemberRepository;
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
 import com.fitcard.domain.membercard.membercardinfo.repository.MemberCardInfoRepository;
 import com.fitcard.domain.membercard.payment.exception.MemberCardPaymentGetStatusException;
+import com.fitcard.domain.membercard.payment.exception.MemberCardPaymentGetWithCategoryException;
 import com.fitcard.domain.membercard.payment.model.MemberCardPaymentInfos;
 import com.fitcard.domain.membercard.payment.model.Payment;
 import com.fitcard.domain.membercard.payment.model.dto.request.MemberCardPaymentGetStatusRequest;
 import com.fitcard.domain.membercard.payment.model.dto.response.MemberCardPaymentGetStatusResponse;
+import com.fitcard.domain.membercard.payment.model.dto.response.MemberCardPaymentGetWithCategoryResponse;
 import com.fitcard.domain.membercard.payment.repository.PaymentRepository;
 import com.fitcard.domain.membercard.performance.model.MemberCardPerformance;
 import com.fitcard.domain.membercard.performance.repository.MemberCardPerformanceRepository;
+import com.fitcard.domain.merchant.merchantinfo.model.MerchantCategory;
 import com.fitcard.global.error.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,9 +30,7 @@ import org.springframework.web.client.RestClient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -40,16 +43,18 @@ public class PaymentServiceImpl implements PaymentService {
     private final CardPerformanceRepository cardPerformanceRepository;
     private final String GET_MEMBER_CARD_PAYMENT;
     private final RestClient restClient;
+    private final MemberRepository memberRepository;
 
     public PaymentServiceImpl(PaymentRepository paymentRepository, MemberCardInfoRepository memberCardInfoRepository,
                               MemberCardPerformanceRepository memberCardPerformanceRepository, CardPerformanceRepository cardPerformanceRepository,
-                              @Value("${financial.user-card.payment.get-all}") String GET_MEMBER_CARD_PAYMENT) {
+                              @Value("${financial.user-card.payment.get-all}") String GET_MEMBER_CARD_PAYMENT, MemberRepository memberRepository) {
         this.paymentRepository = paymentRepository;
         this.memberCardInfoRepository = memberCardInfoRepository;
         this.memberCardPerformanceRepository = memberCardPerformanceRepository;
         this.cardPerformanceRepository = cardPerformanceRepository;
         this.GET_MEMBER_CARD_PAYMENT = GET_MEMBER_CARD_PAYMENT;
         this.restClient = RestClient.create();
+        this.memberRepository = memberRepository;
     }
 
     @Override
@@ -62,24 +67,18 @@ public class PaymentServiceImpl implements PaymentService {
         Optional<MemberCardPerformance> optionalMemberCardPerformance = memberCardPerformanceRepository.findByMemberCardAndYearAndMonth(memberCardInfo, year, month);
         MemberCardPerformance memberCardPerformance = optionalMemberCardPerformance
                 .orElseGet(() -> memberCardPerformanceRepository.save(MemberCardPerformance.empty(year, month, memberCardInfo)));
-
-
-//        log.info("year: {}, month: {}", year, month);
-//        log.info("memberCardPerformance: {}", memberCardPerformance);
+        
         //payments 모두 계산
         MemberCardPaymentInfos memberCardPaymentInfos = saveMemberCardPaymentsFromFinancial(memberCardInfo, memberCardInfo.getFinancialUserCardId(), memberCardPerformance.getLastFinancialId());
 
         if(memberCardPaymentInfos.getPayments().isEmpty()){
-//            log.info("empty payment list");
             return makeMemberCardPaymentGetStatusResponse(memberCardInfo, memberCardPerformance);
         }
         int totalAmount = memberCardPerformance.getAmount() + memberCardPaymentInfos.getTotalAmount();
-//        log.info("total amount {}", totalAmount);
         int lastId = memberCardPerformance.getLastFinancialId();
         lastId = memberCardPaymentInfos.getPayments().stream()
                 .map(Payment::getFinancialMemberCardPaymentId)
                 .max(Integer::compareTo).get();
-//        log.info("last id {}", lastId);
 
         memberCardPerformance.setLastFinancialId(lastId, totalAmount);
 
@@ -87,6 +86,16 @@ public class PaymentServiceImpl implements PaymentService {
         MemberCardPaymentGetStatusResponse memberCardPaymentGetStatusResponse = makeMemberCardPaymentGetStatusResponse(memberCardInfo, memberCardPerformance);
         memberCardPerformance.setCardPerformance(memberCardPaymentGetStatusResponse.getCardPerformanceId(), memberCardPaymentGetStatusResponse.getPerformanceLevel());
         return memberCardPaymentGetStatusResponse;
+    }
+
+    @Override
+    public MemberCardPaymentGetWithCategoryResponse getMemberCardPaymentWithCategory(int memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberCardPaymentGetWithCategoryException(ErrorCode.MEMBER_NOT_FOUND, "사용자가 없습니다."));
+
+        List<MemberCardInfo> memberCards = memberCardInfoRepository.findByMember(member);
+
+        return makeMemberCardPaymentGetWithCategoryResponse(memberCards);
     }
 
     private MemberCardPaymentGetStatusResponse makeMemberCardPaymentGetStatusResponse(MemberCardInfo memberCardInfo, MemberCardPerformance memberCardPerformance){
@@ -138,7 +147,6 @@ public class PaymentServiceImpl implements PaymentService {
 
         MemberCardPaymentInfos memberCardPaymentInfos = parsingGetAllRenewalMemberCardsFromJson(response, memberCardInfo);
         List<Payment> payments = paymentRepository.saveAll(memberCardPaymentInfos.getPayments());
-//        log.info("payments size: {}", payments.size());
         return MemberCardPaymentInfos.of(payments, memberCardPaymentInfos.getTotalAmount());
     }
 
@@ -162,9 +170,7 @@ public class PaymentServiceImpl implements PaymentService {
                 String paymentName = bankUserCardPaymentGetResponse.get("paymentName").asText();
                 String paymentCategory = bankUserCardPaymentGetResponse.get("paymentCategory").asText();
 
-//                log.info("paymentDateStr: {}", paymentDateStr);
                 if (paymentRepository.existsByFinancialMemberCardPaymentId(financialMemberCardPaymentId)) {
-//                    log.info("이미 있음!!");
                     continue;
                 }
 
@@ -181,8 +187,6 @@ public class PaymentServiceImpl implements PaymentService {
                 }
             }
 
-//            savedPayments = paymentRepository.saveAll(payments);
-
         } catch (Exception e) {
             log.error("json 파싱 실패!! {}", e.getMessage());
             e.printStackTrace();
@@ -191,4 +195,23 @@ public class PaymentServiceImpl implements PaymentService {
         return MemberCardPaymentInfos.of(payments, totalAmount);
     }
 
+    private MemberCardPaymentGetWithCategoryResponse makeMemberCardPaymentGetWithCategoryResponse(List<MemberCardInfo> memberCards){
+
+        // 이번 달의 시작 날짜와 현재 시간 계산
+        LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).toLocalDate().atStartOfDay();
+        LocalDateTime now = LocalDateTime.now();
+
+        Map<String, Integer> paymentsByCategory = new HashMap<>();
+
+        for (MemberCardInfo memberCardInfo : memberCards) {
+            List<Payment> payments = paymentRepository.findAllByMemberCardAndPaymentDateBetween(memberCardInfo, startOfMonth, now);
+
+            for (Payment payment : payments) {
+                String category = MerchantCategory.getByCategoryCode(payment.getPaymentCategory()).getCategoryName();
+                int amount = payment.getAmount();
+                paymentsByCategory.put(category, paymentsByCategory.getOrDefault(category, 0) + amount);
+            }
+        }
+        return MemberCardPaymentGetWithCategoryResponse.from(paymentsByCategory);
+    }
 }

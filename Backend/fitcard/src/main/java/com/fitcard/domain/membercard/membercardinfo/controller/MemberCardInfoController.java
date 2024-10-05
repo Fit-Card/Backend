@@ -12,6 +12,7 @@ import com.fitcard.global.config.swagger.SwaggerApiSuccess;
 import com.fitcard.global.guard.Login;
 import com.fitcard.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +65,7 @@ public class MemberCardInfoController {
     @SwaggerApiSuccess(description = "사용자 나이대 카드 사용순 조회를 성공했습니다.")
     @PostMapping("/get/age-specific/{size}")
     public Response<MemberCardGetByAgeSpecificResponses> getMemberCardsByAgeSpecific(@Login Integer memberId,
+                                                                                     @Parameter(description = "조회할 카드 개수", example = "3")
                                                                                      @PathVariable("size") int size) {
         MemberCardGetByAgeSpecificResponses response = memberCardInfoService.getMemberCardsByAgeSpecific(memberId, size);
         return Response.SUCCESS(response);
@@ -73,6 +75,7 @@ public class MemberCardInfoController {
     @SwaggerApiSuccess(description = "사용자 카드 실적 현황과 랜덤 혜택 조회를 성공했습니다.")
     @PostMapping("/get/performance-and-benefit/{size}")
     public Response<MemberCardPerformanceAndBenefitResponses> getMemberCardPaymentStatusAndBenefits(@Login Integer memberId,
+                                                                                                    @Parameter(description = "조회할 혜택 개수", example = "3")
                                                                                                     @PathVariable("size") int num) {
         MemberCardPerformanceAndBenefitResponses response = memberCardInfoService.getMemberCardPerformanceAndBenefits(memberId, num);
         return Response.SUCCESS(response);
