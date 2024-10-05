@@ -101,6 +101,10 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
 
         request.getFinancialUserCardIds().forEach(financialUserCardId -> {
             MemberCardInfo memberCardInfo = getMemberCardInfoFromFinancial(financialUserCardId, member);
+            //이미 있는 카드면 continue
+            if (memberCardInfoRepository.existsByFinancialCardId(memberCardInfo.getCardVersion().getCardInfo().getFinancialCardId())) {
+                return;
+            }
             memberCardInfos.add(memberCardInfo);
 
             FirebaseCardInfoRequest cardInfoRequest = FirebaseCardInfoRequest.from(memberCardInfo);
