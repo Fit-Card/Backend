@@ -4,10 +4,12 @@ import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface MerchantInfoRepository extends JpaRepository<MerchantInfo, Integer> {
 
     Optional<MerchantInfo> findByName(String merchantName);
@@ -34,5 +36,4 @@ public interface MerchantInfoRepository extends JpaRepository<MerchantInfo, Inte
             "WHERE cv.id IS NOT NULL " +
             "GROUP BY m.merchantId, cv.id")
     List<Object[]> findMerchantCard();
-
 }
