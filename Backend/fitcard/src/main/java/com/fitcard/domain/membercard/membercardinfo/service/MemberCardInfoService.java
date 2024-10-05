@@ -20,6 +20,6 @@ public interface MemberCardInfoService {
 
     MemberCardGetByAgeSpecificResponses getMemberCardsByAgeSpecific(Integer memberId, int size);
 
-    MemberCardPerformanceAndBenefitResponses getMemberCardPerformanceAndBenefits(Integer memberId);
+    MemberCardPerformanceAndBenefitResponses getMemberCardPerformanceAndBenefits(Integer memberId, Integer num);
 
 }
