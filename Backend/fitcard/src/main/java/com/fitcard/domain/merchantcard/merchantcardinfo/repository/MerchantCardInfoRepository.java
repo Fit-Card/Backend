@@ -31,6 +31,22 @@ public interface MerchantCardInfoRepository extends JpaRepository<MerchantCardIn
             "ORDER BY ci.cardCompany.id")
     List<Object[]> findMerchantCardBank(@Param("merchantId") Integer merchantId);
 
+    @Query("SELECT ci.cardCompany.id AS cardCompanyId, " +
+            "CONCAT(cc.name, '은행') AS bankName, " +
+            "COUNT(ci.cardCompany.id) AS count, " +
+            "ci.cardCompany.imageUrl as cardCompanyImgUrl " +
+            "FROM MerchantCardInfo mc " +
+            "LEFT JOIN mc.cardVersionId cv " +
+            "LEFT JOIN cv.cardInfo ci " +
+            "LEFT JOIN MemberCardInfo memc ON memc.cardVersion.id = cv.id " +
+            "LEFT JOIN ci.cardCompany cc " +
+            "WHERE mc.merchantId.merchantId = :merchantId " +
+            "AND memc.member.memberId = :loginId " +
+            "GROUP BY ci.cardCompany.id " +
+            "ORDER BY ci.cardCompany.id")
+    List<Object[]> findMerchantCardBankMy(@Param("loginId") Integer loginId, @Param("merchantId") Integer merchantId);
+
+
 
     @Query(value = "SELECT " +
             "mc.card_version_id, " +
@@ -70,4 +86,6 @@ public interface MerchantCardInfoRepository extends JpaRepository<MerchantCardIn
             "GROUP BY mc.card_version_id, ci.name, cv.image_url, m.merchant_id, cb.benefit_type, cb.benefit_value " +
             "ORDER BY ci.card_company_id", nativeQuery = true)
     List<Object[]> findMerchantCardBenefit(@Param("merchantId") Integer merchantId, @Param("cardCompanyId") Integer cardCompanyId);
+
+
 }

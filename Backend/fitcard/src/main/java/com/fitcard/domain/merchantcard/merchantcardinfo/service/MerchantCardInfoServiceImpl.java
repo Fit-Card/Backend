@@ -8,6 +8,7 @@ import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.model.dto.response.MerchantSearchResponse;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.MerchantCardInfo;
+import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.request.MerchantCardBankRequest;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.request.MerchantCardBenefitRequest;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardBankResponse;
 import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardBenefitResponse;
@@ -20,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,10 +71,14 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
     }
 
     @Override
-    public List<MerchantCardBankResponse> getMerchantCardBank(Integer merchantId) {
-        List<Object[]> results = merchantCardInfoRepository.findMerchantCardBank(merchantId);
-        // Object 배열을 MerchantCardBankResponse로 변환
-
+    public List<MerchantCardBankResponse> getMerchantCardBank(Integer loginId, MerchantCardBankRequest request) {
+        List<Object[]> results;
+        System.out.println(request.getIsMine());
+        if(request.getIsMine() == 0) {
+            results = merchantCardInfoRepository.findMerchantCardBank(request.getMerchantId());
+        }else{
+            results = merchantCardInfoRepository.findMerchantCardBankMy(loginId, request.getMerchantId());
+        }
         return results.stream()
                 .map(result -> MerchantCardBankResponse.from(
                         (Integer) result[0],
@@ -97,5 +103,6 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
                 ))
                 .collect(Collectors.toList());
     }
+
 
 }
