@@ -10,11 +10,12 @@ import java.util.List;
 @Schema(description = "가맹점별 혜택 목록 DTO")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MerchantCardBenefitResponses {
+public class MerchantCardResponses {
 
-    private List<MerchantCardBenefitResponse> merchantCardBenefitResponse;
+    @Schema(description = "혜택 카드 목록")
+    private List<MerchantCardResponse> merchantCardResponses;
 
-    public static MerchantCardBenefitResponses from(List<MerchantCardBenefitResponse> MerchantCardBenefitResponse){
-        return new MerchantCardBenefitResponses(MerchantCardBenefitResponse);
+    public static MerchantCardResponses from(List<MerchantCardResponse> merchantCardResponses){
+        return new MerchantCardResponses(merchantCardResponses);
     }
 }
