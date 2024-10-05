@@ -19,7 +19,6 @@ public class BankUserCardPaymentController {
     @GetMapping("")
     public Response<BankUserCardPaymentGetResponses> getUserCardPayments(@RequestParam Long bankUserCardId,
                                                                              @RequestParam Integer lastId) {
-        log.info("bankUserCardId: {}, lastId: {}", bankUserCardId, lastId);
         BankUserCardPaymentGetResponses response = bankUserCardPaymentService.getBankUserCardPayments(new BankUserCardPaymentGetRequest(bankUserCardId, lastId));
         return Response.SUCCESS(response);
     }

@@ -128,14 +128,10 @@ public class PaymentServiceImpl implements PaymentService {
     private MemberCardPaymentInfos saveMemberCardPaymentsFromFinancial(MemberCardInfo memberCardInfo, long bankUserCardId, int lastId ) {
         String requestUri = GET_MEMBER_CARD_PAYMENT + "?bankUserCardId=" + bankUserCardId + "&lastId=" + lastId;
 
-        log.info("requestUri: {}", requestUri);
         String response = restClient.get()
                 .uri(requestUri)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, (req, res) -> {
-                    log.info("error!!! response: {}", res);
-                    log.info("error!!!! error getStatusText: {}", res.getStatusText());
-                    log.info("error!!!! error get status code: {}", res.getStatusCode());
                     throw new MemberCardPaymentGetStatusException(ErrorCode.NOT_FOUND_FINANCIAL_USER_CARD_ID, "financial에 해당하는 user card id가 없습니다");
                 })
                 .body(String.class);
