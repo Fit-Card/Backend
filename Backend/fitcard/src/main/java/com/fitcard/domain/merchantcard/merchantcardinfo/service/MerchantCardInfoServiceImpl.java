@@ -73,7 +73,6 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
     @Override
     public List<MerchantCardBankResponse> getMerchantCardBank(Integer loginId, MerchantCardBankRequest request) {
         List<Object[]> results;
-        System.out.println(request.getIsMine());
         if(request.getIsMine() == 0) {
             results = merchantCardInfoRepository.findMerchantCardBank(request.getMerchantId());
         }else{
@@ -90,9 +89,13 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
     }
 
     @Override
-    public List<MerchantCardBenefitResponse> getMerchantCardBenefit(MerchantCardBenefitRequest request) {
-        List<Object[]> results = merchantCardInfoRepository.findMerchantCardBenefit(Math.toIntExact(request.getMerchantId()), request.getCardCompanyId());
-
+    public List<MerchantCardBenefitResponse> getMerchantCardBenefit(Integer loginId,MerchantCardBenefitRequest request) {
+        List<Object[]> results;
+        if(request.getIsMine() == 0) {
+            results = merchantCardInfoRepository.findMerchantCardBenefit(request.getMerchantId(), request.getCardCompanyId());
+        }else{
+            results = merchantCardInfoRepository.findMerchantCardBenefitMy(loginId, request.getMerchantId(), request.getCardCompanyId());
+        }
         return results.stream()
                 .map(result -> MerchantCardBenefitResponse.of(
                         (Integer) result[0],

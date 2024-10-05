@@ -13,5 +13,5 @@ public interface MerchantCardInfoService {
     List<MerchantCardResponse> getMerchantCardInfo(Integer merchantId);
     void createAll();
     List<MerchantCardBankResponse> getMerchantCardBank(Integer loginId, MerchantCardBankRequest request);
-    List<MerchantCardBenefitResponse> getMerchantCardBenefit(MerchantCardBenefitRequest merchantCardBenefitRequest);
+    List<MerchantCardBenefitResponse> getMerchantCardBenefit(Integer loginId,MerchantCardBenefitRequest merchantCardBenefitRequest);
 }

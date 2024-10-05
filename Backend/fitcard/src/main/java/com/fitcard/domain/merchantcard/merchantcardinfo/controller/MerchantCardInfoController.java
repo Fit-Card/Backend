@@ -58,8 +58,8 @@ public class MerchantCardInfoController {
     @Operation(summary = "가맹점-카드 혜택 조회 API", description = "가맹점-카드에 해당되는 혜택 리스트를 조회합니다.")
     @SwaggerApiSuccess(description = "가맹점 혜택 조회에 성공했습니다.")
     @PostMapping("/get/benefits")
-    public Response<MerchantCardBenefitResponses> getMerchantCardDetailByBank(@RequestBody MerchantCardBenefitRequest request) {
-        List<MerchantCardBenefitResponse> merchantCardInfoList = merchantCardInfoService.getMerchantCardBenefit(request);
+    public Response<MerchantCardBenefitResponses> getMerchantCardDetailByBank(@Login Integer loginId, @RequestBody MerchantCardBenefitRequest request) {
+        List<MerchantCardBenefitResponse> merchantCardInfoList = merchantCardInfoService.getMerchantCardBenefit(loginId, request);
         return Response.SUCCESS(MerchantCardBenefitResponses.from(merchantCardInfoList), "가맹점 혜택 전체 조회에 성공했습니다.");
     }
 
