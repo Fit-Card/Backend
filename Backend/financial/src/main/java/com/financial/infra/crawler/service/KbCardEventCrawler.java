@@ -24,7 +24,7 @@ public class KbCardEventCrawler {
     @Value("${event-url.kb}")
     private String eventUrl;
 
-    public void crawlEventLinks() {
+    public Map<String, String[]> crawlEventLinks() {
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
         WebDriver driver = new ChromeDriver();
 
@@ -37,10 +37,21 @@ public class KbCardEventCrawler {
         String pattern = "goDetail\\('([0-9]+)'";
         Pattern regex = Pattern.compile(pattern);
 
-        for (int i = 1; i <= 10; i++) {
+        String pageSource = driver.getPageSource();
+        Document doc = Jsoup.parse(pageSource);
+
+        Elements pagingElements = doc.select("div.paging a");
+        int totalPages = 1;  // 기본 페이지는 1페이지
+        if (!pagingElements.isEmpty()) {
+            // 마지막 a 태그의 값을 가져오기
+            String lastPageText = pagingElements.last().text();
+            totalPages = Integer.parseInt(lastPageText);  // 페이징의 마지막 번호를 전체 페이지로 설정
+        }
+
+        for (int i = 1; i <= totalPages; i++) {
             // 페이지 소스를 가져와 Jsoup으로 파싱
-            String pageSource = driver.getPageSource();
-            Document doc = Jsoup.parse(pageSource);
+            pageSource = driver.getPageSource();
+            doc = Jsoup.parse(pageSource);
 
             // Jsoup을 사용해 크롤링
             doc.select(".eventList li > a").forEach(element -> {
@@ -67,7 +78,7 @@ public class KbCardEventCrawler {
             });
 
             // 다음 페이지로 이동
-            if (i < 10) {
+            if (i < totalPages) {
                 driver.findElement(By.xpath("//a[text()='" + (i + 1) + "']")).click();
                 try {
                     Thread.sleep(2000);  // 페이지 로드 대기
@@ -80,7 +91,6 @@ public class KbCardEventCrawler {
         // 상세 페이지 크롤링
         for (String detailUrl : map.keySet()) {
             driver.get(detailUrl);  // 상세 페이지로 이동
-
             // map에서 title, startDate, endDate를 가져오기
             String[] eventData = map.get(detailUrl);
             String title = eventData[0];
@@ -98,12 +108,13 @@ public class KbCardEventCrawler {
 
             // 대상 크롤링
             Elements columns = detailDoc.select("div.column p");
+            String target ="";
             if (columns.size() > 1) {
                 Element targetElement = columns.get(1);  // 두 번째 div.column 선택
-                String target = targetElement.text();
+                target = targetElement.text();
                 System.out.println("대상: " + target);
             } else {
-                String target = "자세한 정보는 이벤트 링크에 접속하여 확인하세요.";
+                target = "자세한 정보는 이벤트 링크에 접속하여 확인하세요.";
             }
 
             // 내용 크롤링 (div.cont.box 안의 모든 p 태그 크롤링)
@@ -116,10 +127,15 @@ public class KbCardEventCrawler {
             if(content.equals("")) content = "자세한 정보는 이벤트 링크에 접속하여 확인하세요.";
             System.out.println("내용: " + content);
 
+            eventData = new String[]{title, startDate, endDate, content, target};
+
+            map.put(detailUrl, eventData);
             System.out.println("------------------------------------");
         }
 
         // 브라우저 닫기
         driver.quit();
+
+        return map;
     }
 }

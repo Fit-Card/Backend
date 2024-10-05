@@ -55,4 +55,9 @@ public class BankCardEvent {
         this.title = title;
         this.content = content;
     }
+
+    public static BankCardEvent of(FinCardCompany finCardCompany, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content){
+        return new BankCardEvent(finCardCompany, target, isCategory, eventUrl, startDate, endDate, title, content);
+    }
+
 }
