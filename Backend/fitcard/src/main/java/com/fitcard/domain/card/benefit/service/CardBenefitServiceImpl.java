@@ -2,22 +2,20 @@ package com.fitcard.domain.card.benefit.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitcard.domain.card.benefit.exception.CardBenefitGetSimpleBenefitException;
 import com.fitcard.domain.card.benefit.exception.SaveBenefitsFromFinancialException;
 import com.fitcard.domain.card.benefit.model.CardBenefit;
 import com.fitcard.domain.card.benefit.model.dto.response.*;
 import com.fitcard.domain.card.benefit.repository.CardBenefitRepository;
-import com.fitcard.domain.card.cardinfo.repository.CardInfoRepository;
 import com.fitcard.domain.card.performance.exception.CardPerformanceNotFoundException;
-import com.fitcard.domain.card.performance.exception.SavePerformancesFromFinancialException;
 import com.fitcard.domain.card.performance.model.CardPerformance;
-import com.fitcard.domain.card.performance.model.dto.response.FinancialCardPerformanceResponses;
 import com.fitcard.domain.card.performance.repository.CardPerformanceRepository;
 import com.fitcard.domain.card.version.exception.CardVersionNotFoundException;
 import com.fitcard.domain.card.version.model.CardVersion;
 import com.fitcard.domain.card.version.repository.CardVersionRepository;
+import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import com.fitcard.global.error.ErrorCode;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -129,6 +124,21 @@ public class CardBenefitServiceImpl implements CardBenefitService {
 
     }
 
+    @Override
+    public CardBenefitGetSimpleResponses getSimpleCardBenefits(int cardPerformanceId, int num) {
+        List<CardBenefit> cardBenefits = takeRandomCardBenefits(cardPerformanceId, num);
+
+        List<BenefitSimple> benefitSimples = cardBenefits.stream()
+                .map(cardBenefit -> {
+                    String discountInfo = buildDiscountString(cardBenefit);
+                    MerchantInfo merchantInfo = merchantInfoRepository.findByMerchantId(cardBenefit.getMerchantId());
+                    return BenefitSimple.of(merchantInfo, discountInfo);
+                })
+                .toList();
+
+        return CardBenefitGetSimpleResponses.from(benefitSimples);
+    }
+
     private String buildDiscountString(CardBenefit benefit) {
         String discountType = switch (benefit.getBenefitType()) {
             case "PERCENT_DISCOUNT" -> "% 할인";
@@ -160,6 +170,20 @@ public class CardBenefitServiceImpl implements CardBenefitService {
             DecimalFormat decimalFormat = new DecimalFormat("#.0");
             return decimalFormat.format(benefitValue);
         }
+    }
+
+    private List<CardBenefit> takeRandomCardBenefits(int cardPerformanceId, int num) {
+        CardPerformance cardPerformance = cardPerformanceRepository.findById(cardPerformanceId)
+                .orElseThrow(() -> new CardBenefitGetSimpleBenefitException(ErrorCode.CARD_PERFORMANCE_NOT_FOUND, "카드 실적 정보를 찾을 수 없습니다."));
+
+        List<CardBenefit> cardBenefits = cardBenefitRepository.findAllByCardPerformance(cardPerformance);
+
+        if (cardBenefits.size() <= num) {
+            return cardBenefits;
+        }
+
+        Collections.shuffle(cardBenefits);
+        return cardBenefits.subList(0, num);
     }
 
 }
