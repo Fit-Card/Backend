@@ -4,10 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Schema(description = "분점 목록")
+@Schema(description = "카드사 혜택 목록")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BranchCategoryResponses {
