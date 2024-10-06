@@ -1,6 +1,7 @@
 package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.Branch;
+import com.fitcard.domain.merchant.branch.model.dto.request.BranchCalculateBenefitRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchCategoryRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchMemberCardRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -218,5 +220,16 @@ public class BranchServiceImpl implements BranchService {
                         (String) result[4]
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public BranchCalculateBenefitResponse getBenefitResult(Integer loginId, BranchCalculateBenefitRequest request) {
+        List<Object[]> results = branchRepository.calculateBenefit(loginId, request.getMerchantBranchId(), request.getCardVersionId(), request.getMoney());
+        Object[] result = results.get(0);
+
+        return BranchCalculateBenefitResponse.of(
+                (String) result[0],
+                (Double) result[1]
+                );
     }
 }
