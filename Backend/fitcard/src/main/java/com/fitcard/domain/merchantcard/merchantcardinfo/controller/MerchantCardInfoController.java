@@ -31,6 +31,13 @@ public class MerchantCardInfoController {
         return Response.SUCCESS(MerchantCardResponses.from(merchantCardInfoList), "가맹점 혜택 조회에 성공했습니다.");
     }
 
+    @Operation(summary = "가맹점-카드 ~ 사용자-카드 조회 API", description = "가맹점 혜택에 해당되는 카드 중 사용자가 가진 카드 리스트를 조회합니다.")
+    @SwaggerApiSuccess(description = "가맹점 혜택에 해당되는 카드 중 사용자가 가진 카드 리스트를 조회에 성공했습니다.")
+    @PostMapping("/get/membercard")
+    public Response<MerchantCardBankResponses> getMerchantCardBank(@PathVariable Integer merchantId) {
+        return Response.SUCCESS(null, "성공");
+    }
+
     @Operation(summary = "가맹점-카드 전체 조회 API", description = "가맹점에 해당되는 카드 전체 리스트를 조회합니다.")
     @SwaggerApiSuccess(description = "가맹점 혜택 조회에 성공했습니다.")
     @PostMapping("/get/all")
@@ -47,13 +54,7 @@ public class MerchantCardInfoController {
         return Response.SUCCESS(MerchantCardBankResponses.from(responses), "가맹점 혜택 카드 은행사 리스트 조회 성공했습니다.");
     }
 
-//    @Operation(summary = "가맹점-카드 ~ 사용자-카드 조회 API", description = "가맹점 혜택에 해당되는 카드 중 사용자가 가진 카드 리스트를 조회합니다.")
-//    @SwaggerApiSuccess(description = "가맹점 혜택에 해당되는 카드 중 사용자가 가진 카드 리스트를 조회에 성공했습니다.")
-//    @PostMapping("/get/membercard")
-//    public Response<MerchantCardBankResponses> getMerchantCardBank(@PathVariable Integer merchantId) {
-//        List<MerchantCardBankResponse> responses = merchantCardInfoService.getMerchantCardBank(merchantId);
-//        return Response.SUCCESS(null, "성공");
-//    }
+
 
     @Operation(summary = "가맹점-카드 혜택 조회 API", description = "가맹점-카드에 해당되는 혜택 리스트를 조회합니다.")
     @SwaggerApiSuccess(description = "가맹점 혜택 조회에 성공했습니다.")
