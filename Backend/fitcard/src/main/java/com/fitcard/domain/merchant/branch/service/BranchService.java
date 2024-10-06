@@ -1,11 +1,9 @@
 package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchCategoryRequest;
+import com.fitcard.domain.merchant.branch.model.dto.request.BranchMemberCardRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponse;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponses;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchSearchResponse;
+import com.fitcard.domain.merchant.branch.model.dto.response.*;
 import com.fitcard.infra.kakao.model.LocalInfo;
 
 import java.util.List;
@@ -19,4 +17,5 @@ public interface BranchService {
     List<BranchGetResponse> getBranchesByMerchantKeyword(final BranchSearchRequest request);
     List<BranchSearchResponse> getBranchesByMerchantKeywordPagination(final BranchSearchRequest request, final int page);
     BranchCategoryResponses getBranchesByMerchantCategoryPagination(final BranchCategoryRequest request, final int page);
+    List<BranchMemberCardResponse> getMemberCardsByBranchId(Integer loginId, BranchMemberCardRequest request);
 }

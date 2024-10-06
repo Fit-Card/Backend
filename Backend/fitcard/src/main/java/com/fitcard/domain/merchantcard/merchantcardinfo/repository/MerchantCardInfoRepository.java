@@ -19,7 +19,7 @@ public interface MerchantCardInfoRepository extends JpaRepository<MerchantCardIn
     List<MerchantCardInfo> findAllByMerchantId(MerchantInfo merchantInfo);
 
     @Query("SELECT ci.cardCompany.id as cardCompanyId, " +
-            "concat(cc.name, '은행') as bankName, " +
+            "concat(cc.name, '카드') as bankName, " +
             "count(ci.cardCompany.id) as count, " +
             "ci.cardCompany.imageUrl as cardCompanyImgUrl " +
             "FROM MerchantCardInfo mc " +
@@ -32,7 +32,7 @@ public interface MerchantCardInfoRepository extends JpaRepository<MerchantCardIn
     List<Object[]> findMerchantCardBank(@Param("merchantId") Integer merchantId);
 
     @Query("SELECT ci.cardCompany.id AS cardCompanyId, " +
-            "CONCAT(cc.name, '은행') AS bankName, " +
+            "CONCAT(cc.name, '카드') AS bankName, " +
             "COUNT(ci.cardCompany.id) AS count, " +
             "ci.cardCompany.imageUrl as cardCompanyImgUrl " +
             "FROM MerchantCardInfo mc " +
