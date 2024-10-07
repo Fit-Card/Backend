@@ -39,7 +39,7 @@ public class AlarmController {
     @PostMapping("/get/detail")
     public Response<AlarmGetResponse> getAlarm(@Login Integer memberId, @RequestBody AlarmGetRequest request) {
         AlarmGetResponse response = alarmService.getAlarmsDetail(memberId, request);
-        return Response.SUCCESS(null, "사용자 알림 상세 조회를 성공했습니다.");
+        return Response.SUCCESS(response, "사용자 알림 상세 조회를 성공했습니다.");
     }
 
 }
