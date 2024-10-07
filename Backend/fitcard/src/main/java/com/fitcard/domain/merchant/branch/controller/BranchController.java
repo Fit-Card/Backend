@@ -72,11 +72,11 @@ public class BranchController {
         return Response.SUCCESS(BranchMemberCardResponses.from(responses), "가맹점 분점 유저 카드 리스트 조회에 성공했습니다.");
     }
 
-    @Operation(summary = "가맹점 분점 유저 카드 혜택 금액 조회", description = "가맹점 분점 유저 카드 혜택 금액을 조회합니다.")
-    @SwaggerApiSuccess(description = "가맹점 분점 유저 카드 혜택 금액 조회에 성공했습니다.")
+    @Operation(summary = "가맹점 분점 유저 카드 혜택 조회", description = "가맹점 분점 유저 카드 혜택을 조회합니다.")
+    @SwaggerApiSuccess(description = "가맹점 분점 유저 카드 혜택 조회에 성공했습니다.")
     @PostMapping("/get/membercard-benefit")
-    public Response<BranchCalculateBenefitResponse> getCalculateBenefit(@Login Integer loginId, @RequestBody BranchCalculateBenefitRequest request){
-        BranchCalculateBenefitResponse response = branchService.getBenefitResult(loginId, request);
-        return Response.SUCCESS(response, "가맹점 분점 유저 카드 혜택 금액 조회에 성공했습니다.");
+    public Response<BranchCalculateBenefitResponses> getCalculateBenefit(@Login Integer loginId, @RequestBody BranchCalculateBenefitRequest request){
+        List<BranchCalculateBenefitResponse> responses = branchService.getBenefitResult(loginId, request);
+        return Response.SUCCESS(BranchCalculateBenefitResponses.from(responses), "가맹점 분점 유저 카드 혜택 금액 조회에 성공했습니다.");
     }
 }
