@@ -32,7 +32,7 @@ public class AlarmGetResponse {
     private String alarmContent;
 
     @Schema(description = "대상 카드 목록", example = "신한 트래블 SOL, 신한 트래블 SOOL")
-    private List<String> targetCards;
+    private String targetCards;
 
     @Schema(description = "이벤트 시작일", example = "2024-09-01")
     private String eventStartDate;
@@ -45,4 +45,19 @@ public class AlarmGetResponse {
 
     @Schema(description = "알람 생성 시간", example = "2024-09-06 17:51:02")
     private String alarmCreatedAt;
+
+    public static AlarmGetResponse of(String cardName, String cardImage, String alarmTitle, String alarmContent, String targetCards,
+                                      String eventStartDate, String eventEndDate, String eventUrl, String alarmCreatedAt) {
+        return new AlarmGetResponse(
+                cardName,
+                cardImage,
+                alarmTitle,
+                alarmContent,
+                targetCards,
+                eventStartDate,
+                eventEndDate,
+                eventUrl,
+                alarmCreatedAt
+        );
+    }
 }
