@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -45,8 +46,15 @@ public class MerchantInfoServiceImpl implements MerchantInfoService {
         System.out.println(request.getMerchantNameKeyword());
         List<MerchantInfo> result = merchantInfoRepository.findMerchantListByMerchantNameKeyword(request.getMerchantNameKeyword());
         return result.stream()
-                .map(MerchantSearchResponse::from)
-                .toList();
+                .collect(Collectors.groupingBy(
+                        merchant -> {
+                            String[] nameParts = merchant.getName().split(" ");
+                            return nameParts.length > 0 ? nameParts[0] : merchant.getName();
+                        }
+                ))
+                .values().stream()
+                .map(groupedMerchants -> MerchantSearchResponse.from(groupedMerchants.get(0))) // 각 그룹에서 첫 번째 항목을 DTO로 변환
+                .collect(Collectors.toList());
     }
 
 }
