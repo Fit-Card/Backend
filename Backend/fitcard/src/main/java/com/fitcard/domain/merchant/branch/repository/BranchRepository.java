@@ -16,7 +16,7 @@ import java.util.List;
 public interface BranchRepository extends JpaRepository<Branch, Long> {
     boolean existsByKakaoLocalId(String kakaoLocalId);
 
-    @Query("SELECT b FROM Branch b JOIN b.merchantInfo a WHERE a.name LIKE CONCAT('%', :keyword, '%')")
+    @Query("SELECT b FROM Branch b JOIN b.merchantInfo a WHERE b.branchName LIKE CONCAT('%', :keyword, '%')")
     List<Branch> findBranchesByMerchantNameKeyword(@Param("keyword") final String keyword);
 
 
@@ -97,6 +97,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<Object[]> findBranchMemberCardBenefit(@Param("loginId") Integer loginId, @Param("merchantBranchId") Integer merchantBranchId);
 
     @Query(value = "SELECT " +
+            "mc.card_version_id, ci.name,  cv.image_url, m.name, " +
             "max(CASE cb.benefit_type " +
             "WHEN 'PERCENT_DISCOUNT' THEN CONCAT(cb.benefit_value, '% 할인') " +
             "WHEN 'PERCENT_REWARD' THEN CONCAT(cb.benefit_value, '% 적립') " +
@@ -107,7 +108,18 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
             "WHEN 'AMOUNT_CASHBACK' THEN CONCAT(cb.benefit_value, '원 캐쉬백') " +
             "WHEN 'LITER_DISCOUNT' THEN CONCAT('리터당 ', cb.benefit_value, ' 할인') " +
             "ELSE '기타 혜택' " +
-            "END) AS benefit_description, round(MAX(:money*(100 - cb.benefit_value)/100), 0) AS benefit " +
+            "END) AS benefit_description, " +
+            "max(CASE cb.benefit_type " +
+            "WHEN 'PERCENT_DISCOUNT' THEN :money*(cb.benefit_value)/100 " +
+            "WHEN 'PERCENT_REWARD' THEN :money*(cb.benefit_value)/100 " +
+            "WHEN 'PERCENT_CASHBACK' THEN :money*(cb.benefit_value)/100 " +
+            "WHEN 'MILEAGE_REWARD' THEN :money*(cb.benefit_value)/100 " +
+            "WHEN 'AMOUNT_DISCOUNT' THEN cb.benefit_value " +
+            "WHEN 'POINT_REWARD' THEN cb.benefit_value " +
+            "WHEN 'AMOUNT_CASHBACK' THEN cb.benefit_value " +
+            "WHEN 'LITER_DISCOUNT' THEN cb.benefit_value " +
+            "ELSE '기타 혜택' " +
+            "END) AS benefit_value " +
             "FROM merchant_branch mb " +
             "left join merchant_card mc on mb.merchant_id = mc.merchant_id " +
             "left join merchant m on mb.merchant_id = m.merchant_id " +
@@ -118,7 +130,6 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
             "left join card_benefit cb on mcp.card_performance_id = cb.card_performance_id " +
             "left join card_performance cp on mcp.card_performance_level = cp.level " +
             "WHERE mb.merchant_branch_id = :merchantBranchId AND memc.member_id = :loginId AND mcp.member_card_performance_id is not null " +
-            "and mcp.month = month(now()) and mc.card_version_id = :cardVersionId " +
             "GROUP BY mc.card_version_id, ci.name, cv.image_url, m.name ", nativeQuery = true)
-    List<Object[]> calculateBenefit(@Param("loginId") Integer loginId, @Param("merchantBranchId") Integer merchantBranchId, @Param("cardVersionId") Integer cardVersionId, @Param("money") int money);
+    List<Object[]> calculateBenefit(@Param("loginId") Integer loginId, @Param("merchantBranchId") Integer merchantBranchId, @Param("money") int money);
 }
