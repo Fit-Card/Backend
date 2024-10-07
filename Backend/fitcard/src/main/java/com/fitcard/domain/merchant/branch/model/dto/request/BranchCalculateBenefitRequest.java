@@ -16,10 +16,6 @@ public class BranchCalculateBenefitRequest {
     @NotEmpty(message = "가맹분점 ID를 입력하세요")
     private Integer merchantBranchId;
 
-    @Schema(description = "카드 버전 ID", example = "286")
-    @NotEmpty(message = "카드 버전 ID를 입력하세요")
-    private Integer cardVersionId;
-
     @Schema(description = "금액", example = "10000")
     @NotEmpty(message = "금액을 입력하세요")
     private int money;
