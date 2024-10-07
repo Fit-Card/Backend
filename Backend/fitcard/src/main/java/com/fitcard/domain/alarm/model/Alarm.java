@@ -40,7 +40,7 @@ public class Alarm extends BaseEntity {
         this.content = content;
     }
 
-    public static Alarm of(CardEvent cardEvent, CardCompany cardCompany, String title, String content) {
-        return new Alarm(cardEvent, cardCompany, title, content);
+    public static Alarm of(CardEvent cardEvent) {
+        return new Alarm(cardEvent, cardEvent.getCardCompany(), cardEvent.getTitle(), cardEvent.getContent());
     }
 }

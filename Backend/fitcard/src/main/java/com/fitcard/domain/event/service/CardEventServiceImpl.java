@@ -38,10 +38,7 @@ public class CardEventServiceImpl implements CardEventService {
         for (CardEvent cardEvent : newCardEvents) {
             // 알람 생성
             Alarm alarm = Alarm.of(
-                    cardEvent,
-                    cardEvent.getCardCompany(),
-                    cardEvent.getTitle(),
-                    cardEvent.getContent()
+                    cardEvent
             );
 
             alarmRepository.save(alarm);
