@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -96,14 +97,21 @@ public class MerchantCardInfoServiceImpl implements MerchantCardInfoService {
         }else{
             results = merchantCardInfoRepository.findMerchantCardBenefitMy(loginId, request.getMerchantId(), request.getCardCompanyId());
         }
-        return results.stream()
-                .map(result -> MerchantCardBenefitResponse.of(
-                        (Integer) result[0],
-                        (String) result[1],
-                        (String) result[2],
-                        (String) result[3],
-                        (String) result[4]
-                ))
+        Map<Integer, List<Object[]>> groupedResults = results.stream()
+                .collect(Collectors.groupingBy(result -> (Integer) result[0])); // card_version_id로 그룹화
+
+        // 그룹화된 결과를 처리
+        return groupedResults.values().stream()
+                .map(grouped -> {
+                    Object[] first = grouped.get(0); // 그룹에서 첫 번째 항목만 사용
+                    return MerchantCardBenefitResponse.of(
+                            (Integer) first[0], // card_version_id
+                            (String) first[1],  // name
+                            (String) first[2],  // image_url
+                            (String) first[3],  // merchant_name
+                            (String) first[4]   // benefit_description
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
