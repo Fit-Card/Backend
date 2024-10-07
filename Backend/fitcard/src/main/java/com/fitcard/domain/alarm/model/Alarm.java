@@ -20,11 +20,11 @@ public class Alarm extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "card_event_id", nullable = false)
-    private CardEvent cardEventId;
+    private CardEvent cardEvent;
 
     @ManyToOne
     @JoinColumn(name = "card_company_id", nullable = false)
-    private CardCompany cardCompanyId;
+    private CardCompany cardCompany;
 
     @NotEmpty
     private String title;
@@ -33,10 +33,14 @@ public class Alarm extends BaseEntity {
     private String content;
 
     // private 생성자
-    private Alarm(CardEvent cardEventId, CardCompany cardCompanyId, String title, String content) {
-        this.cardEventId = cardEventId;
-        this.cardCompanyId = cardCompanyId;
+    private Alarm(CardEvent cardEvent, CardCompany cardCompany, String title, String content) {
+        this.cardEvent = cardEvent;
+        this.cardCompany = cardCompany;
         this.title = title;
         this.content = content;
+    }
+
+    public static Alarm of(CardEvent cardEvent) {
+        return new Alarm(cardEvent, cardEvent.getCardCompany(), cardEvent.getTitle(), cardEvent.getContent());
     }
 }

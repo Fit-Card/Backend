@@ -47,7 +47,12 @@ public enum ErrorCode {
     CARD_PERFORMANCE_NOT_FOUND(404, "CA004", "카드 실적 정보를 찾을 수 없습니다."),
 
     // card benefit
-    CARD_BENEFIT_NOT_FOUND(404, "CA005", "카드 혜택 정보를 찾을 수 없습니다.");
+    CARD_BENEFIT_NOT_FOUND(404, "CA005", "카드 혜택 정보를 찾을 수 없습니다."),
+    
+    // card event
+    CARD_EVENT_NOT_FOUND(404, "CE005", "카드 이벤트 정보를 찾을 수 없습니다."),
+    //alarm
+    ALARM_NOT_FOUND(404, "AL001", "알람을 찾을 수 없습니다.");
 
 
 

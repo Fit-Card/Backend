@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface CardEventRepository extends JpaRepository<CardEvent, Integer> {
+public interface CardEventRepository extends JpaRepository<CardEvent, Long> {
 
     @Query("SELECT e FROM CardEvent e WHERE e.createdAt > :cutoffTime")
     List<CardEvent> findNewEvents(LocalDateTime cutoffTime);
