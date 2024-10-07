@@ -223,13 +223,18 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public BranchCalculateBenefitResponse getBenefitResult(Integer loginId, BranchCalculateBenefitRequest request) {
-        List<Object[]> results = branchRepository.calculateBenefit(loginId, request.getMerchantBranchId(), request.getCardVersionId(), request.getMoney());
-        Object[] result = results.get(0);
+    public List<BranchCalculateBenefitResponse> getBenefitResult(Integer loginId, BranchCalculateBenefitRequest request) {
+        List<Object[]> results = branchRepository.calculateBenefit(loginId, request.getMerchantBranchId(), request.getMoney());
 
-        return BranchCalculateBenefitResponse.of(
-                (String) result[0],
-                (Double) result[1]
-                );
+        return results.stream()
+                .map(result ->BranchCalculateBenefitResponse.of(
+                        (Integer) result[0],
+                        (String) result[1],
+                        (String) result[2],
+                        (String) result[3],
+                        (String) result[4],
+                        Double.parseDouble((String) result[5])
+                ))
+                .collect(Collectors.toList());
     }
 }
