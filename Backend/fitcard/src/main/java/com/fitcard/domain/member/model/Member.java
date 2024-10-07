@@ -66,8 +66,11 @@ public class Member extends BaseEntity {
         return new Member(loginId, password, name, birthDate, phoneNumber, isCertifiedMydata, userSeqNo);
     }
 
-    public void update(String password, String phoneNumber) {
+    public void update(String password) {
         this.password = password;
-        this.phoneNumber = phoneNumber;
+    }
+
+    public void updatePhoneNumber(String newPhoneNumber) {
+        this.phoneNumber = newPhoneNumber;
     }
 }

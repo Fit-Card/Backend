@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberUpdateRequest {
 
+    @Schema(description = "현재 비밀번호", example ="password123")
+    private String password;
+
     @Schema(description = "새 비밀번호", example = "newpassword123")
     private String newPassword;
-
-    @Schema(description = "새 전화번호", example = "010-9876-5432")
-    private String newPhoneNumber;
 }

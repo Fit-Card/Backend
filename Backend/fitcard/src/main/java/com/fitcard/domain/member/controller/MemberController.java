@@ -1,6 +1,7 @@
 package com.fitcard.domain.member.controller;
 
 import com.fitcard.domain.member.model.dto.request.MemberSaveFcmTokenRequest;
+import com.fitcard.domain.member.model.dto.request.MemberUpdatePhoneRequest;
 import com.fitcard.domain.member.model.dto.request.MemberUpdateRequest;
 import com.fitcard.domain.member.model.dto.response.MemberGetResponse;
 import com.fitcard.domain.member.model.dto.response.MemberUpdateResponse;
@@ -45,6 +46,17 @@ public class MemberController {
         MemberUpdateResponse response = memberService.updateUser(loginId, request);
         return Response.SUCCESS(response, "사용자 정보 수정에 성공헀습니다.");
     }
+
+    @Operation(summary = "사용자 전화번호 수정 API", description = "사용자의 전화번호를 수정합니다.")
+    @SwaggerApiSuccess(description = "사용자 전화번호 수정에 성공했습니다.")
+    @SwaggerApiError({ErrorCode.MEMBER_NOT_FOUND, ErrorCode.INVALID_TOKEN})
+    @PostMapping("/update-phone")
+    public Response<MemberUpdateResponse> updatePhoneNumber(@RequestBody MemberUpdatePhoneRequest request) {
+        String loginId = SecurityUtil.getLoginId();
+        MemberUpdateResponse response = memberService.updatePhoneNumber(loginId, request);
+        return Response.SUCCESS(response, "사용자 전화번호 수정에 성공헀습니다.");
+    }
+
 
     @Operation(summary = "Fcm token 저장 API", description = "이벤트 알림을 위한 사용자의 Fcm 토큰을 저장합니다.")
     @SwaggerApiSuccess(description = "Fcm token 저장에 성공했습니다.")
