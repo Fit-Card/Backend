@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AlarmGetRequest {
 
-    @Schema(description = "알람 id", example = "2")
-    @NotNull(message = "알람 id를 입력하세요.")
-    private Integer alarmId;
+    @Schema(description = "카드 이벤트 id", example = "1")
+    @NotNull(message = "카드 이벤트 id를 입력하세요.")
+    private Long cardEventId;
 }

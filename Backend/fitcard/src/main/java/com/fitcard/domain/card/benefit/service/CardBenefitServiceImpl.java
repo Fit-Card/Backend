@@ -157,7 +157,7 @@ public class CardBenefitServiceImpl implements CardBenefitService {
             return String.format("%d", (int) benefitValue);
         } else {
             // 정수가 아니라면 소수점 1자리까지 출력
-            DecimalFormat decimalFormat = new DecimalFormat("#.0");
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
             return decimalFormat.format(benefitValue);
         }
     }

@@ -17,9 +17,8 @@ public class AlarmGetAllResponse {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    //카드 이름, 카드 이미지, 알람 제목, 생성 시간
-    @Schema(description = "알람 ID", example = "1")
-    private Integer alarmId;
+    @Schema(description = "카드 이벤트 id", example ="1")
+    private Long cardEventId;
 
     @Schema(description = "카드 이름", example = "신한 트래블 SOL")
     private String cardName;
@@ -32,4 +31,8 @@ public class AlarmGetAllResponse {
 
     @Schema(description = "알람 생성 시간", example = "2024-09-06 17:51:02")
     private String alarmCreatedAt;
+
+    public static AlarmGetAllResponse of(Long cardEventId, String cardName, String cardImage, String alarmTitle, String alarmCreatedAt) {
+        return new AlarmGetAllResponse(cardEventId, cardName, cardImage, alarmTitle, alarmCreatedAt);
+    }
 }

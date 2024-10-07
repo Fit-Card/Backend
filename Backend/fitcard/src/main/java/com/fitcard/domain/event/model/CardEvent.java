@@ -45,7 +45,16 @@ public class CardEvent extends BaseEntity {
     @NotEmpty
     private String content;
 
-    private CardEvent(CardCompany cardCompany, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content) {
+    @NotNull
+    private boolean isCredit;
+
+    @NotNull
+    private boolean isBC;
+
+    @NotNull
+    private Boolean isPersonal;
+
+    private CardEvent(CardCompany cardCompany, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content, boolean isCredit, boolean isBC, Boolean isPersonal) {
         this.cardCompany = cardCompany;
         this.target = target;
         this.isCategory = isCategory;
@@ -54,5 +63,8 @@ public class CardEvent extends BaseEntity {
         this.endDate = endDate;
         this.title = title;
         this.content = content;
+        this.isCredit = isCredit;
+        this.isBC = isBC;
+        this.isPersonal = isPersonal;
     }
 }
