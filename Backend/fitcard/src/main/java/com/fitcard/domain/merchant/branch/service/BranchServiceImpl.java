@@ -1,16 +1,16 @@
 package com.fitcard.domain.merchant.branch.service;
 
 import com.fitcard.domain.merchant.branch.model.Branch;
+import com.fitcard.domain.merchant.branch.model.dto.request.BranchCalculateBenefitRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchCategoryRequest;
+import com.fitcard.domain.merchant.branch.model.dto.request.BranchMemberCardRequest;
 import com.fitcard.domain.merchant.branch.model.dto.request.BranchSearchRequest;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponse;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchCategoryResponses;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchGetResponse;
-import com.fitcard.domain.merchant.branch.model.dto.response.BranchSearchResponse;
+import com.fitcard.domain.merchant.branch.model.dto.response.*;
 import com.fitcard.domain.merchant.branch.repository.BranchRepository;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantCategory;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
+import com.fitcard.domain.merchantcard.merchantcardinfo.model.dto.response.MerchantCardBenefitResponse;
 import com.fitcard.infra.kakao.model.LocalInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -206,5 +206,30 @@ public class BranchServiceImpl implements BranchService {
         int totalPages = (int) Math.ceil((double) totalElements / 10); // 10개씩 나
 
         return BranchCategoryResponses.of(paginatedList, pageNo, totalPages); // 페이지 결과 반환
+    }
+
+    @Override
+    public List<BranchMemberCardResponse> getMemberCardsByBranchId(Integer loginId, BranchMemberCardRequest request) {
+        List<Object[]> results = branchRepository.findBranchMemberCardBenefit(loginId, request.getMerchantBranchId());
+        return results.stream()
+                .map(result -> BranchMemberCardResponse.of(
+                        (Integer) result[0],
+                        (String) result[1],
+                        (String) result[2],
+                        (String) result[3],
+                        (String) result[4]
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BranchCalculateBenefitResponse getBenefitResult(Integer loginId, BranchCalculateBenefitRequest request) {
+        List<Object[]> results = branchRepository.calculateBenefit(loginId, request.getMerchantBranchId(), request.getCardVersionId(), request.getMoney());
+        Object[] result = results.get(0);
+
+        return BranchCalculateBenefitResponse.of(
+                (String) result[0],
+                (Double) result[1]
+                );
     }
 }

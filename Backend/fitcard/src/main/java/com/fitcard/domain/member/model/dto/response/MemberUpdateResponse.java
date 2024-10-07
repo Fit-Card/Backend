@@ -14,7 +14,7 @@ public class MemberUpdateResponse {
     @Schema(description = "수정 결과 메시지", example = "회원 정보 수정에 성공했습니다.")
     private String message;
 
-    public static MemberUpdateResponse of(Member member) {
+    public static MemberUpdateResponse from(Member member) {
         return new MemberUpdateResponse("회원 정보 수정에 성공했습니다.");
     }
 }

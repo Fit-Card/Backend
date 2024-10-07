@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Configuration
 public class FirebaseConfig {
@@ -16,15 +16,14 @@ public class FirebaseConfig {
     @PostConstruct
     public void initializeFirebase() throws IOException {
         if (FirebaseApp.getApps().isEmpty()) {
-            FileInputStream serviceAccount = new FileInputStream(
-                    new ClassPathResource("fitcard-e3489-firebase-adminsdk-v4fd2-523b6aa13d.json").getFile());
+            // FileInputStream 대신 InputStream으로 리소스 로드
+            InputStream serviceAccount = new ClassPathResource("fitcard-e3489-firebase-adminsdk-v4fd2-523b6aa13d.json").getInputStream();
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
 
             FirebaseApp.initializeApp(options);
-            System.out.println("Firebase has been initialized");
         }
     }
 }

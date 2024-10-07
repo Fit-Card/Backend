@@ -2,6 +2,7 @@ package com.fitcard.domain.membercard.membercardinfo.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fitcard.domain.card.benefit.model.dto.response.CardBenefitGetSimpleResponses;
 import com.fitcard.domain.card.benefit.service.CardBenefitServiceImpl;
 import com.fitcard.domain.card.cardinfo.model.CardInfo;
 import com.fitcard.domain.card.cardinfo.repository.CardInfoRepository;
@@ -23,7 +24,6 @@ import com.fitcard.domain.membercard.payment.model.dto.response.MemberCardPaymen
 import com.fitcard.domain.membercard.payment.service.PaymentService;
 import com.fitcard.global.error.ErrorCode;
 import com.fitcard.global.firebase.FirebaseService;
-import com.fitcard.global.firebase.FirebaseServiceImpl;
 import com.fitcard.global.firebase.dto.FirebaseCardInfoRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -101,6 +101,10 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
 
         request.getFinancialUserCardIds().forEach(financialUserCardId -> {
             MemberCardInfo memberCardInfo = getMemberCardInfoFromFinancial(financialUserCardId, member);
+            //이미 있는 카드면 continue
+            if (memberCardInfoRepository.existsByFinancialCardId(memberCardInfo.getCardVersion().getCardInfo().getFinancialCardId())) {
+                return;
+            }
             memberCardInfos.add(memberCardInfo);
 
             FirebaseCardInfoRequest cardInfoRequest = FirebaseCardInfoRequest.from(memberCardInfo);
@@ -167,7 +171,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
     }
 
     @Override
-    public MemberCardPerformanceAndBenefitResponses getMemberCardPerformanceAndBenefits(Integer memberId) {
+    public MemberCardPerformanceAndBenefitResponses getMemberCardPerformanceAndBenefits(Integer memberId, Integer num) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberCardGetPerformanceAndBenefitsException(ErrorCode.MEMBER_NOT_FOUND, "사용자가 존재하지 않습니다."));
         List<MemberCardInfo> memberCards = memberCardInfoRepository.findAllByMember(member);
@@ -175,8 +179,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         List<MemberCardPerformanceAndBenefitResponse> memberCardPerformanceAndBenefitResponses = new ArrayList<>();
         for (MemberCardInfo memberCardInfo : memberCards) {
             MemberCardPaymentGetStatusResponse memberCardPaymentStatus = paymentService.getMemberCardPaymentStatus(new MemberCardPaymentGetStatusRequest(memberCardInfo.getMemberCardId()));
-            //todo: benefits를 랜덤으로 만들어 줘야 한다.
-            List<String> cardBenefits = List.of("스타벅스 10% 할인", "바나프레소 5% 할인", "버거킹 5% 할인");
+            CardBenefitGetSimpleResponses cardBenefits = cardBenefitServiceImpl.getSimpleCardBenefits(memberCardPaymentStatus.getCardPerformanceId(), num);
             memberCardPerformanceAndBenefitResponses.add(MemberCardPerformanceAndBenefitResponse.of(memberCardInfo.getCardVersion().getCardInfo(),
                     memberCardPaymentStatus, cardBenefits));
         }
