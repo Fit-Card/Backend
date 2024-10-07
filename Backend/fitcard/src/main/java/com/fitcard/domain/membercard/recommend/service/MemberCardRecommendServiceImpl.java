@@ -14,7 +14,11 @@ import com.fitcard.domain.membercard.performance.model.MemberCardPerformance;
 import com.fitcard.domain.membercard.performance.repository.MemberCardPerformanceRepository;
 import com.fitcard.domain.membercard.performance.service.MemberCardPerformanceService;
 import com.fitcard.domain.membercard.recommend.model.MemberCardRecommend;
+import com.fitcard.domain.membercard.recommend.repository.MemberCardRepositoryRepository;
+import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
+import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -36,12 +41,15 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
     private final CardBenefitRepository cardBenefitRepository;
     private final PaymentService paymentService;
     private final MemberCardPerformanceService memberCardPerformanceService;
+    private final MerchantInfoRepository merchantInfoRepository;
+    private final MemberCardRepositoryRepository memberCardRecommendRepository;
 
 
     /**
      * 한 달에 한 번 모든 사용자 카드에 대해서 추천 카드를 저장한다.
      */
     @Override
+    @Synchronized
     public void createMemberCardRecommend() {
         LocalDateTime beforeMonth = LocalDateTime.now().minusMonths(1);
         int year = beforeMonth.getYear();
@@ -58,53 +66,123 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
 
             //memberCardPerformance가 없다면 저장
             MemberCardPerformance memberCardPerformance = memberCardPerformanceRepository.findByMemberCardAndYearAndMonth(memberCardInfo, year, month)
-                    .orElse(memberCardPerformanceService.createMemberCardPerformance(memberCardInfo, payments, year, month));
+                    .orElseGet(()->memberCardPerformanceService.createMemberCardPerformance(memberCardInfo, payments, year, month));
 
-            log.info("payments: {}",payments);
-            log.info("memberCardPerformance: {}",memberCardPerformance);
+            Optional<CardPerformance> optionalCardPerformance = cardPerformanceRepository.findById(memberCardPerformance.getCardPerformanceId());
+            if(optionalCardPerformance.isEmpty()){
+                continue;
+            }
+            CardPerformance cardPerformance = optionalCardPerformance.get();
+
             //사용금액이 0원인 경우 해당 카드에 대해서 카드 추천 불가능
             if (memberCardPerformance.getAmount() == 0) {
                 continue;
             }
 
-            MemberCardRecommend recommendCard = findRecommendCard(memberCardPerformance.getAmount(), payments);
+            MemberCardRecommend recommendCard = findRecommendCard(memberCardPerformance.getAmount(), payments, cardPerformance, memberCardInfo, year, month);
+            memberCardRecommendRepository.save(recommendCard);
         }
 
     }
 
-    private MemberCardRecommend findRecommendCard(int amount, List<Payment> payments){
+    @Synchronized
+    private MemberCardRecommend findRecommendCard(int amount, List<Payment> payments, CardPerformance memberCardPerformance, MemberCardInfo memberCardInfo, int year, int month){
+        //1. memberCard의 혜택 계산
+        int memberCardBenefit = calBenefit(payments, memberCardPerformance);
+
         //모든 카드에 대해 할인 금액 계산해야 한다.
         //모든 카드 = 버전이 가장 최신이면서 performance가 사용자가 사용한 amount 구간인 CardPerformance를 말함
         List<CardPerformance> cardPerformances = cardPerformanceRepository.findNewestVersionAndMaxAmount(amount);
 
-        log.info("cardPerformance: {}", cardPerformances);
-        CardPerformance bestCardPerformance;
-        int benefitDiff = 0;
+        if(memberCardInfo.getMemberCardId() == 4){
+            log.info("=====================4번째 카드!!=================");
+            log.info("paymenst size: {}", payments.size());
+        }
+        CardPerformance bestCardPerformance = null;
+        int benefitDiff = -987654321;
         for(CardPerformance cardPerformance : cardPerformances){
+            int nowCardBenefit = calBenefit(payments, cardPerformance);
+            if(nowCardBenefit-memberCardBenefit > benefitDiff){
+                benefitDiff = nowCardBenefit-memberCardBenefit;
+                bestCardPerformance = cardPerformance;
+            }
+        }
+        if(memberCardInfo.getMemberCardId() == 4){
+            log.info("====================끝!!!!=================");
+                log.info("payment size: {}", payments.size());
 
         }
-
-        return null;
+        //todo : bestCardPerformance가 null 인 경우 예외처리 필요, null인 경우가 없을 것 같긴 하다.
+        return MemberCardRecommend.of(memberCardInfo, bestCardPerformance, memberCardBenefit, benefitDiff, year, month);
     }
 
-    private int calBenefitDifference(List<Payment> payments, CardPerformance cardPerformance) {
+    @Synchronized
+    private int calBenefit(List<Payment> payments, CardPerformance cardPerformance) {
+        if(cardPerformance.getId() == 62){
+            log.info("payment size: {}", payments.size());
+        }
         //1. 카드의 혜택 목록 불러오기
         List<CardBenefitLimitStatus> cardBenefitLimitStatuses = cardBenefitRepository.findAllByCardPerformance(cardPerformance).stream()
                 .map(CardBenefitLimitStatus::from)
                 .toList();
 
+        if(cardPerformance.getId() == 62){
+            log.info("benefit size: {}", cardBenefitLimitStatuses.size());
+            log.info("payment size: {}", payments.size());
+        }
         //2. 이용내역 각각을 혜택 목록에 대입해 할인 금액 계산하기
-        // 이때 CardPerformance의 할인한도, CardBenefit 각각의 금액한도, 횟수한도를 넘으면 안된다.
-        // 최소 결제 금액 수치와 예외 타입 리스트도 확인 필요
-
-        int benefitAmount = 0;
         for (Payment payment : payments) {
+            CardBenefitLimitStatus nowPaymentBenefit = null;
+            int index = -1;
             //이용내역 이름이 cardBenefits의 가맹점을 포함하고 있다면 할인 되는 것. (startWith) -> 완탐
-            //아닐 경우에 payment의 카테고리 확인, 혜택에 카테고리 전체가 포함되는지 확인 -> 완탐
+            int size = cardBenefitLimitStatuses.size();
+            for(int i=0;i<size;i++){
+                CardBenefitLimitStatus cardBenefitLimitStatus = cardBenefitLimitStatuses.get(i);
+                //payment와 benefit의 카테고리 다른 경우
+                //cardBenefit의 merchantCategory가 null임 왜?? -> cardBenefit의 merchantId가 0~6인거로 비교해야한다.
+                if(!cardBenefitLimitStatus.getCardBenefit().getMerchantCategory().equals(payment.getPaymentCategory())) continue;
+
+                MerchantInfo merchant = merchantInfoRepository.findByMerchantId(cardBenefitLimitStatus.getCardBenefit().getMerchantId());
+                if(merchant == null) continue;
+                
+                //todo: payment name이 excludeType에 해당하는 merchant인지 확인필요 -> 잘려서 확인 불가능임. 어쩔수가 없다
+
+                //merchantID가 1~6이라면 해당 카테고리 전체 혜택
+                if(merchant.getMerchantId() <= 6){
+                    nowPaymentBenefit = cardBenefitLimitStatus;
+                    index = i;
+                    break;
+                }
+
+                if(!payment.getPaymentName().contains(merchant.getName())) continue;
+                nowPaymentBenefit = cardBenefitLimitStatus;
+                index = i;
+                break;
+            }
+            //해당하는 혜택이 없는 경우
+            if(nowPaymentBenefit == null) continue;
+
+            //할인금액 더하기
+//            if(cardPerformance.getId() == 62){
+//                log.info("62번째 카드 benefit: {}",nowPaymentBenefit);
+//            }
+            cardBenefitLimitStatuses.get(index).addDiscount(payment);
         }
 
-        return benefitAmount;
+        //3. list의 nowTotalAmountStatus 더해서 최종 할인 금액 계산
+        int discountAmount = calDiscountAmount(cardBenefitLimitStatuses);
+        if(cardPerformance.getId() == 62){
+            log.info("62번째 card discountAmount: {}",discountAmount);
+        }
+        return discountAmount;
     }
 
+    int calDiscountAmount(List<CardBenefitLimitStatus> cardBenefitLimitStatuses) {
+        int discountAmount = 0;
+        for(CardBenefitLimitStatus cardBenefitLimitStatus : cardBenefitLimitStatuses){
+            discountAmount += cardBenefitLimitStatus.getNowTotalAmountStatus();
+        }
+        return discountAmount;
+    }
 
 }
