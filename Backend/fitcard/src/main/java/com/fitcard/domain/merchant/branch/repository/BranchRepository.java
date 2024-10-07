@@ -32,7 +32,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
             @Param("lon") Double longitude,
             Pageable pageable);
 
-    @Query("SELECT " +
+    @Query("SELECT distinct " +
             "a, " +
             "b " +
             "FROM Branch b " +
@@ -51,7 +51,7 @@ public interface BranchRepository extends JpaRepository<Branch, Long> {
     );
 
 
-    @Query("SELECT DISTINCT b.merchantBranchId," +
+    @Query("SELECT distinct " +
             "a, " +
             "b " +
             "FROM Branch b " +
