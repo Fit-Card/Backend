@@ -186,6 +186,13 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         return MemberCardPerformanceAndBenefitResponses.from(memberCardPerformanceAndBenefitResponses);
     }
 
+    @Override
+    public MemberCardRecommendResponse getMemberCardAllRecommend(Integer memberId) {
+
+        return null;
+    }
+
+
     private MemberCardInfo getMemberCardInfoFromFinancial(long financialUserCardId, Member member) {
         String response = restClient.get()
                 .uri(MEMBER_CARD_INFO_GET_URI+"/"+financialUserCardId)
