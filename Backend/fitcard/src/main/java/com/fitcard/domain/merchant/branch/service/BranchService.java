@@ -19,5 +19,5 @@ public interface BranchService {
     List<BranchSearchResponse> getBranchesByMerchantKeywordPagination(final BranchSearchRequest request, final int page);
     BranchCategoryResponses getBranchesByMerchantCategoryPagination(final BranchCategoryRequest request, final int page);
     List<BranchMemberCardResponse> getMemberCardsByBranchId(Integer loginId, BranchMemberCardRequest request);
-    BranchCalculateBenefitResponse getBenefitResult(Integer loginId, BranchCalculateBenefitRequest request);
+    List<BranchCalculateBenefitResponse> getBenefitResult(Integer loginId, BranchCalculateBenefitRequest request);
 }
