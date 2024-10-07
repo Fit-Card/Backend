@@ -1,10 +1,12 @@
 package com.fitcard.domain.member.service;
 
+import com.fitcard.domain.member.exception.IncorrectPasswordException;
 import com.fitcard.domain.member.exception.MemberNotFoundException;
 import com.fitcard.domain.member.exception.MemberUpdateFailedException;
 import com.fitcard.domain.member.model.Member;
 import com.fitcard.domain.member.model.dto.request.MemberSaveFcmTokenRequest;
 import com.fitcard.domain.member.model.dto.request.MemberSendJoinFirebaseRequest;
+import com.fitcard.domain.member.model.dto.request.MemberUpdatePhoneRequest;
 import com.fitcard.domain.member.model.dto.request.MemberUpdateRequest;
 import com.fitcard.domain.member.model.dto.response.MemberGetResponse;
 import com.fitcard.domain.member.model.dto.response.MemberUpdateResponse;
@@ -43,20 +45,44 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND, "사용자를 찾을 수 없습니다."));
 
+        if (!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+            throw new IncorrectPasswordException(ErrorCode.INCORRECT_PASSWORD, "비밀번호가 일치하지 않습니다.");
+        }
+
         // 사용자 비밀번호 암호화 후 업데이트
         String encryptedPassword = passwordEncoder.encode(request.getNewPassword());
 
         // 사용자 정보 수정
         try {
-            member.update(encryptedPassword, request.getNewPhoneNumber());
+            member.update(encryptedPassword);
             memberRepository.save(member);
         } catch (Exception e) {
             throw new MemberUpdateFailedException(ErrorCode.MEMBER_UPDATE_FAILED, "사용자 정보 수정에 실패했습니다.");
         }
 
         // 수정된 사용자 정보 반환
-        return MemberUpdateResponse.of(member);
+        return MemberUpdateResponse.from(member);
     }
+
+    @Override
+    public MemberUpdateResponse updatePhoneNumber(String loginId, MemberUpdatePhoneRequest request) {
+        // 로그인한 사용자 정보를 DB에서 조회
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND, "사용자를 찾을 수 없습니다."));
+
+        // 사용자 전화번호 수정
+        member.updatePhoneNumber(request.getNewPhoneNumber());
+
+        try {
+            memberRepository.save(member);
+        } catch (Exception e) {
+            throw new MemberUpdateFailedException(ErrorCode.MEMBER_UPDATE_FAILED, "사용자 정보 수정에 실패했습니다.");
+        }
+
+        // 수정된 사용자 정보 반환
+        return MemberUpdateResponse.from(member);
+    }
+
 
     @Override
     public void createFcmToken(MemberSaveFcmTokenRequest request, Integer memberId) {
