@@ -62,9 +62,9 @@ public class CardBenefitLimitStatus {
                 dailyLimitCount, monthlyLimitCount, dailyAmountStatus, 0, dailyCountStatus, 0);
     }
 
-    public void addDiscount(Payment payment) {
+    public int addDiscount(Payment payment) {
         //최소 결제 금액 확인
-        if(this.cardBenefit.getMinPayment() != 0 && this.cardBenefit.getMinPayment() > payment.getAmount()) return;
+        if(this.cardBenefit.getMinPayment() != 0 && this.cardBenefit.getMinPayment() > payment.getAmount()) return 0;
 
         int discountAmount = BenefitType.getBenefitTypeByName(cardBenefit.getBenefitType())
                 .calculateBenefit(new BenefitType.BenefitInput(payment.getAmount(), this.cardBenefit.getBenefitValue(), this.cardBenefit.getBenefitPer()));
@@ -89,13 +89,14 @@ public class CardBenefitLimitStatus {
         }
 
         //횟수 비교
-        if(dailyLimitCount != 0 && dailyLimitCount < dailyCountStatus[day]+1) return;
-        if(monthlyLimitCount != 0 && monthlyLimitCount < nowTotalCountStatus+1) return;
+        if(dailyLimitCount != 0 && dailyLimitCount < dailyCountStatus[day]+1) return 0;
+        if(monthlyLimitCount != 0 && monthlyLimitCount < nowTotalCountStatus+1) return 0;
 
         //할인 가능
         dailyAmountStatus[day] += discountAmount;
         dailyCountStatus[day] ++;
         nowTotalAmountStatus += discountAmount;
         nowTotalCountStatus++;
+        return discountAmount;
     }
 }

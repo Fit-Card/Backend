@@ -94,10 +94,6 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
         //모든 카드 = 버전이 가장 최신이면서 performance가 사용자가 사용한 amount 구간인 CardPerformance를 말함
         List<CardPerformance> cardPerformances = cardPerformanceRepository.findNewestVersionAndMaxAmount(amount);
 
-        if(memberCardInfo.getMemberCardId() == 4){
-            log.info("=====================4번째 카드!!=================");
-            log.info("paymenst size: {}", payments.size());
-        }
         CardPerformance bestCardPerformance = null;
         int benefitDiff = -987654321;
         for(CardPerformance cardPerformance : cardPerformances){
@@ -107,29 +103,18 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
                 bestCardPerformance = cardPerformance;
             }
         }
-        if(memberCardInfo.getMemberCardId() == 4){
-            log.info("====================끝!!!!=================");
-                log.info("payment size: {}", payments.size());
-
-        }
         //todo : bestCardPerformance가 null 인 경우 예외처리 필요, null인 경우가 없을 것 같긴 하다.
         return MemberCardRecommend.of(memberCardInfo, bestCardPerformance, memberCardBenefit, benefitDiff, year, month);
     }
 
     @Synchronized
     private int calBenefit(List<Payment> payments, CardPerformance cardPerformance) {
-        if(cardPerformance.getId() == 62){
-            log.info("payment size: {}", payments.size());
-        }
+
         //1. 카드의 혜택 목록 불러오기
         List<CardBenefitLimitStatus> cardBenefitLimitStatuses = cardBenefitRepository.findAllByCardPerformance(cardPerformance).stream()
                 .map(CardBenefitLimitStatus::from)
                 .toList();
 
-        if(cardPerformance.getId() == 62){
-            log.info("benefit size: {}", cardBenefitLimitStatuses.size());
-            log.info("payment size: {}", payments.size());
-        }
         //2. 이용내역 각각을 혜택 목록에 대입해 할인 금액 계산하기
         for (Payment payment : payments) {
             CardBenefitLimitStatus nowPaymentBenefit = null;
@@ -139,7 +124,6 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
             for(int i=0;i<size;i++){
                 CardBenefitLimitStatus cardBenefitLimitStatus = cardBenefitLimitStatuses.get(i);
                 //payment와 benefit의 카테고리 다른 경우
-                //cardBenefit의 merchantCategory가 null임 왜?? -> cardBenefit의 merchantId가 0~6인거로 비교해야한다.
                 if(!cardBenefitLimitStatus.getCardBenefit().getMerchantCategory().equals(payment.getPaymentCategory())) continue;
 
                 MerchantInfo merchant = merchantInfoRepository.findByMerchantId(cardBenefitLimitStatus.getCardBenefit().getMerchantId());
@@ -151,29 +135,26 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
                 if(merchant.getMerchantId() <= 6){
                     nowPaymentBenefit = cardBenefitLimitStatus;
                     index = i;
-                    break;
+//                    continue;
                 }
 
                 if(!payment.getPaymentName().contains(merchant.getName())) continue;
-                nowPaymentBenefit = cardBenefitLimitStatus;
-                index = i;
-                break;
+                if(nowPaymentBenefit != null && nowPaymentBenefit.getCardBenefit().getBenefitValue() < cardBenefitLimitStatus.getCardBenefit().getBenefitValue()){
+                    nowPaymentBenefit = cardBenefitLimitStatus;
+                    index = i;
+                }
             }
             //해당하는 혜택이 없는 경우
             if(nowPaymentBenefit == null) continue;
 
             //할인금액 더하기
-//            if(cardPerformance.getId() == 62){
-//                log.info("62번째 카드 benefit: {}",nowPaymentBenefit);
-//            }
-            cardBenefitLimitStatuses.get(index).addDiscount(payment);
+            int nowDiscountAmount = cardBenefitLimitStatuses.get(index).addDiscount(payment);
+            // log.info("할인 금액: {}", nowDiscountAmount);
         }
 
         //3. list의 nowTotalAmountStatus 더해서 최종 할인 금액 계산
         int discountAmount = calDiscountAmount(cardBenefitLimitStatuses);
-        if(cardPerformance.getId() == 62){
-            log.info("62번째 card discountAmount: {}",discountAmount);
-        }
+
         return discountAmount;
     }
 
