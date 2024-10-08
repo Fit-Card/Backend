@@ -7,9 +7,11 @@ import com.fitcard.domain.member.repository.SmsCertificationDao;
 import com.fitcard.global.error.ErrorCode;
 import com.fitcard.global.util.SmsCertificationUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -32,6 +34,8 @@ public class MemberSmsService {
             smsCertificationDao.removeSmsCertification(requestDto.getPhone());
             throw new SmsCertificationNumberMismatchException(ErrorCode.INVALID_CERTIFICATION_NUMBER, "인증번호가 일치하지 않습니다.");
         }
+        log.info("sms certification: {}", smsCertificationDao.getSmsCertification(requestDto.getPhone()));
+        smsCertificationDao.createFinCertification(requestDto.getPhone(), String.valueOf((int) (Math.random() * 9000) + 1000));
     }
 
     public boolean isVerify(MemberSmsRequest requestDto) {

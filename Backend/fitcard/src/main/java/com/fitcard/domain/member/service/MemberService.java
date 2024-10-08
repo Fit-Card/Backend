@@ -1,6 +1,5 @@
 package com.fitcard.domain.member.service;
 
-import com.fitcard.domain.member.model.Member;
 import com.fitcard.domain.member.model.dto.request.MemberSaveFcmTokenRequest;
 import com.fitcard.domain.member.model.dto.request.MemberUpdatePhoneRequest;
 import com.fitcard.domain.member.model.dto.request.MemberUpdateRequest;
@@ -18,4 +17,6 @@ public interface MemberService {
 
     //사용자 fcm 토큰 발급
     void createFcmToken(MemberSaveFcmTokenRequest request, Integer memberId);
+
+    void updateMemberUserSeqNoFromFinancial(Integer memberId);
 }

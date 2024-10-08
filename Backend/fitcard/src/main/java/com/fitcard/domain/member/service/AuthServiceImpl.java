@@ -33,8 +33,7 @@ public class AuthServiceImpl implements AuthService {
         if (memberRepository.existsByLoginIdOrPhoneNumber(request.getLoginId(), request.getPhoneNumber())) {
             throw new DuplicatedMemberException(ErrorCode.DUPLICATE_MEMBER, "이미 사용 중인 아이디, 핸드폰 번호입니다.");
         }
-
-        if(!smsCertificationDao.hasKey(request.getPhoneNumber())){
+        if(!smsCertificationDao.hasKey(request.getPhoneNumber().replace("-", ""))){
             throw new MemberRegisterException(ErrorCode.UNVERIFIED_PHONE_NUMBER, "전화번호 인증이 완료되지 않았습니다.");
         }
 

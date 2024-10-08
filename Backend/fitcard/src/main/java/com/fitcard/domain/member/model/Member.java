@@ -57,7 +57,7 @@ public class Member extends BaseEntity {
                 request.getName(),
                 request.getBirthDate(),
                 request.getPhoneNumber(),
-                true,   // isCertifiedMydata 초기값
+                false,   // isCertifiedMydata 초기값
                 ""       // userSeqNo 초기값
         );
     }
@@ -72,5 +72,9 @@ public class Member extends BaseEntity {
 
     public void updatePhoneNumber(String newPhoneNumber) {
         this.phoneNumber = newPhoneNumber;
+    }
+
+    public void updateUserSeqNo(String userSeqNo) {
+        this.userSeqNo = userSeqNo;
     }
 }

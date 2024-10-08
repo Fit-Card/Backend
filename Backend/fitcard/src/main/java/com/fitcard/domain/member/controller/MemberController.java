@@ -67,4 +67,13 @@ public class MemberController {
         memberService.createFcmToken(request, memberId);
         return Response.SUCCESS();
     }
+
+    @Operation(summary = "마이데이터 user 정보 불러오기 API", description = "최초 1회 마이데이터 user 정보를 불러옵니다.")
+    @SwaggerApiSuccess(description = "마이데이터 user 정보 불러오기를 성공했습니다.")
+    @SwaggerApiError({ErrorCode.MEMBER_NOT_FOUND,ErrorCode.INVALID_TOKEN})
+    @PostMapping("/finuser")
+    public Response<?> updateUserSeqNo(@Login Integer memberId) {
+        memberService.updateMemberUserSeqNoFromFinancial(memberId);
+        return Response.SUCCESS();
+    }
 }
