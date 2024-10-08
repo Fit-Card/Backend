@@ -8,6 +8,7 @@ import com.fitcard.domain.card.cardinfo.model.CardInfo;
 import com.fitcard.domain.card.cardinfo.repository.CardInfoRepository;
 import com.fitcard.domain.card.company.model.CardCompany;
 import com.fitcard.domain.card.company.repository.CardCompanyRepository;
+import com.fitcard.domain.card.performance.repository.CardPerformanceRepository;
 import com.fitcard.domain.card.version.model.CardVersion;
 import com.fitcard.domain.card.version.repository.CardVersionRepository;
 import com.fitcard.domain.member.model.Member;
@@ -58,12 +59,13 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
     private final PaymentService paymentService;
     private final CardBenefitServiceImpl cardBenefitServiceImpl;
     private final MemberCardRecommendRepository memberCardRecommendRepository;
+    private final CardPerformanceRepository cardPerformanceRepository;
 
     public MemberCardInfoServiceImpl(MemberCardInfoRepository memberCardInfoRepository, MemberRepository memberRepository,
                                      CardCompanyRepository cardCompanyRepository, CardInfoRepository cardInfoRepository,
                                      CardVersionRepository cardVersionRepository, PaymentService paymentService,
                                      @Value("${financial.user-card.get-all}")String allMemberCardInfoGetUri,
-                                     @Value("${financial.user-card.get}")String memberCardInfoGetUri, FirebaseService firebaseService, CardBenefitServiceImpl cardBenefitServiceImpl, MemberCardRecommendRepository memberCardRecommendRepository) {
+                                     @Value("${financial.user-card.get}")String memberCardInfoGetUri, FirebaseService firebaseService, CardBenefitServiceImpl cardBenefitServiceImpl, MemberCardRecommendRepository memberCardRecommendRepository, CardPerformanceRepository cardPerformanceRepository) {
 
         this.cardCompanyRepository = cardCompanyRepository;
         this.memberCardInfoRepository = memberCardInfoRepository;
@@ -77,6 +79,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         this.paymentService = paymentService;
         this.cardBenefitServiceImpl = cardBenefitServiceImpl;
         this.memberCardRecommendRepository = memberCardRecommendRepository;
+        this.cardPerformanceRepository = cardPerformanceRepository;
     }
 
     @Override
@@ -108,6 +111,10 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             if (memberCardInfoRepository.existsByFinancialUserCardIdAndMember(memberCardInfo.getFinancialUserCardId(), member)) {
                 return;
             }
+
+            //혜택이 존재하지 않는 카드는 생성되지 않아야 한다.
+            if(!cardPerformanceRepository.existsByCardVersion(memberCardInfo.getCardVersion())) return;
+
             memberCardInfos.add(memberCardInfo);
 
             FirebaseCardInfoRequest cardInfoRequest = FirebaseCardInfoRequest.from(memberCardInfo);
@@ -186,6 +193,10 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
             memberCardPerformanceAndBenefitResponses.add(MemberCardPerformanceAndBenefitResponse.of(memberCardInfo.getCardVersion().getCardInfo(),
                     memberCardPaymentStatus, cardBenefits));
         }
+
+        memberCardPerformanceAndBenefitResponses.
+                sort((o1, o2) -> Integer.compare(o2.getMemberCardPaymentStatus().getTotalPayment(), o1.getMemberCardPaymentStatus().getTotalPayment()));
+
         return MemberCardPerformanceAndBenefitResponses.from(memberCardPerformanceAndBenefitResponses);
     }
 

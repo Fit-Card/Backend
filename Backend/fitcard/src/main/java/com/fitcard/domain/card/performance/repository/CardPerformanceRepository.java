@@ -33,4 +33,6 @@ public interface CardPerformanceRepository extends JpaRepository<CardPerformance
             ) grouped_cv ON cv.cardInfo.id = grouped_cv.cardInfoId AND cv.version = grouped_cv.maxVersion
             """, nativeQuery = false)
     List<CardPerformance> findNewestVersionAndMaxAmount(@Param("amount") int amount);
+
+    boolean existsByCardVersion(CardVersion cardVersion);
 }
