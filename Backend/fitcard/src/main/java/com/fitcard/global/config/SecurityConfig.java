@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)  // CSRF 비활성화
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register", "/auth/checkid", "/kakao/**").permitAll() // 로그인, 회원가입 허용
+                        .requestMatchers("/auth/login", "/auth/register", "/auth/checkid", "/kakao/**", "/auth/**").permitAll() // 로그인, 회원가입 허용
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**", "/api-docs/**", "/api*", "/").permitAll()  // Swagger 경로 허용
                         .anyRequest().authenticated()  // 나머지는 인증 필요
                 );
