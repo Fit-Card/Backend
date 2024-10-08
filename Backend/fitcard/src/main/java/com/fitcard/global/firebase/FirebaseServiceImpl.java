@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
@@ -56,7 +57,7 @@ public class FirebaseServiceImpl implements FirebaseService {
     }
 
     @Override
-    public List<Map<String, String>> getUsersWithCardInfo(String cardCompanyName, String cardName, boolean isBC, boolean isCredit, boolean isPersonal) {
+    public List<Map<String, String>> getUsersWithCardInfo(String cardCompanyName, String cardName, boolean isBC, boolean isCredit, boolean isPersonal, boolean isCategory) {
         List<Map<String, String>> targetUserCardInfos = new ArrayList<>();
 
         try {
@@ -69,7 +70,7 @@ public class FirebaseServiceImpl implements FirebaseService {
                 if (cardInfos != null) {
                     for (Map<String, Object> cardInfo : cardInfos) {
                         // 카드 정보가 매칭되는 경우
-                        if (matchesCardInfo(cardInfo, cardCompanyName, cardName, isBC, isCredit, isPersonal)) {
+                        if (matchesCardInfo(cardInfo, cardCompanyName, cardName, isBC, isCredit, isPersonal, isCategory)) {
                             // 해당 유저 ID와 해당 카드의 financialCardId를 저장
                             String userId = document.getId();
                             String financialCardId = (String) cardInfo.get("financialCardId");
@@ -91,7 +92,7 @@ public class FirebaseServiceImpl implements FirebaseService {
         return targetUserCardInfos; // 유저 ID와 financialCardId를 함께 반환
     }
 
-    private boolean matchesCardInfo(Map<String, Object> cardInfo, String cardCompanyName, String cardName, boolean isBC, boolean isCredit, boolean isPersonal) {
+    private boolean matchesCardInfo(Map<String, Object> cardInfo, String cardCompanyName, String cardName, boolean isBC, boolean isCredit, boolean isPersonal, boolean isCategory) {
         String storedCardCompanyName = (String) cardInfo.get("cardCompanyName");
         String storedCardName = (String) cardInfo.get("cardName");
         boolean storedIsBC = (boolean) cardInfo.get("bc");
@@ -99,10 +100,14 @@ public class FirebaseServiceImpl implements FirebaseService {
         boolean storedIsPersonal = (boolean) cardInfo.get("personal");
 
         // 카드 정보의 조건이 하나라도 일치하면 true
-        return storedCardName.contains(cardName) || (cardCompanyName.equals(storedCardCompanyName) &&
-                storedIsBC == isBC &&
-                storedIsCredit == isCredit &&
-                storedIsPersonal == isPersonal);
+        if (isCategory) {
+            return storedCardName.contains(cardName) || (cardCompanyName.equals(storedCardCompanyName) &&
+                    storedIsBC == isBC &&
+                    storedIsCredit == isCredit &&
+                    storedIsPersonal == isPersonal);
+        } else {
+            return cardCompanyName.equals(storedCardCompanyName);
+        }
     }
 
     @Override
@@ -143,7 +148,7 @@ public class FirebaseServiceImpl implements FirebaseService {
             notificationData.put("title", title);
             notificationData.put("body", body);
             notificationData.put("financialCardId", financialCardId);
-            notificationData.put("timestamp", LocalDateTime.now());
+            notificationData.put("timestamp", Timestamp.now());
             notificationData.put("cardEventId", cardEventId);
 
             firestore.collection("notifications")
@@ -164,9 +169,8 @@ public class FirebaseServiceImpl implements FirebaseService {
         log.info("member Id = {}", memberId);
         try {
             Firestore firestore = FirestoreClient.getFirestore();
-            QuerySnapshot querySnapshot = firestore.collection("users")
-                    .document(String.valueOf(memberId))
-                    .collection("notifications")  // 유저별 notifications 컬렉션 접근
+            QuerySnapshot querySnapshot = firestore.collection("notifications")
+                    .whereEqualTo("userId", String.valueOf(memberId))  // userId로 필터링
                     .get()
                     .get();
 

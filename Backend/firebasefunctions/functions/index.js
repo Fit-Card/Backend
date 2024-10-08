@@ -41,7 +41,7 @@ exports.join = onRequest(async (req, res) => {
         await db
             .collection('users')
             .doc(userId)
-            .set({
+            .update({
                 token: fcmToken,                
             });
         console.log('User data saved to Firestore:', { userId, fcmToken });

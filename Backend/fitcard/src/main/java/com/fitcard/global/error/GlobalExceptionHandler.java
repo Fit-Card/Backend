@@ -25,6 +25,13 @@ public class GlobalExceptionHandler {
 //        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.ERROR(ErrorCode.UNAUTHORIZED, "관리자만 접근할 수 있습니다. " + ex.getMessage()));
 //    }
 
+    @ExceptionHandler(NumberFormatException.class)
+    protected ResponseEntity<Response<ErrorInfo>> handleNumberFormatException(Exception ex){
+        log.error("NumberFormatException - message: {} / class: {}", ex.getMessage(), ex.getClass());
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.ERROR(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Response<ErrorInfo>> handleException(Exception ex){
         log.error("Exception - message: {} / class: {}", ex.getMessage(), ex.getClass());

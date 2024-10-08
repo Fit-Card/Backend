@@ -1,6 +1,7 @@
 package com.fitcard.domain.event.model;
 
 import com.fitcard.domain.card.company.model.CardCompany;
+import com.fitcard.domain.event.model.dto.response.FinancialCardEventResponse;
 import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "card_event")
@@ -66,5 +68,19 @@ public class CardEvent extends BaseEntity {
         this.isCredit = isCredit;
         this.isBC = isBC;
         this.isPersonal = isPersonal;
+    }
+
+    public static CardEvent of(CardCompany cardCompany, FinancialCardEventResponse financialCardEventResponse, String target, Boolean isCategory, Boolean isBC, Boolean isPersonal, Boolean isCredit) {
+        return new CardEvent(cardCompany,
+                target,
+                isCategory,
+                financialCardEventResponse.getEventUrl(),
+                financialCardEventResponse.getStartDate(),
+                financialCardEventResponse.getEndDate(),
+                financialCardEventResponse.getTitle(),
+                financialCardEventResponse.getContent(),
+                isCredit,
+                isBC,
+                isPersonal);
     }
 }
