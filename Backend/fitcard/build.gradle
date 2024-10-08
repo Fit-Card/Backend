@@ -58,6 +58,12 @@ dependencies {
 	testImplementation 'com.h2database:h2'  // In-memory database for tests
 	testImplementation 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// coolsms
+	implementation 'net.nurigo:sdk:4.3.0'
+
+	//redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

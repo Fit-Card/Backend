@@ -1,15 +1,13 @@
 package com.fitcard.domain.member.service;
 
-import com.fitcard.domain.member.exception.DuplicatedMemberException;
-import com.fitcard.domain.member.exception.IncorrectPasswordException;
-import com.fitcard.domain.member.exception.InvalidRefreshTokenException;
-import com.fitcard.domain.member.exception.MemberNotFoundException;
+import com.fitcard.domain.member.exception.*;
 import com.fitcard.domain.member.model.Member;
 import com.fitcard.domain.member.model.dto.request.MemberLoginRequest;
 import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
 import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
 import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
 import com.fitcard.domain.member.repository.MemberRepository;
+import com.fitcard.domain.member.repository.SmsCertificationDao;
 import com.fitcard.global.config.auth.JwtToken;
 import com.fitcard.global.config.auth.JwtTokenProvider;
 import com.fitcard.global.error.ErrorCode;
@@ -28,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final SmsCertificationDao smsCertificationDao;
 
     @Override
     public void register(MemberRegisterRequest request) {
@@ -35,11 +34,15 @@ public class AuthServiceImpl implements AuthService {
             throw new DuplicatedMemberException(ErrorCode.DUPLICATE_MEMBER, "이미 사용 중인 아이디, 핸드폰 번호입니다.");
         }
 
+        if(!smsCertificationDao.hasKey(request.getPhoneNumber())){
+            throw new MemberRegisterException(ErrorCode.UNVERIFIED_PHONE_NUMBER, "전화번호 인증이 완료되지 않았습니다.");
+        }
+
         // 패스워드 인코딩 처리
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         
         // Member 객체 생성 시 인코딩된 패스워드를 전달
-        Member member = Member.from(request, encodedPassword);
+        Member member = Member.of(request, encodedPassword);
         memberRepository.save(member);
     }
 

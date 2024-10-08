@@ -31,6 +31,8 @@ public enum ErrorCode {
     DUPLICATE_MEMBER(404, "M003", "이미 존재하는 ID 입니다."),
     INCORRECT_PASSWORD(400, "M004", "비밀번호가 틀렸습니다."),
     NOT_FOUND_FINANCIAL_USER_SEQ(400, "M005", "user sequence number를 찾을 수 없습니다."),
+    INVALID_CERTIFICATION_NUMBER(400, "M006", "인증번호가 일치하지 않습니다."),
+    UNVERIFIED_PHONE_NUMBER(400, "M007", "인증되지 않은 전화번호입니다."),
 
     //card
     CARD_COMPANY_NOT_FOUND(404, "CA001", "카드사를 찾을 수 없습니다."),

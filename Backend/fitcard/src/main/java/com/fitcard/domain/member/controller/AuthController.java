@@ -1,12 +1,11 @@
 package com.fitcard.domain.member.controller;
 
-import com.fitcard.domain.member.model.dto.request.MemberCheckIdRequest;
-import com.fitcard.domain.member.model.dto.request.MemberLoginRequest;
-import com.fitcard.domain.member.model.dto.request.MemberRegisterRequest;
+import com.fitcard.domain.member.model.dto.request.*;
 import com.fitcard.domain.member.model.dto.response.MemberCheckIdResponse;
 import com.fitcard.domain.member.model.dto.response.MemberLoginResponse;
 import com.fitcard.domain.member.model.dto.response.RefreshTokenResponse;
 import com.fitcard.domain.member.service.AuthService;
+import com.fitcard.domain.member.service.MemberSmsService;
 import com.fitcard.global.config.auth.JwtToken;
 import com.fitcard.global.config.swagger.SwaggerApiError;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
@@ -16,7 +15,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "인증 관련 API")
 @RestController
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final MemberSmsService memberSmsService;
 
     @Operation(summary = "사용자 회원가입 API", description = "사용자가 회원가입을 진행합니다.")
     @SwaggerApiSuccess(description = "사용자 회원가입을 성공했습니다.")
@@ -61,6 +64,24 @@ public class AuthController {
     public Response<RefreshTokenResponse> refreshAccessToken(@RequestBody JwtToken jwtToken) {
         RefreshTokenResponse response = authService.refresh(jwtToken);
         return Response.SUCCESS(response, "JWT 토큰 재발급을 성공했습니다.");
+    }
+
+    @Operation(summary = "SMS 인증번호 전송 API", description = "전화번호로 SMS 인증번호를 전송합니다.")
+    @SwaggerApiSuccess(description = "SMS 인증번호 전송 성공")
+    @SwaggerApiError({ErrorCode.INVALID_CERTIFICATION_NUMBER})
+    @PostMapping("/sms/send")
+    public Response<?> sendSms(@RequestBody MemberPhoneRequest requestDto) {
+        memberSmsService.sendSms(requestDto);
+        return Response.SUCCESS();
+    }
+
+    @Operation(summary = "SMS 인증번호 확인 API", description = "사용자가 입력한 인증번호를 확인합니다.")
+    @SwaggerApiSuccess(description = "SMS 인증번호 확인 성공")
+    @SwaggerApiError({ErrorCode.INVALID_CERTIFICATION_NUMBER})
+    @PostMapping("/sms/verify")
+    public Response<?> verifySms(@RequestBody MemberSmsRequest requestDto) {
+        memberSmsService.verifySms(requestDto);
+        return Response.SUCCESS();
     }
 
 }

@@ -50,14 +50,14 @@ public class Member extends BaseEntity {
         this.userSeqNo = userSeqNo;
     }
 
-    public static Member from(MemberRegisterRequest request, String encodedPassword) {
+    public static Member of(MemberRegisterRequest request, String encodedPassword) {
         return new Member(
                 request.getLoginId(),
                 encodedPassword,  // 인코딩된 패스워드를 사용
                 request.getName(),
                 request.getBirthDate(),
                 request.getPhoneNumber(),
-                false,   // isCertifiedMydata 초기값
+                true,   // isCertifiedMydata 초기값
                 ""       // userSeqNo 초기값
         );
     }
