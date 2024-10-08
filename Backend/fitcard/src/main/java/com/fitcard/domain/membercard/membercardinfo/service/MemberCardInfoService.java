@@ -19,6 +19,4 @@ public interface MemberCardInfoService {
 
     MemberCardPerformanceAndBenefitResponses getMemberCardPerformanceAndBenefits(Integer memberId, Integer num);
 
-    MemberCardRecommendResponse getMemberCardAllRecommend(Integer memberId);
-
 }

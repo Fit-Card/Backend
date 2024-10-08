@@ -4,6 +4,8 @@ import com.fitcard.domain.card.benefit.model.CardBenefitLimitStatus;
 import com.fitcard.domain.card.benefit.repository.CardBenefitRepository;
 import com.fitcard.domain.card.performance.model.CardPerformance;
 import com.fitcard.domain.card.performance.repository.CardPerformanceRepository;
+import com.fitcard.domain.member.model.Member;
+import com.fitcard.domain.member.repository.MemberRepository;
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
 import com.fitcard.domain.membercard.membercardinfo.repository.MemberCardInfoRepository;
 import com.fitcard.domain.membercard.payment.model.Payment;
@@ -13,10 +15,14 @@ import com.fitcard.domain.membercard.payment.service.PaymentService;
 import com.fitcard.domain.membercard.performance.model.MemberCardPerformance;
 import com.fitcard.domain.membercard.performance.repository.MemberCardPerformanceRepository;
 import com.fitcard.domain.membercard.performance.service.MemberCardPerformanceService;
+import com.fitcard.domain.membercard.recommend.exception.MemberCardRecommendGetAllException;
 import com.fitcard.domain.membercard.recommend.model.MemberCardRecommend;
+import com.fitcard.domain.membercard.recommend.model.dto.response.MemberCardRecommendResponse;
+import com.fitcard.domain.membercard.recommend.model.dto.response.MemberCardRecommendResponses;
 import com.fitcard.domain.membercard.recommend.repository.MemberCardRecommendRepository;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
+import com.fitcard.global.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +49,7 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
     private final MemberCardPerformanceService memberCardPerformanceService;
     private final MerchantInfoRepository merchantInfoRepository;
     private final MemberCardRecommendRepository memberCardRecommendRepository;
+    private final MemberRepository memberRepository;
 
 
     /**
@@ -58,7 +65,7 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
         LocalDateTime endDateTime = LocalDateTime.of(year, month, YearMonth.of(year, month).lengthOfMonth(), 23, 59, 59);
 
         List<MemberCardInfo> memberCardInfos = memberCardInfoRepository.findAll();
-
+//        log.info("memberCardInfos: {}", memberCardInfos);
         for(MemberCardInfo memberCardInfo : memberCardInfos){
             //payment 계산
             paymentService.getMemberCardPaymentStatus(new MemberCardPaymentGetStatusRequest(memberCardInfo.getMemberCardId()));
@@ -85,6 +92,21 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
 
     }
 
+    @Override
+    public MemberCardRecommendResponses getMemberCardAllRecommend(Integer memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberCardRecommendGetAllException(ErrorCode.MEMBER_NOT_FOUND, "사용자가 존재하지 않습니다."));
+        List<MemberCardInfo> memberCards = memberCardInfoRepository.findAllByMember(member);
+
+        List<MemberCardRecommendResponse> memberCardRecommendResponses = memberCards.stream()
+                .map(memberCard -> {
+                    Optional<MemberCardRecommend> memberCardRecommend = memberCardRecommendRepository.findByMemberCard(memberCard);
+                    return memberCardRecommend.map(MemberCardRecommendResponse::of).orElseGet(() -> MemberCardRecommendResponse.empty(memberCard));
+                })
+                .toList();
+        return MemberCardRecommendResponses.from(memberCardRecommendResponses);
+    }
+
     @Synchronized
     private MemberCardRecommend findRecommendCard(int amount, List<Payment> payments, CardPerformance memberCardPerformance, MemberCardInfo memberCardInfo, int year, int month){
         //1. memberCard의 혜택 계산
@@ -95,16 +117,17 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
         List<CardPerformance> cardPerformances = cardPerformanceRepository.findNewestVersionAndMaxAmount(amount);
 
         CardPerformance bestCardPerformance = null;
-        int benefitDiff = -987654321;
+        int recommendCardBenefitAmount = 0;
+//        int benefitDiff = -987654321;
         for(CardPerformance cardPerformance : cardPerformances){
             int nowCardBenefit = calBenefit(payments, cardPerformance);
-            if(nowCardBenefit-memberCardBenefit > benefitDiff){
-                benefitDiff = nowCardBenefit-memberCardBenefit;
+            if(nowCardBenefit > recommendCardBenefitAmount){
+                recommendCardBenefitAmount = nowCardBenefit;
                 bestCardPerformance = cardPerformance;
             }
         }
         //todo : bestCardPerformance가 null 인 경우 예외처리 필요, null인 경우가 없을 것 같긴 하다.
-        return MemberCardRecommend.of(memberCardInfo, bestCardPerformance, memberCardBenefit, benefitDiff, year, month);
+        return MemberCardRecommend.of(memberCardInfo, bestCardPerformance, memberCardBenefit, recommendCardBenefitAmount, year, month);
     }
 
     @Synchronized

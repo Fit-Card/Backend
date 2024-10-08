@@ -23,6 +23,7 @@ public class CardCompany extends BaseEntity {
     @NotEmpty
     private String name;
 
+    @Column(length=1000)
     private String imageUrl;
 
     private CardCompany( String financialCardId, String name, String imageUrl) {

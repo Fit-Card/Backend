@@ -1,7 +1,9 @@
 package com.fitcard.domain.membercard.recommend.controller;
 
+import com.fitcard.domain.membercard.recommend.model.dto.response.MemberCardRecommendResponses;
 import com.fitcard.domain.membercard.recommend.service.MemberCardRecommendService;
 import com.fitcard.global.config.swagger.SwaggerApiSuccess;
+import com.fitcard.global.guard.Login;
 import com.fitcard.global.response.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,5 +28,13 @@ public class MemberCardRecommendController {
     public Response<?> createMemberCardRecommend() {
         memberCardRecommendService.createMemberCardRecommend();
         return Response.SUCCESS();
+    }
+
+    @Operation(summary = "사용자 추천 카드 조회 API", description = "지난달의 사용자 카드 이용내역을 바탕으로 추천 카드를 조회합니다.")
+    @SwaggerApiSuccess(description = "사용자 추천 카드 조회를 성공했습니다.")
+    @PostMapping("/get")
+    public Response<MemberCardRecommendResponses> findMemberCardRecommend(@Login Integer memberId) {
+        MemberCardRecommendResponses response = memberCardRecommendService.getMemberCardAllRecommend(memberId);
+        return Response.SUCCESS(response);
     }
 }

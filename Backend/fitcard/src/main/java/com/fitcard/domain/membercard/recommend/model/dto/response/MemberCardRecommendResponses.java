@@ -1,4 +1,4 @@
-package com.fitcard.domain.membercard.membercardinfo.model.dto.response;
+package com.fitcard.domain.membercard.recommend.model.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
