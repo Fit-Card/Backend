@@ -9,4 +9,6 @@ public interface CardEventService {
     boolean detectNewCardEvents();
 
     void sendNotificationForNewEvents(List<CardEvent> newCardEvents);
+
+    int createCardEventsFromFinancial();
 }

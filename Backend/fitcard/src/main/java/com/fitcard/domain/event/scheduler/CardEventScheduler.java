@@ -1,6 +1,7 @@
 package com.fitcard.domain.event.scheduler;
 
 import com.fitcard.domain.event.service.CardEventService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

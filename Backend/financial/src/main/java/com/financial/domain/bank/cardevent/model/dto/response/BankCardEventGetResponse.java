@@ -7,13 +7,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BankCardEventGetResponse {
-
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private Long cardEventId;
 
@@ -30,10 +29,10 @@ public class BankCardEventGetResponse {
     private String eventUrl;
 
     @NotEmpty
-    private String startDate;
+    private LocalDate startDate;
 
     @NotEmpty
-    private String endDate;
+    private LocalDate endDate;
 
     @NotEmpty
     private String title;

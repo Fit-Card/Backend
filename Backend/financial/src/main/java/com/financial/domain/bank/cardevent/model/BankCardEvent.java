@@ -34,10 +34,10 @@ public class BankCardEvent {
     private String eventUrl;
 
     @NotNull
-    private String startDate;
+    private LocalDate startDate;
 
     @NotNull
-    private String endDate;
+    private LocalDate endDate;
 
     @NotEmpty
     private String title;
@@ -45,7 +45,7 @@ public class BankCardEvent {
     @NotEmpty
     private String content;
 
-    private BankCardEvent(FinCardCompany finCardCompany, String target, Boolean isCategory, String eventUrl, String startDate, String endDate, String title, String content) {
+    private BankCardEvent(FinCardCompany finCardCompany, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content) {
         this.finCardCompany = finCardCompany;
         this.target = target;
         this.isCategory = isCategory;
@@ -56,7 +56,7 @@ public class BankCardEvent {
         this.content = content;
     }
 
-    public static BankCardEvent of(FinCardCompany finCardCompany, String target, Boolean isCategory, String eventUrl, String startDate, String endDate, String title, String content){
+    public static BankCardEvent of(FinCardCompany finCardCompany, String target, Boolean isCategory, String eventUrl, LocalDate startDate, LocalDate endDate, String title, String content){
         return new BankCardEvent(finCardCompany, target, isCategory, eventUrl, startDate, endDate, title, content);
     }
 
