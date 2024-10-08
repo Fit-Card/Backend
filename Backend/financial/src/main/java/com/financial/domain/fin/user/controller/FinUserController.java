@@ -2,7 +2,9 @@ package com.financial.domain.fin.user.controller;
 
 import com.financial.domain.fin.user.model.FinUser;
 import com.financial.domain.fin.user.model.dto.request.FinUserDeleteRequest;
+import com.financial.domain.fin.user.model.dto.request.FinUserGetIdRequest;
 import com.financial.domain.fin.user.model.dto.request.FinUserSaveRequest;
+import com.financial.domain.fin.user.model.dto.response.FinUserGetIdResponse;
 import com.financial.domain.fin.user.service.FinUserService;
 import com.financial.global.response.Response;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,13 @@ public class FinUserController {
     public Response<?> deleteUser(@RequestBody FinUserDeleteRequest request) {
         finUserService.deleteUser(request);
         return Response.SUCCESS();
+    }
+
+    @GetMapping("")
+    public Response<FinUserGetIdResponse> getUser(@RequestParam String phone,
+                                                  @RequestParam String verificationCode) {
+        FinUserGetIdResponse response = finUserService.getFinUserId(new FinUserGetIdRequest(phone, verificationCode));
+        return Response.SUCCESS(response);
     }
 
 }
