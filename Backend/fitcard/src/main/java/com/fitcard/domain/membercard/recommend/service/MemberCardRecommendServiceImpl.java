@@ -14,7 +14,7 @@ import com.fitcard.domain.membercard.performance.model.MemberCardPerformance;
 import com.fitcard.domain.membercard.performance.repository.MemberCardPerformanceRepository;
 import com.fitcard.domain.membercard.performance.service.MemberCardPerformanceService;
 import com.fitcard.domain.membercard.recommend.model.MemberCardRecommend;
-import com.fitcard.domain.membercard.recommend.repository.MemberCardRepositoryRepository;
+import com.fitcard.domain.membercard.recommend.repository.MemberCardRecommendRepository;
 import com.fitcard.domain.merchant.merchantinfo.model.MerchantInfo;
 import com.fitcard.domain.merchant.merchantinfo.repository.MerchantInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
     private final PaymentService paymentService;
     private final MemberCardPerformanceService memberCardPerformanceService;
     private final MerchantInfoRepository merchantInfoRepository;
-    private final MemberCardRepositoryRepository memberCardRecommendRepository;
+    private final MemberCardRecommendRepository memberCardRecommendRepository;
 
 
     /**
