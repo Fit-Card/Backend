@@ -7,9 +7,11 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+@ToString
 @Entity
 @Table(name = "member_card_payment")
 @Getter

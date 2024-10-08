@@ -15,7 +15,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
     boolean existsByFinancialMemberCardPaymentId(Integer financialMemberCardPaymentId);
 
-    List<Payment> findAllByMemberCardAndPaymentDateBetween(MemberCardInfo memberCardInfo, LocalDateTime startOfMonth, LocalDateTime now);
+    List<Payment> findAllByMemberCardAndPaymentDateBetween(MemberCardInfo memberCardInfo, LocalDateTime startDate, LocalDateTime endDate);
 
 
 }

@@ -1,5 +1,6 @@
 package com.fitcard.domain.membercard.performance.model;
 
+import com.fitcard.domain.card.performance.model.CardPerformance;
 import com.fitcard.domain.membercard.membercardinfo.model.MemberCardInfo;
 import com.fitcard.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -41,18 +42,22 @@ public class MemberCardPerformance extends BaseEntity {
     @JoinColumn(name = "member_card_id", nullable = false)
     private MemberCardInfo memberCard;
 
-    private MemberCardPerformance(Integer amount, Integer year, Integer month, MemberCardInfo memberCard, Integer cardPerformanceId, Integer cardPerformanceLevel) {
+    private MemberCardPerformance(Integer amount, Integer year, Integer month, MemberCardInfo memberCard, Integer lastFinancialId, Integer cardPerformanceId, Integer cardPerformanceLevel) {
         this.amount = amount;
         this.year = year;
         this.month = month;
         this.memberCard = memberCard;
-        this.lastFinancialId = 0;
+        this.lastFinancialId = lastFinancialId;
         this.cardPerformanceId = cardPerformanceId;
         this.cardPerformanceLevel = cardPerformanceLevel;
     }
 
     public static MemberCardPerformance empty(Integer year, Integer month, MemberCardInfo memberCardInfo) {
-        return new MemberCardPerformance(0, year, month, memberCardInfo, 0, 1);
+        return new MemberCardPerformance(0, year, month, memberCardInfo, 0,0, 1);
+    }
+
+    public static MemberCardPerformance of(int amount, int year, int month, MemberCardInfo memberCardInfo, int lastFinancialId, CardPerformance cardPerformance) {
+        return new MemberCardPerformance(amount, year, month, memberCardInfo, lastFinancialId, cardPerformance.getId(), cardPerformance.getLevel());
     }
 
     public void setLastFinancialId(Integer lastFinancialId, Integer amount) {
