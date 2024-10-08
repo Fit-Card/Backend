@@ -33,4 +33,6 @@ public interface MemberCardInfoRepository extends JpaRepository<MemberCardInfo, 
             @Param("endDate") LocalDate endDate);
 
     List<MemberCardInfo> findAllByMember(Member member);
+
+    boolean existsByFinancialUserCardIdAndMember(Long bankCardId, Member member);
 }

@@ -89,7 +89,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
                 .retrieve()
                 .body(String.class);
 
-        return parsingGetAllRenewalMemberCardsFromJson(response);
+        return parsingGetAllRenewalMemberCardsFromJson(response, member);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         request.getFinancialUserCardIds().forEach(financialUserCardId -> {
             MemberCardInfo memberCardInfo = getMemberCardInfoFromFinancial(financialUserCardId, member);
             //이미 있는 카드면 continue
-            if (memberCardInfoRepository.existsByFinancialCardId(memberCardInfo.getCardVersion().getCardInfo().getFinancialCardId())) {
+            if (memberCardInfoRepository.existsByFinancialUserCardIdAndMember(memberCardInfo.getFinancialUserCardId(), member)) {
                 return;
             }
             memberCardInfos.add(memberCardInfo);
@@ -205,7 +205,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         return parsingMemberCardInfoFromJson(response, member);
     }
 
-    private MemberCardGetAllRenewalResponses parsingGetAllRenewalMemberCardsFromJson(String response){
+    private MemberCardGetAllRenewalResponses parsingGetAllRenewalMemberCardsFromJson(String response, Member member){
         ObjectMapper objectMapper = new ObjectMapper();
 
         List<MemberCardGetRenewalResponse> memberCardGetRenewalResponses = new ArrayList<>();
@@ -232,7 +232,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
                 CardInfo cardInfo = optionalCardInfo.get();
 
                 String expiredDate = bankUserCardGetResponse.get("expiredDate").asText();
-                if(memberCardInfoRepository.existsByFinancialCardId(bankCardId)){
+                if(memberCardInfoRepository.existsByFinancialUserCardIdAndMember(financialUserCardId, member)){
                     continue;
                 }
                 MemberCardGetRenewalResponse memberCardGetRenewalResponse = MemberCardGetRenewalResponse.of(cardInfo, cardCompany, expiredDate, financialUserCardId);
