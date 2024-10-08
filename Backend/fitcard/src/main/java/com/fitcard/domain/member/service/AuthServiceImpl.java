@@ -31,8 +31,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void register(MemberRegisterRequest request) {
-        if (memberRepository.existsByLoginId(request.getLoginId())) {
-            throw new DuplicatedMemberException(ErrorCode.DUPLICATE_MEMBER, "이미 사용 중인 아이디입니다.");
+        if (memberRepository.existsByLoginIdOrPhoneNumber(request.getLoginId(), request.getPhoneNumber())) {
+            throw new DuplicatedMemberException(ErrorCode.DUPLICATE_MEMBER, "이미 사용 중인 아이디, 핸드폰 번호입니다.");
         }
 
         // 패스워드 인코딩 처리

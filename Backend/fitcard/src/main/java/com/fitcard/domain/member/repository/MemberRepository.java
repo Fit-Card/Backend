@@ -11,4 +11,5 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     // loginId의 중복 여부 확인 메서드
     boolean existsByLoginId(String loginId);
 
+    boolean existsByLoginIdOrPhoneNumber(String loginId, String phoneNumber);
 }
