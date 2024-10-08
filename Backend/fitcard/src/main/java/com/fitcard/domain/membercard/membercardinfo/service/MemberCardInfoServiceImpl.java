@@ -22,6 +22,7 @@ import com.fitcard.domain.membercard.membercardinfo.repository.MemberCardInfoRep
 import com.fitcard.domain.membercard.payment.model.dto.request.MemberCardPaymentGetStatusRequest;
 import com.fitcard.domain.membercard.payment.model.dto.response.MemberCardPaymentGetStatusResponse;
 import com.fitcard.domain.membercard.payment.service.PaymentService;
+import com.fitcard.domain.membercard.recommend.repository.MemberCardRecommendRepository;
 import com.fitcard.global.error.ErrorCode;
 import com.fitcard.global.firebase.FirebaseService;
 import com.fitcard.global.firebase.dto.FirebaseCardInfoRequest;
@@ -56,12 +57,13 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
     private final FirebaseService firebaseService;
     private final PaymentService paymentService;
     private final CardBenefitServiceImpl cardBenefitServiceImpl;
+    private final MemberCardRecommendRepository memberCardRecommendRepository;
 
     public MemberCardInfoServiceImpl(MemberCardInfoRepository memberCardInfoRepository, MemberRepository memberRepository,
                                      CardCompanyRepository cardCompanyRepository, CardInfoRepository cardInfoRepository,
                                      CardVersionRepository cardVersionRepository, PaymentService paymentService,
                                      @Value("${financial.user-card.get-all}")String allMemberCardInfoGetUri,
-                                     @Value("${financial.user-card.get}")String memberCardInfoGetUri, FirebaseService firebaseService, CardBenefitServiceImpl cardBenefitServiceImpl) {
+                                     @Value("${financial.user-card.get}")String memberCardInfoGetUri, FirebaseService firebaseService, CardBenefitServiceImpl cardBenefitServiceImpl, MemberCardRecommendRepository memberCardRecommendRepository) {
 
         this.cardCompanyRepository = cardCompanyRepository;
         this.memberCardInfoRepository = memberCardInfoRepository;
@@ -74,6 +76,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         this.firebaseService = firebaseService;
         this.paymentService = paymentService;
         this.cardBenefitServiceImpl = cardBenefitServiceImpl;
+        this.memberCardRecommendRepository = memberCardRecommendRepository;
     }
 
     @Override
@@ -89,7 +92,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
                 .retrieve()
                 .body(String.class);
 
-        return parsingGetAllRenewalMemberCardsFromJson(response);
+        return parsingGetAllRenewalMemberCardsFromJson(response, member);
     }
 
     @Override
@@ -102,7 +105,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         request.getFinancialUserCardIds().forEach(financialUserCardId -> {
             MemberCardInfo memberCardInfo = getMemberCardInfoFromFinancial(financialUserCardId, member);
             //이미 있는 카드면 continue
-            if (memberCardInfoRepository.existsByFinancialCardId(memberCardInfo.getCardVersion().getCardInfo().getFinancialCardId())) {
+            if (memberCardInfoRepository.existsByFinancialUserCardIdAndMember(memberCardInfo.getFinancialUserCardId(), member)) {
                 return;
             }
             memberCardInfos.add(memberCardInfo);
@@ -198,7 +201,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
         return parsingMemberCardInfoFromJson(response, member);
     }
 
-    private MemberCardGetAllRenewalResponses parsingGetAllRenewalMemberCardsFromJson(String response){
+    private MemberCardGetAllRenewalResponses parsingGetAllRenewalMemberCardsFromJson(String response, Member member){
         ObjectMapper objectMapper = new ObjectMapper();
 
         List<MemberCardGetRenewalResponse> memberCardGetRenewalResponses = new ArrayList<>();
@@ -225,7 +228,7 @@ public class MemberCardInfoServiceImpl implements MemberCardInfoService {
                 CardInfo cardInfo = optionalCardInfo.get();
 
                 String expiredDate = bankUserCardGetResponse.get("expiredDate").asText();
-                if(memberCardInfoRepository.existsByFinancialCardId(bankCardId)){
+                if(memberCardInfoRepository.existsByFinancialUserCardIdAndMember(financialUserCardId, member)){
                     continue;
                 }
                 MemberCardGetRenewalResponse memberCardGetRenewalResponse = MemberCardGetRenewalResponse.of(cardInfo, cardCompany, expiredDate, financialUserCardId);

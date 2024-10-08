@@ -3,10 +3,7 @@ package com.fitcard.domain.membercard.membercardinfo.service;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardCreateRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardDeleteRequest;
 import com.fitcard.domain.membercard.membercardinfo.model.dto.request.MemberCardGetAllRequest;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetAllRenewalResponses;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetByAgeSpecificResponses;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardGetResponses;
-import com.fitcard.domain.membercard.membercardinfo.model.dto.response.MemberCardPerformanceAndBenefitResponses;
+import com.fitcard.domain.membercard.membercardinfo.model.dto.response.*;
 
 public interface MemberCardInfoService {
 

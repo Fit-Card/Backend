@@ -102,7 +102,7 @@ public class PaymentServiceImpl implements PaymentService {
         //실적 구간 찾기
         List<CardPerformance> cardPerformances = cardPerformanceRepository.findByCardVersion(memberCardInfo.getCardVersion());
         if(cardPerformances.isEmpty()){
-            throw new MemberCardPaymentGetStatusException(ErrorCode.CARD_NOT_FOUND, "카드 버전이 존재하지 않습니다.");
+            throw new MemberCardPaymentGetStatusException(ErrorCode.CARD_NOT_FOUND, "카드 실적이 존재하지 않습니다.");
         }
 
         int level = 0;

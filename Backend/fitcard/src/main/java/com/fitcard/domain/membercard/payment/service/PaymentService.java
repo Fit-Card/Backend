@@ -9,5 +9,4 @@ public interface PaymentService {
     MemberCardPaymentGetStatusResponse getMemberCardPaymentStatus(MemberCardPaymentGetStatusRequest request);
 
     MemberCardPaymentGetWithCategoryResponse getMemberCardPaymentWithCategory(int memberId);
-
 }
