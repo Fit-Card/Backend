@@ -103,7 +103,12 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
                     Optional<MemberCardRecommend> memberCardRecommend = memberCardRecommendRepository.findByMemberCard(memberCard);
                     return memberCardRecommend.map(MemberCardRecommendResponse::of).orElseGet(() -> MemberCardRecommendResponse.empty(memberCard));
                 })
+                .sorted((o1, o2) -> {
+                    return Integer.compare((o2.getRecommendCardBenefitAmount() - o2.getMemberCardBenefitAmount()),
+                            o1.getRecommendCardBenefitAmount() - o1.getMemberCardBenefitAmount());
+                })
                 .toList();
+
         return MemberCardRecommendResponses.from(memberCardRecommendResponses);
     }
 
@@ -121,6 +126,8 @@ public class MemberCardRecommendServiceImpl implements MemberCardRecommendServic
 //        int benefitDiff = -987654321;
         for(CardPerformance cardPerformance : cardPerformances){
             int nowCardBenefit = calBenefit(payments, cardPerformance);
+            int monthlyAnnualFee = cardPerformance.getCardVersion().getAnnualFee() / 12;
+            nowCardBenefit -= monthlyAnnualFee;
             if(nowCardBenefit > recommendCardBenefitAmount){
                 recommendCardBenefitAmount = nowCardBenefit;
                 bestCardPerformance = cardPerformance;
