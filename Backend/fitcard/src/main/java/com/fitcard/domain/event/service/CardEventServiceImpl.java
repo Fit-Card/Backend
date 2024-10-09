@@ -101,7 +101,7 @@ public class CardEventServiceImpl implements CardEventService {
                 Long cardEventId = cardEvent.getCardEventId();
 
                 String messageTitle = cardEvent.getTitle();
-                String messageBody = cardEvent.getTarget();
+                String messageBody = cardEvent.getContent();
 
                 // FCM을 통해 알림 전송
                 firebaseService.sendNotificationWithCardInfo(userId, messageTitle, messageBody, financialCardId, cardEventId);
