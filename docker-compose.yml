@@ -1,0 +1,56 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: fitcard-mysql
+    volumes:
+      - db:/var/lib/mysql
+    restart: "no"
+    env_file:
+      - /etc/fitcard/.env
+    networks:
+      - fitcard
+    ports:
+      - "3306:3306"
+      
+  fitcard:
+    image: fitcard-image:latest
+    container_name: fitcard-be
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8081"
+    restart: "always"
+    networks:
+      - fitcard
+
+  financial:
+    image: financial-image:latest
+    container_name: financial-be
+    depends_on:
+      - mysql
+    ports:
+      - "8082:8082"
+    restart: "always"
+    networks:
+      - fitcard
+    
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/nginx:/etc/nginx  # nginx 설정 파일 경로
+      - /var/www/html:/var/www/html  # 정적 파일 제공을 위한 경로
+      - /etc/letsencrypt:/etc/letsencrypt  # SSL 인증서 경로
+    restart: "always"
+    networks:
+      - fitcard
+volumes:
+  db: {}
+
+networks:
+  fitcard:
+    name: fitcard
+    driver: bridge
